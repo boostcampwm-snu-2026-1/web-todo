@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Today's Tasks</title>
+  <link rel="stylesheet" href="/public/style/reset.css" />
+  <link rel="stylesheet" href="/public/style/global.css" />
+  <link rel="stylesheet" href="/public/style/todo.css" />
+</head>
+<body>
+  <div class="background">
+  <div class="card">
+    <!-- Header -->
+    <div class="card-header">
+      <h1>Today's Tasks</h1>
+      <p class="date">Monday, November 13</p>
+    </div>
+    <!-- Input -->
+    <div class="input-row">
+      <input class="task-input" type="text" placeholder="Add a new task..." />
+      <button class="add-btn" aria-label="Add task">
+        <svg><use href="/public/asset/icon_sprite.svg#icon-plus"/></svg>
+      </button>
+    </div>
+    <!-- Task List -->
+    <ul class="task-list">
+      <!-- Task 1 -->
+      <li class="task-item">
+        <div class="checkbox" aria-label="Mark complete">
+          <svg><use href="/public/asset/icon_sprite.svg#icon-check"/></svg>
+        </div>
+        <span class="task-label">Quick backup task</span>
+        <div class="task-actions">
+          <button class="action-btn" aria-label="Edit">
+            <svg><use href="/public/asset/icon_sprite.svg#icon-edit"/></svg>
+          </button>
+          <button class="action-btn" aria-label="Delete">
+            <svg><use href="/public/asset/icon_sprite.svg#icon-trash"/></svg>
+          </button>
+        </div>
+      </li>
+      <!-- Task 2 -->
+      <li class="task-item">
+        <div class="checkbox" aria-label="Mark complete">
+          <svg><use href="/public/asset/icon_sprite.svg#icon-check"/></svg>
+        </div>
+        <span class="task-label">Report Marketing Rlight</span>
+        <div class="task-actions">
+          <button class="action-btn" aria-label="Edit">
+            <svg><use href="/public/asset/icon_sprite.svg#icon-edit"/></svg>
+          </button>
+          <button class="action-btn" aria-label="Delete">
+            <svg><use href="/public/asset/icon_sprite.svg#icon-trash"/></svg>
+          </button>
+        </div>
+      </li>
+      <!-- Task 3 (high priority) -->
+      <li class="task-item">
+        <div class="checkbox" aria-label="Mark complete">
+          <svg><use href="/public/asset/icon_sprite.svg#icon-check"/></svg>
+        </div>
+        <span class="priority-dot"></span>
+        <span class="task-label">Finalize Q4 Marketing Report</span>
+        <div class="task-actions">
+          <button class="action-btn" aria-label="Edit">
+            <svg><use href="/public/asset/icon_sprite.svg#icon-edit"/></svg>
+          </button>
+          <button class="action-btn" aria-label="Delete">
+            <svg><use href="/public/asset/icon_sprite.svg#icon-trash"/></svg>
+          </button>
+        </div>
+      </li>
+      <!-- Task 4 -->
+      <li class="task-item">
+        <div class="checkbox" aria-label="Mark complete">
+          <svg><use href="/public/asset/icon_sprite.svg#icon-check"/></svg>
+        </div>
+        <span class="task-label">Complete taskt task</span>
+        <div class="task-actions">
+          <button class="action-btn" aria-label="Edit">
+            <svg><use href="/public/asset/icon_sprite.svg#icon-edit"/></svg>
+          </button>
+          <button class="action-btn" aria-label="Delete">
+            <svg><use href="/public/asset/icon_sprite.svg#icon-trash"/></svg>
+          </button>
+        </div>
+      </li>
+      <!-- Task 5 (done) -->
+      <li class="task-item done">
+        <div class="checkbox" aria-label="Mark incomplete">
+          <svg><use href="/public/asset/icon_sprite.svg#icon-check"/></svg>
+        </div>
+        <span class="task-label">Team Sync at 10 AM</span>
+        <div class="task-actions">
+          <button class="action-btn" aria-label="Edit">
+            <svg><use href="/public/asset/icon_sprite.svg#icon-edit"/></svg>
+          </button>
+          <button class="action-btn" aria-label="Delete">
+            <svg><use href="/public/asset/icon_sprite.svg#icon-trash"/></svg>
+          </button>
+        </div>
+      </li>
+    </ul>
+  </div>
+  </div>
+</body>
+</html>
