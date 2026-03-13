@@ -19,8 +19,8 @@ function createTodoItem(todo) {
     const toggleButton = document.createElement("button");
     toggleButton.className = "toggle-btn";
     toggleButton.type = "button";
-    toggleButton.setAttribute("aria-label", "할 일 완료 상태 전환");
     toggleButton.dataset.id = todo.id;
+    toggleButton.setAttribute("aria-label", "할 일 완료 상태 전환");
     toggleButton.textContent = todo.completed ? "✓" : "";
 
     const todoText = document.createElement("span");
@@ -33,6 +33,7 @@ function createTodoItem(todo) {
     const deleteButton = document.createElement("button");
     deleteButton.className = "delete-btn";
     deleteButton.type = "button";
+    deleteButton.dataset.id = todo.id;
     deleteButton.textContent = "삭제";
 
     todoActions.appendChild(deleteButton);
@@ -87,6 +88,17 @@ function toggleTodo(todoId) {
     renderTodoList();
 }
 
+function deleteTodo(todoId) {
+    const index = todos.findIndex((todo) => todo.id === todoId);
+
+    if (index === -1) {
+        return;
+    }
+
+    todos.splice(index, 1);
+    renderTodoList();
+}
+
 addButtonElement.addEventListener("click", addTodo);
 
 todoInputElement.addEventListener("keydown", (event) => {
@@ -96,12 +108,19 @@ todoInputElement.addEventListener("keydown", (event) => {
 });
 
 todoListElement.addEventListener("click", (event) => {
-    if (!event.target.classList.contains("toggle-btn")) {
+
+    if (event.target.classList.contains("toggle-btn")) {
+        const todoId = Number(event.target.dataset.id);
+        toggleTodo(todoId);
         return;
     }
 
-    const todoId = Number(event.target.dataset.id);
-    toggleTodo(todoId);
+    if (event.target.classList.contains("delete-btn")) {
+        const todoId = Number(event.target.dataset.id);
+        deleteTodo(todoId);
+        return;
+    }
+
 });
 
 renderTodoList();
