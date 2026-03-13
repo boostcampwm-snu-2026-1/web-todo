@@ -7,42 +7,50 @@
     <link rel="stylesheet" href="./todo.css">
 </head>
 <body>
+    <main class="todo-app">
+        <header class="todo-header">
+            <p class="todo-label">FOCUS LIST</p>
+            <h1>What matters today?</h1>
+            <p class="todo-description">Keep your priorities clear and finish one by one.</p>
+        </header>
 
-<main class="todo-app">
+        <section class="todo-input-section">
+            <label class="sr-only" for="todo-input">New todo</label>
+            <input
+                type="text"
+                id="todo-input"
+                placeholder="Write your next task..."
+            >
+            <button id="add-btn" type="button">Add Task</button>
+        </section>
 
-    <header class="todo-header">
-        <h1>Today's Tasks</h1>
-        <p class="todo-date">Monday, November 13</p>
-    </header>
+        <section class="todo-list-section">
+            <ul id="todo-list">
+                <li class="todo-item">
+                    <button class="toggle-btn" type="button" aria-label="Toggle todo"></button>
+                    <span class="todo-text">Prepare meeting notes</span>
+                    <div class="todo-actions">
+                        <button class="delete-btn" type="button">Delete</button>
+                    </div>
+                </li>
 
-    <section class="todo-input-section">
-        <input 
-            type="text"
-            id="todo-input"
-            placeholder="Add a new task..."
-        />
-        <button id="add-btn">+</button>
-    </section>
+                <li class="todo-item">
+                    <button class="toggle-btn" type="button" aria-label="Toggle todo"></button>
+                    <span class="todo-text">Review frontend DOM APIs</span>
+                    <div class="todo-actions">
+                        <button class="delete-btn" type="button">Delete</button>
+                    </div>
+                </li>
 
-    <section class="todo-list-section">
-        <ul id="todo-list">
-
-            <li class="todo-item">
-                <input type="checkbox">
-                <span>Quick backup task</span>
-                <button class="delete-btn">🗑</button>
-            </li>
-
-            <li class="todo-item">
-                <input type="checkbox">
-                <span>Report Marketing Rlight</span>
-                <button class="delete-btn">🗑</button>
-            </li>
-
-        </ul>
-    </section>
-
-</main>
-
+                <li class="todo-item completed">
+                    <button class="toggle-btn" type="button" aria-label="Toggle todo">✓</button>
+                    <span class="todo-text">Push first commit</span>
+                    <div class="todo-actions">
+                        <button class="delete-btn" type="button">Delete</button>
+                    </div>
+                </li>
+            </ul>
+        </section>
+    </main>
 </body>
 </html>
