@@ -11,7 +11,7 @@ let todos = [];
 let currentFilter = 'all'
 
 function render() {
-    const filtered = todos.sfilter(todo => {
+    const filtered = todos.filter(todo => {
         if (currentFilter === 'active') return !todo.done;
         if (currentFilter === 'done') return todo.done;
         return true;
@@ -62,7 +62,7 @@ list.addEventListener('click', async (e) => {
     const li = e.target.closest('li');
     if (!li) return;
 
-    const id = Number(li.dataset.id);
+    const id = li.dataset.id;
 
     if (e.target.matches('.btn-delete')) {
         await deleteTodo(id);
