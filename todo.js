@@ -55,6 +55,45 @@ function showAddSuccessAlert() {
   alert("New task has been successfully added!");
 }
 
+function createTodoItemElement(todo) {
+  const itemElement = document.createElement("li");
+  itemElement.className = "todo-item";
+  itemElement.dataset.todoId = String(todo.id);
+
+  const textElement = document.createElement("span");
+  textElement.className = "todo-text";
+  textElement.textContent = todo.text;
+
+  itemElement.appendChild(textElement);
+  return itemElement;
+}
+
+function createEmptyMessageElement() {
+  const emptyElement = document.createElement("li");
+  emptyElement.className = "todo-item todo-empty";
+  emptyElement.textContent = "No tasks yet. Add your first task!";
+  return emptyElement;
+}
+
+function renderTodoList(todos) {
+  const listElement = document.getElementById("todo-list");
+  if (!listElement) return;
+
+  listElement.textContent = "";
+
+  if (todos.length === 0) {
+    listElement.appendChild(createEmptyMessageElement());
+    return;
+  }
+
+  const fragment = document.createDocumentFragment();
+  todos.forEach((todo) => {
+    fragment.appendChild(createTodoItemElement(todo));
+  });
+
+  listElement.appendChild(fragment);
+}
+
 function handleTodoSubmit(event) {
   event.preventDefault();
 
@@ -68,6 +107,7 @@ function handleTodoSubmit(event) {
   const newTodo = createTodo(text);
   todos.push(newTodo);
   saveTodos(todos);
+  renderTodoList(todos);
   clearInput(inputElement);
   showAddSuccessAlert();
 }
@@ -80,4 +120,5 @@ function registerEvents() {
 }
 
 renderTodayDate();
+renderTodoList(loadTodos());
 registerEvents();
