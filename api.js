@@ -14,11 +14,11 @@ export async function createTodo(title) {
     return response.json();
 }
 
-export async function toggleTodo(id) {
+export async function toggleTodo(id, done) {
     const response = await fetch(`${BASE_URL}/todos/${id}`, {
         method: 'PATCH',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ done: true })
+        body: JSON.stringify({ done: !done })
     });
     return response.json();
 }

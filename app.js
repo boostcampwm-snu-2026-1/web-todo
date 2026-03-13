@@ -72,7 +72,8 @@ list.addEventListener('click', async (e) => {
     }
 
     if (e.target.matches('input[type="checkbox"]')) {
-        const updated = await toggleTodo(id);
+        const todo = todos.find(t => t.id === id);
+        const updated = await toggleTodo(id, todo.done);
         todos = todos.map(t => t.id === id ? updated : t);
         render();
     }
