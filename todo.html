@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <link rel="stylesheet" href="todo.css">
+</head>
+<body>
+    <div id="todo-app">
+        <h1>오늘의 할 일</h1>
+
+        <div class="input-section">
+            <input type="text" id="todo-input" placeholder="새로운 할 일을 추가해보세요">
+            <button id="add-btn">추가</button>
+        </div>
+
+        <ul id="todo-list"> <!-- ul(Unordered List)은 순서가 중요하지 않은 목록 전체를 담는 큰 상자 해당 -->
+
+            <li class="todo-item"> <!-- li(List Item)는 그 상자 안에 들어가는 개별 항목들 -->
+                <input type="checkbox" class="complete-checkbox">
+
+                <span class="todo-text">과제 요구사항 파악하기</span>
+                
+                <button class="delete-btn">삭제</button>
+                
+            </li>
+        </ul>
+    </div>
+</body>
+</html>
