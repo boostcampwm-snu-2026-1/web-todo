@@ -31,6 +31,21 @@ body {
     font-size: 1.8rem;
 }
 
+.app-header {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.date-display {
+    font-size: 0.9rem;
+    color: #888; 
+    margin-bottom: 0.5rem;
+    letter-spacing: 1px;
+    font-weight: 300;
+}
+
 .input-section {
     display: flex;
     gap: 10px; 

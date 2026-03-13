@@ -49,6 +49,23 @@ function addTodo() {
     renderTodos(); 
 }
 
+function deleteTodo(id) {
+    todos = todos.filter(todo => todo.id !== id);
+    
+    renderTodos();
+}
+
+function toggleTodo(id) {
+    todos = todos.map(todo => {
+        if (todo.id === id) {
+            return { ...todo, done: !todo.done };
+        }
+        return todo;
+    });
+    
+    renderTodos();
+}
+
 addBtn.addEventListener('click', addTodo);
 
 todoInput.addEventListener('keypress', (event) => {
@@ -74,19 +91,18 @@ todoList.addEventListener('click', (event) => {
     }
 });
 
-function deleteTodo(id) {
-    todos = todos.filter(todo => todo.id !== id);
+function displayDate() {
+    const dateElement = document.getElementById('current-date');
+    const now = new Date();
     
-    renderTodos();
+    const options = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric', 
+        weekday: 'long' 
+    };
+    
+    dateElement.textContent = now.toLocaleDateString('ko-KR', options);
 }
 
-function toggleTodo(id) {
-    todos = todos.map(todo => {
-        if (todo.id === id) {
-            return { ...todo, done: !todo.done };
-        }
-        return todo;
-    });
-    
-    renderTodos();
-}
+displayDate();
