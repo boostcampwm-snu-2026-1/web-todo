@@ -56,3 +56,37 @@ todoInput.addEventListener('keypress', (event) => {
         addTodo();
     }
 });
+
+todoList.addEventListener('click', (event) => {
+    const target = event.target;
+    
+    const li = target.closest('.todo-item');
+    if (!li) return; 
+    
+    const id = Number(li.dataset.id);
+
+    if (target.classList.contains('delete-btn')) {
+        deleteTodo(id);
+    } 
+    
+    else if (target.classList.contains('toggle-checkbox')) {
+        toggleTodo(id);
+    }
+});
+
+function deleteTodo(id) {
+    todos = todos.filter(todo => todo.id !== id);
+    
+    renderTodos();
+}
+
+function toggleTodo(id) {
+    todos = todos.map(todo => {
+        if (todo.id === id) {
+            return { ...todo, done: !todo.done };
+        }
+        return todo;
+    });
+    
+    renderTodos();
+}
