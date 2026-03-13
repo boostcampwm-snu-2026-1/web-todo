@@ -6,19 +6,42 @@
     <title>Todo App</title>
 </head>
 <body>
-    <main class="todo-app">
-        <header class="todo-header">
-            <h1>Todo List</h1>
-            <p>오늘 할 일을 정리해보세요.</p>
-        </header>
 
-        <section class="todo-input-section">
-            <!-- Input UI will be added later -->
-        </section>
+<main class="todo-app">
 
-        <section class="todo-list-section">
-            <!-- Todo list will be added later -->
-        </section>
-    </main>
+    <header class="todo-header">
+        <h1>Today's Tasks</h1>
+        <p class="todo-date">Monday, November 13</p>
+    </header>
+
+    <section class="todo-input-section">
+        <input 
+            type="text"
+            id="todo-input"
+            placeholder="Add a new task..."
+        />
+        <button id="add-btn">+</button>
+    </section>
+
+    <section class="todo-list-section">
+        <ul id="todo-list">
+
+            <li class="todo-item">
+                <input type="checkbox">
+                <span>Quick backup task</span>
+                <button class="delete-btn">🗑</button>
+            </li>
+
+            <li class="todo-item">
+                <input type="checkbox">
+                <span>Report Marketing Rlight</span>
+                <button class="delete-btn">🗑</button>
+            </li>
+
+        </ul>
+    </section>
+
+</main>
+
 </body>
 </html>
