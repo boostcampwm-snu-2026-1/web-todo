@@ -29,9 +29,22 @@ addBtn.addEventListener('click', function(){ // 버튼이 눌리면
     todoInput.focus();
 });
 
-todoInput.addEventListener('keypress', function(event){
+todoInput.addEventListener('keypress', function(event){ // 엔터 입력기능 추가
     if (event.key === 'Enter'){
         addBtn.click();
     }
 });
 
+todoList.addEventListener('click', function(event){
+    const target = event.target;
+
+    if (target.classList.contains('delete-btn')){ // 삭제 버튼 클릭시
+        const li = target.parentElement;
+        li.remove();
+    }
+
+    if (target.classList.contains('complete-checkbox')){ // 체크박스 클릭시
+        const li = target.parentElement;
+        li.classList.toggle('completed');
+    }
+});
