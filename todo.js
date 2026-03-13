@@ -60,10 +60,20 @@ function createTodoItemElement(todo) {
   itemElement.className = "todo-item";
   itemElement.dataset.todoId = String(todo.id);
 
+  const checkboxElement = document.createElement("input");
+  checkboxElement.className = "todo-checkbox";
+  checkboxElement.type = "checkbox";
+  checkboxElement.checked = Boolean(todo.completed);
+  checkboxElement.setAttribute("aria-label", "Mark task as done");
+
   const textElement = document.createElement("span");
   textElement.className = "todo-text";
   textElement.textContent = todo.text;
+  if (todo.completed) {
+    textElement.classList.add("todo-text-done");
+  }
 
+  itemElement.appendChild(checkboxElement);
   itemElement.appendChild(textElement);
   return itemElement;
 }
@@ -94,6 +104,31 @@ function renderTodoList(todos) {
   listElement.appendChild(fragment);
 }
 
+function updateTodoCompletion(todoId, completed) {
+  const todos = loadTodos();
+  const updatedTodos = todos.map((todo) => {
+    if (todo.id !== todoId) return todo;
+    return { ...todo, completed };
+  });
+
+  saveTodos(updatedTodos);
+  renderTodoList(updatedTodos);
+}
+
+function handleTodoListChange(event) {
+  const target = event.target;
+  if (!(target instanceof HTMLInputElement)) return;
+  if (!target.classList.contains("todo-checkbox")) return;
+
+  const todoItemElement = target.closest(".todo-item");
+  if (!todoItemElement) return;
+
+  const todoId = Number(todoItemElement.dataset.todoId);
+  if (!Number.isFinite(todoId)) return;
+
+  updateTodoCompletion(todoId, target.checked);
+}
+
 function handleTodoSubmit(event) {
   event.preventDefault();
 
@@ -117,6 +152,11 @@ function registerEvents() {
   if (!formElement) return;
 
   formElement.addEventListener("submit", handleTodoSubmit);
+
+  const listElement = document.getElementById("todo-list");
+  if (!listElement) return;
+
+  listElement.addEventListener("change", handleTodoListChange);
 }
 
 renderTodayDate();

@@ -95,11 +95,25 @@ body {
   padding: 10px 14px;
   display: flex;
   align-items: center;
+  gap: 10px;
+}
+
+.todo-checkbox {
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  flex-shrink: 0;
 }
 
 .todo-text {
   color: #1c1c1c;
   font-size: 0.98rem;
+  line-height: 1.35;
+}
+
+.todo-text-done {
+  text-decoration: line-through;
+  color: #8a8f98;
 }
 
 .todo-empty {
