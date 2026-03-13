@@ -3,50 +3,50 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo App</title>
+    <title>할 일 앱</title>
     <link rel="stylesheet" href="./todo.css">
 </head>
 <body>
     <main class="todo-app">
         <header class="todo-header">
-            <p class="todo-label">FOCUS LIST</p>
-            <h1>What matters today?</h1>
-            <p class="todo-description">Keep your priorities clear and finish one by one.</p>
+            <p class="todo-label">집중 목록</p>
+            <h1>오늘 중요한 일은?</h1>
+            <p class="todo-description">우선순위를 분명히 하고 하나씩 끝내보세요.</p>
         </header>
 
         <section class="todo-input-section">
-            <label class="sr-only" for="todo-input">New todo</label>
+            <label class="sr-only" for="todo-input">새 할 일</label>
             <input
                 type="text"
                 id="todo-input"
-                placeholder="Write your next task..."
+                placeholder="다음 할 일을 입력하세요..."
             >
-            <button id="add-btn" type="button">Add Task</button>
+            <button id="add-btn" type="button">할 일 추가</button>
         </section>
 
         <section class="todo-list-section">
             <ul id="todo-list">
                 <li class="todo-item">
-                    <button class="toggle-btn" type="button" aria-label="Toggle todo"></button>
-                    <span class="todo-text">Prepare meeting notes</span>
+                    <button class="toggle-btn" type="button" aria-label="할 일 완료 상태 전환"></button>
+                    <span class="todo-text">회의 메모 준비하기</span>
                     <div class="todo-actions">
-                        <button class="delete-btn" type="button">Delete</button>
+                        <button class="delete-btn" type="button">삭제</button>
                     </div>
                 </li>
 
                 <li class="todo-item">
-                    <button class="toggle-btn" type="button" aria-label="Toggle todo"></button>
-                    <span class="todo-text">Review frontend DOM APIs</span>
+                    <button class="toggle-btn" type="button" aria-label="할 일 완료 상태 전환"></button>
+                    <span class="todo-text">프론트엔드 DOM API 복습하기</span>
                     <div class="todo-actions">
-                        <button class="delete-btn" type="button">Delete</button>
+                        <button class="delete-btn" type="button">삭제</button>
                     </div>
                 </li>
 
                 <li class="todo-item completed">
-                    <button class="toggle-btn" type="button" aria-label="Toggle todo">✓</button>
-                    <span class="todo-text">Push first commit</span>
+                    <button class="toggle-btn" type="button" aria-label="할 일 완료 상태 전환">✓</button>
+                    <span class="todo-text">첫 커밋 푸시하기</span>
                     <div class="todo-actions">
-                        <button class="delete-btn" type="button">Delete</button>
+                        <button class="delete-btn" type="button">삭제</button>
                     </div>
                 </li>
             </ul>
