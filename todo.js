@@ -5,6 +5,8 @@ const todos = [
 ];
 
 const todoListElement = document.querySelector("#todo-list");
+const todoInputElement = document.querySelector("#todo-input");
+const addButtonElement = document.querySelector("#add-btn");
 
 function createTodoItem(todo) {
     const todoItem = document.createElement("li");
@@ -49,5 +51,36 @@ function renderTodoList() {
         todoListElement.appendChild(todoItemElement);
     });
 }
+
+function createNewTodo(text) {
+    return {
+        id: Date.now(),
+        text: text,
+        completed: false,
+    };
+}
+
+function addTodo() {
+    const inputValue = todoInputElement.value.trim();
+
+    if (inputValue === "") {
+        return;
+    }
+
+    const newTodo = createNewTodo(inputValue);
+    todos.push(newTodo);
+
+    renderTodoList();
+    todoInputElement.value = "";
+    todoInputElement.focus();
+}
+
+addButtonElement.addEventListener("click", addTodo);
+
+todoInputElement.addEventListener("keydown", (event) => {
+    if (event.key === "Enter") {
+        addTodo();
+    }
+});
 
 renderTodoList();
