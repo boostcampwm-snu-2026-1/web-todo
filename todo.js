@@ -20,6 +20,7 @@ function createTodoItem(todo) {
     toggleButton.className = "toggle-btn";
     toggleButton.type = "button";
     toggleButton.setAttribute("aria-label", "할 일 완료 상태 전환");
+    toggleButton.dataset.id = todo.id;
     toggleButton.textContent = todo.completed ? "✓" : "";
 
     const todoText = document.createElement("span");
@@ -75,12 +76,32 @@ function addTodo() {
     todoInputElement.focus();
 }
 
+function toggleTodo(todoId) {
+    const targetTodo = todos.find((todo) => todo.id === todoId);
+
+    if (!targetTodo) {
+        return;
+    }
+
+    targetTodo.completed = !targetTodo.completed;
+    renderTodoList();
+}
+
 addButtonElement.addEventListener("click", addTodo);
 
 todoInputElement.addEventListener("keydown", (event) => {
     if (event.key === "Enter") {
         addTodo();
     }
+});
+
+todoListElement.addEventListener("click", (event) => {
+    if (!event.target.classList.contains("toggle-btn")) {
+        return;
+    }
+
+    const todoId = Number(event.target.dataset.id);
+    toggleTodo(todoId);
 });
 
 renderTodoList();
