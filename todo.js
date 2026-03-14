@@ -9,6 +9,11 @@ const todoValue = document.getElementById("todo-input"),
         }
     });
 
+let todo = JSON.parse(localStorage.getItem("todo-list"));
+if(!todo){
+    todo = [];
+}
+
 function CreateToDoData() {
     if(todoValue.value===""){
         alert("Please Enter your todo text");
@@ -45,4 +50,21 @@ function CompletedToDoItems(e) {
     }
 }
 
+// function UpdateToDoItems(e) {
+// }
 
+function DeleteToDoItems(e) {
+    const li = e.closest('li');
+    const deleteValue = li.querySelector(".todo-text").innerText;
+
+    if (confirm(`Do you want to delete this?`)) {
+        li.classList.add("deleted-item");
+        todoValue.focus();
+
+        todo = todo.filter(el => el.item !== deleteValue);
+
+        setTimeout(() => {
+            li.remove();
+        }, 100);
+    }
+}
