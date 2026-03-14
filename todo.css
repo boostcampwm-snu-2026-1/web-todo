@@ -30,14 +30,28 @@ input {
 }
 .todo-item {
     display: flex;
-    align-items: center; /* 수직 중앙 정렬 */
-    justify-content: space-between; /* 양 끝으로 배치 */
-    padding: 10px;
-    border-bottom: 1px solid #eee; /* 항목 간 구분선 */
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 10px;
+    border-bottom: 1px solid #eee;
+}
+.todo-item input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    flex-shrink: 0;
 }
 
+.todo-item span {
+    flex: 1;
+    text-align: center;
+    font-size: 16px;
+    margin: 0 10px;
+}
+
+
 .todo-text {
-    flex: 1; /* 텍스트가 가운데 공간을 다 차지하게 함 */
+    flex: 1;
     margin-left: 10px;
 }
 

@@ -33,7 +33,7 @@ function render() {
         li.innerHTML = `
             <input type="checkbox" ${todo.done ? 'checked' : ''} onclick="toggleTodo(${todo.id})">
             <span>${todo.content}</span>
-            <button onclick="deleteTodo(${todo.id})">삭제</button>
+            <button onclick="deleteTodo(${todo.id})">🗑️</button>
         `;
         todoList.appendChild(li);
     });
