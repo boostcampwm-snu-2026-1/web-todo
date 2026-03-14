@@ -111,6 +111,20 @@ body {
   line-height: 1.35;
 }
 
+.delete-button {
+  margin-left: auto;
+  border: none;
+  background: transparent;
+  font-size: 1rem;
+  line-height: 1;
+  cursor: pointer;
+  padding: 4px;
+}
+
+.delete-button:hover {
+  filter: brightness(0.7);
+}
+
 .todo-text-done {
   text-decoration: line-through;
   color: #8a8f98;

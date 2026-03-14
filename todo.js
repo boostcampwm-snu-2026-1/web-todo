@@ -55,6 +55,15 @@ function showAddSuccessAlert() {
   alert("New task has been successfully added!");
 }
 
+function createDeleteButtonElement() {
+  const deleteButton = document.createElement("button");
+  deleteButton.className = "delete-button";
+  deleteButton.type = "button";
+  deleteButton.setAttribute("aria-label", "Delete task");
+  deleteButton.textContent = "🗑";
+  return deleteButton;
+}
+
 function createTodoItemElement(todo) {
   const itemElement = document.createElement("li");
   itemElement.className = "todo-item";
@@ -73,8 +82,11 @@ function createTodoItemElement(todo) {
     textElement.classList.add("todo-text-done");
   }
 
+  const deleteButton = createDeleteButtonElement();
+
   itemElement.appendChild(checkboxElement);
   itemElement.appendChild(textElement);
+  itemElement.appendChild(deleteButton);
   return itemElement;
 }
 
@@ -115,6 +127,26 @@ function updateTodoCompletion(todoId, completed) {
   renderTodoList(updatedTodos);
 }
 
+function deleteTodo(todoId) {
+  const todos = loadTodos();
+  const updatedTodos = todos.filter((todo) => todo.id !== todoId);
+  saveTodos(updatedTodos);
+  renderTodoList(updatedTodos);
+}
+
+function findTodoById(todoId) {
+  const todos = loadTodos();
+  return todos.find((todo) => todo.id === todoId);
+}
+
+function getTodoIdFromItemElement(itemElement) {
+  return Number(itemElement.dataset.todoId);
+}
+
+function confirmDeleteTask(todoText) {
+  return confirm(`Would you like to delete the task?\n${todoText}`);
+}
+
 function handleTodoListChange(event) {
   const target = event.target;
   if (!(target instanceof HTMLInputElement)) return;
@@ -127,6 +159,28 @@ function handleTodoListChange(event) {
   if (!Number.isFinite(todoId)) return;
 
   updateTodoCompletion(todoId, target.checked);
+}
+
+function handleTodoListClick(event) {
+  const target = event.target;
+  if (!(target instanceof HTMLElement)) return;
+
+  const deleteButton = target.closest(".delete-button");
+  if (!deleteButton) return;
+
+  const todoItemElement = deleteButton.closest(".todo-item");
+  if (!todoItemElement) return;
+
+  const todoId = getTodoIdFromItemElement(todoItemElement);
+  if (!Number.isFinite(todoId)) return;
+
+  const todo = findTodoById(todoId);
+  if (!todo) return;
+
+  const shouldDelete = confirmDeleteTask(todo.text);
+  if (!shouldDelete) return;
+
+  deleteTodo(todoId);
 }
 
 function handleTodoSubmit(event) {
@@ -157,6 +211,7 @@ function registerEvents() {
   if (!listElement) return;
 
   listElement.addEventListener("change", handleTodoListChange);
+  listElement.addEventListener("click", handleTodoListClick);
 }
 
 renderTodayDate();
