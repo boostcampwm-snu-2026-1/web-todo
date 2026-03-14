@@ -2,6 +2,14 @@ const todoForm = document.querySelector("#todo-form");
 const todoInput = document.querySelector("#todo-input");
 const todoList = document.querySelector("#todo-list");
 let editingTodoId = null;
+let draggedTodoId = null;
+let dropPosition = "before";
+
+function clearDropIndicator() {
+  todoList.querySelectorAll(".drop-before, .drop-after").forEach((item) => {
+    item.classList.remove("drop-before", "drop-after");
+  });
+}
 
 function render() {
   window.renderTodos(todoList, window.todoState.todos, editingTodoId);
@@ -107,6 +115,75 @@ todoList.addEventListener("keydown", (event) => {
     editingTodoId = null;
     render();
   }
+});
+
+todoList.addEventListener("dragstart", (event) => {
+  const item = event.target.closest("li");
+
+  if (!item || editingTodoId !== null) {
+    event.preventDefault();
+    return;
+  }
+
+  draggedTodoId = Number(item.dataset.id);
+  item.classList.add("dragging");
+  event.dataTransfer.effectAllowed = "move";
+  event.dataTransfer.setData("text/plain", String(draggedTodoId));
+});
+
+todoList.addEventListener("dragover", (event) => {
+  const item = event.target.closest("li");
+
+  if (!item || draggedTodoId === null) {
+    return;
+  }
+
+  event.preventDefault();
+  event.dataTransfer.dropEffect = "move";
+
+  const itemRect = item.getBoundingClientRect();
+  const isAfter = event.clientY > itemRect.top + itemRect.height / 2;
+  dropPosition = isAfter ? "after" : "before";
+
+  clearDropIndicator();
+  item.classList.add(isAfter ? "drop-after" : "drop-before");
+});
+
+todoList.addEventListener("drop", (event) => {
+  const item = event.target.closest("li");
+
+  if (!item || draggedTodoId === null) {
+    return;
+  }
+
+  event.preventDefault();
+
+  const targetTodoId = Number(item.dataset.id);
+  window.todoActions.reorderTodos(draggedTodoId, targetTodoId, dropPosition);
+  draggedTodoId = null;
+  clearDropIndicator();
+  render();
+});
+
+todoList.addEventListener("dragend", () => {
+  draggedTodoId = null;
+  clearDropIndicator();
+
+  const draggingItem = todoList.querySelector(".dragging");
+
+  if (draggingItem) {
+    draggingItem.classList.remove("dragging");
+  }
+});
+
+todoList.addEventListener("dragleave", (event) => {
+  const item = event.target.closest("li");
+
+  if (!item || item.contains(event.relatedTarget)) {
+    return;
+  }
+
+  item.classList.remove("drop-before", "drop-after");
 });
 
 render();

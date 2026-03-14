@@ -4,6 +4,19 @@ window.renderTodos = function renderTodos(todoList, todos, editingTodoId) {
   todos.forEach((todo) => {
     const item = document.createElement("li");
     const isEditing = todo.id === editingTodoId;
+    item.dataset.id = todo.id;
+    item.draggable = !isEditing;
+
+    const dragHandle = document.createElement("button");
+    dragHandle.type = "button";
+    dragHandle.className = "drag-handle";
+    dragHandle.setAttribute("aria-label", "Drag to reorder");
+    dragHandle.setAttribute("tabindex", "-1");
+    dragHandle.innerHTML = `
+      <span></span><span></span>
+      <span></span><span></span>
+      <span></span><span></span>
+    `;
 
     const checkbox = document.createElement("input");
     checkbox.type = "checkbox";
@@ -12,7 +25,7 @@ window.renderTodos = function renderTodos(todoList, todos, editingTodoId) {
     checkbox.dataset.id = todo.id;
     checkbox.disabled = isEditing;
 
-    item.append(checkbox);
+    item.append(dragHandle, checkbox);
 
     if (isEditing) {
       const editInput = document.createElement("input");
