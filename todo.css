@@ -111,8 +111,32 @@ body {
   line-height: 1.35;
 }
 
-.delete-button {
+.todo-edit-input {
+  flex: 1;
+  min-width: 0;
+  height: 34px;
+  border: 1px solid #b9bec7;
+  border-radius: 8px;
+  padding: 0 10px;
+  font-size: 0.96rem;
+}
+
+.todo-edit-input:focus {
+  outline: 2px solid #8db3ff;
+  outline-offset: 1px;
+}
+
+.todo-actions {
   margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.edit-button,
+.delete-button,
+.save-button,
+.cancel-button {
   border: none;
   background: transparent;
   font-size: 1rem;
@@ -121,8 +145,27 @@ body {
   padding: 4px;
 }
 
+.edit-button {
+  display: inline-block;
+  transform: scaleX(-1);
+}
+
+.edit-button:hover,
 .delete-button:hover {
   filter: brightness(0.7);
+}
+
+.save-button {
+  color: #1f7a1f;
+}
+
+.cancel-button {
+  color: #b34040;
+}
+
+.save-button:hover,
+.cancel-button:hover {
+  filter: brightness(0.85);
 }
 
 .todo-text-done {

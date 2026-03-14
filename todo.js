@@ -1,6 +1,7 @@
 "use strict";
 
 const TODO_STORAGE_KEY = "web-todo-items";
+let editingTodoId = null;
 
 function formatTodayDate() {
   const now = new Date();
@@ -55,13 +56,50 @@ function showAddSuccessAlert() {
   alert("New task has been successfully added!");
 }
 
-function createDeleteButtonElement() {
-  const deleteButton = document.createElement("button");
-  deleteButton.className = "delete-button";
-  deleteButton.type = "button";
-  deleteButton.setAttribute("aria-label", "Delete task");
-  deleteButton.textContent = "🗑";
-  return deleteButton;
+function createActionButton(className, label, text) {
+  const buttonElement = document.createElement("button");
+  buttonElement.className = className;
+  buttonElement.type = "button";
+  buttonElement.setAttribute("aria-label", label);
+  buttonElement.textContent = text;
+  return buttonElement;
+}
+
+function createTodoTextElement(todo) {
+  const textElement = document.createElement("span");
+  textElement.className = "todo-text";
+  textElement.textContent = todo.text;
+
+  if (todo.completed) {
+    textElement.classList.add("todo-text-done");
+  }
+
+  return textElement;
+}
+
+function createTodoEditInputElement(todo) {
+  const inputElement = document.createElement("input");
+  inputElement.className = "todo-edit-input";
+  inputElement.type = "text";
+  inputElement.value = todo.text;
+  inputElement.maxLength = 100;
+  inputElement.setAttribute("aria-label", "Edit task");
+  return inputElement;
+}
+
+function createTodoActionsElement(todo) {
+  const actionsElement = document.createElement("div");
+  actionsElement.className = "todo-actions";
+
+  if (editingTodoId === todo.id) {
+    actionsElement.appendChild(createActionButton("save-button", "Save task", "✓"));
+    actionsElement.appendChild(createActionButton("cancel-button", "Cancel edit", "✕"));
+    return actionsElement;
+  }
+
+  actionsElement.appendChild(createActionButton("edit-button", "Edit task", "✎"));
+  actionsElement.appendChild(createActionButton("delete-button", "Delete task", "🗑"));
+  return actionsElement;
 }
 
 function createTodoItemElement(todo) {
@@ -74,19 +112,14 @@ function createTodoItemElement(todo) {
   checkboxElement.type = "checkbox";
   checkboxElement.checked = Boolean(todo.completed);
   checkboxElement.setAttribute("aria-label", "Mark task as done");
-
-  const textElement = document.createElement("span");
-  textElement.className = "todo-text";
-  textElement.textContent = todo.text;
-  if (todo.completed) {
-    textElement.classList.add("todo-text-done");
-  }
-
-  const deleteButton = createDeleteButtonElement();
+  checkboxElement.disabled = editingTodoId === todo.id;
+  const contentElement =
+    editingTodoId === todo.id ? createTodoEditInputElement(todo) : createTodoTextElement(todo);
+  const actionsElement = createTodoActionsElement(todo);
 
   itemElement.appendChild(checkboxElement);
-  itemElement.appendChild(textElement);
-  itemElement.appendChild(deleteButton);
+  itemElement.appendChild(contentElement);
+  itemElement.appendChild(actionsElement);
   return itemElement;
 }
 
@@ -101,6 +134,10 @@ function renderTodoList(todos) {
   const listElement = document.getElementById("todo-list");
   if (!listElement) return;
 
+  if (editingTodoId !== null && !todos.some((todo) => todo.id === editingTodoId)) {
+    editingTodoId = null;
+  }
+
   listElement.textContent = "";
 
   if (todos.length === 0) {
@@ -114,6 +151,14 @@ function renderTodoList(todos) {
   });
 
   listElement.appendChild(fragment);
+
+  if (editingTodoId !== null) {
+    const editInput = listElement.querySelector(".todo-edit-input");
+    if (editInput instanceof HTMLInputElement) {
+      editInput.focus();
+      editInput.select();
+    }
+  }
 }
 
 function updateTodoCompletion(todoId, completed) {
@@ -130,6 +175,20 @@ function updateTodoCompletion(todoId, completed) {
 function deleteTodo(todoId) {
   const todos = loadTodos();
   const updatedTodos = todos.filter((todo) => todo.id !== todoId);
+  if (editingTodoId === todoId) {
+    editingTodoId = null;
+  }
+  saveTodos(updatedTodos);
+  renderTodoList(updatedTodos);
+}
+
+function updateTodoText(todoId, text) {
+  const todos = loadTodos();
+  const updatedTodos = todos.map((todo) => {
+    if (todo.id !== todoId) return todo;
+    return { ...todo, text };
+  });
+
   saveTodos(updatedTodos);
   renderTodoList(updatedTodos);
 }
@@ -145,6 +204,27 @@ function getTodoIdFromItemElement(itemElement) {
 
 function confirmDeleteTask(todoText) {
   return confirm(`Would you like to delete the task?\n${todoText}`);
+}
+
+function startEditing(todoId) {
+  editingTodoId = todoId;
+  renderTodoList(loadTodos());
+}
+
+function cancelEditing() {
+  editingTodoId = null;
+  renderTodoList(loadTodos());
+}
+
+function saveEditing(todoId, text) {
+  const trimmedText = text.trim();
+  if (!trimmedText) {
+    alert("Task cannot be empty.");
+    return;
+  }
+
+  editingTodoId = null;
+  updateTodoText(todoId, trimmedText);
 }
 
 function handleTodoListChange(event) {
@@ -165,14 +245,31 @@ function handleTodoListClick(event) {
   const target = event.target;
   if (!(target instanceof HTMLElement)) return;
 
-  const deleteButton = target.closest(".delete-button");
-  if (!deleteButton) return;
-
-  const todoItemElement = deleteButton.closest(".todo-item");
+  const todoItemElement = target.closest(".todo-item");
   if (!todoItemElement) return;
 
   const todoId = getTodoIdFromItemElement(todoItemElement);
   if (!Number.isFinite(todoId)) return;
+
+  if (target.closest(".edit-button")) {
+    startEditing(todoId);
+    return;
+  }
+
+  if (target.closest(".cancel-button")) {
+    cancelEditing();
+    return;
+  }
+
+  if (target.closest(".save-button")) {
+    const editInput = todoItemElement.querySelector(".todo-edit-input");
+    if (!(editInput instanceof HTMLInputElement)) return;
+
+    saveEditing(todoId, editInput.value);
+    return;
+  }
+
+  if (!target.closest(".delete-button")) return;
 
   const todo = findTodoById(todoId);
   if (!todo) return;
@@ -181,6 +278,29 @@ function handleTodoListClick(event) {
   if (!shouldDelete) return;
 
   deleteTodo(todoId);
+}
+
+function handleTodoListKeydown(event) {
+  const target = event.target;
+  if (!(target instanceof HTMLInputElement)) return;
+  if (!target.classList.contains("todo-edit-input")) return;
+
+  const todoItemElement = target.closest(".todo-item");
+  if (!todoItemElement) return;
+
+  const todoId = getTodoIdFromItemElement(todoItemElement);
+  if (!Number.isFinite(todoId)) return;
+
+  if (event.key === "Enter") {
+    event.preventDefault();
+    saveEditing(todoId, target.value);
+    return;
+  }
+
+  if (event.key === "Escape") {
+    event.preventDefault();
+    cancelEditing();
+  }
 }
 
 function handleTodoSubmit(event) {
@@ -212,6 +332,7 @@ function registerEvents() {
 
   listElement.addEventListener("change", handleTodoListChange);
   listElement.addEventListener("click", handleTodoListClick);
+  listElement.addEventListener("keydown", handleTodoListKeydown);
 }
 
 renderTodayDate();
