@@ -72,6 +72,14 @@ li label {
   line-height: 1.4;
 }
 
+.edit-input {
+  flex: 1;
+  padding: 10px 12px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 10px;
+}
+
 li label.completed {
   text-decoration: line-through;
   color: #777;
