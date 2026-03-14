@@ -178,6 +178,26 @@ body {
   font-size: 0.95rem;
 }
 
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%) translateY(8px);
+  background-color: #1f1f1f;
+  color: #fff;
+  padding: 10px 14px;
+  border-radius: 10px;
+  font-size: 0.9rem;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.toast.show {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
 .sr-only {
   position: absolute;
   width: 1px;

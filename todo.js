@@ -2,6 +2,7 @@
 
 const TODO_STORAGE_KEY = "web-todo-items";
 let editingTodoId = null;
+let toastTimeoutId = null;
 
 function formatTodayDate() {
   const now = new Date();
@@ -52,8 +53,21 @@ function clearInput(inputElement) {
   inputElement.value = "";
 }
 
-function showAddSuccessAlert() {
-  alert("New task has been successfully added!");
+function showToastMessage(message) {
+  const toastElement = document.getElementById("toast-message");
+  if (!toastElement) return;
+
+  toastElement.textContent = message;
+  toastElement.classList.add("show");
+
+  if (toastTimeoutId !== null) {
+    clearTimeout(toastTimeoutId);
+  }
+
+  toastTimeoutId = window.setTimeout(() => {
+    toastElement.classList.remove("show");
+    toastTimeoutId = null;
+  }, 1000);
 }
 
 function createActionButton(className, label, text) {
@@ -318,7 +332,7 @@ function handleTodoSubmit(event) {
   saveTodos(todos);
   renderTodoList(todos);
   clearInput(inputElement);
-  showAddSuccessAlert();
+  showToastMessage("New task has been successfully added!");
 }
 
 function registerEvents() {
