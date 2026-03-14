@@ -1,4 +1,4 @@
-export function renderTodos(todoList, todos) {
+window.renderTodos = function renderTodos(todoList, todos) {
   todoList.innerHTML = "";
 
   todos.forEach((todo) => {
@@ -16,8 +16,9 @@ export function renderTodos(todoList, todos) {
     const button = document.createElement("button");
     button.type = "button";
     button.textContent = "Delete";
+    button.dataset.id = todo.id;
 
     item.append(checkbox, label, button);
     todoList.append(item);
   });
-}
+};
