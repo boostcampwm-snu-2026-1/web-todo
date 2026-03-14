@@ -60,6 +60,7 @@ body{
 }
 
 ul li{
+    margin-top: 10px;
     list-style: none;
     font-size: 18px;
     cursor: pointer;
@@ -73,4 +74,10 @@ li{
     background: #aabbcc;
     margin-bottom: 10px;
     border-radius: 5px;
+}
+
+.todo-controls{
+    width: 25px;
+    height: 25px;
+    padding: 3px;
 }
