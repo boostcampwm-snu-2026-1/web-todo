@@ -2,18 +2,31 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Web Todo</title>
     <link rel="stylesheet" href="todo.css">
 </head>
+
 <body>
     <div class="container">
-        <h1>Todo List</h1> <div class="input-group">
-            <input type="text" id="todo-input" placeholder="Todo 입력">
-            <button id="add-btn">+</button>
-        </div>
-
-        <ul id="todo-list">
+        <header>
+            <h1>Todo List</h1>
+        </header>
+        <main>
+            <section class="input-section">
+                <div class="input-group">
+                    <input type="text" id="todo-input" placeholder="Todo 입력">
+                    <button id="add-btn">+</button>
+                </div>
+            </section>
+            <ul id="todo-list">
+                <li class="todo-item">
+                <input type="checkbox" class="toggle-done">
+                <span class="todo-text">자바스크립트 공부하기</span>
+                <button class="delete-btn">=</button>
+                </li>
             </ul>
+        </main>
     </div>
 
     <script src="todo.js"></script>
