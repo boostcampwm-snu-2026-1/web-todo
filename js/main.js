@@ -29,4 +29,13 @@ todoList.addEventListener("click", (event) => {
   render();
 });
 
+todoList.addEventListener("change", (event) => {
+  if (event.target.type !== "checkbox") {
+    return;
+  }
+
+  window.todoActions.toggleTodo(Number(event.target.dataset.id));
+  render();
+});
+
 render();
