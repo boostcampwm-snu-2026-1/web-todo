@@ -14,6 +14,16 @@ window.todoActions = {
     }
   },
 
+  updateTodo(id, nextText) {
+    const todo = window.todoState.todos.find((todo) => todo.id === id);
+
+    if (!todo) {
+      return;
+    }
+
+    todo.text = nextText;
+  },
+
   deleteTodo(id) {
     window.todoState.todos = window.todoState.todos.filter(
       (todo) => todo.id !== id

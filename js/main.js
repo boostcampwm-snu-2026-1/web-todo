@@ -25,7 +25,35 @@ todoList.addEventListener("click", (event) => {
     return;
   }
 
-  window.todoActions.deleteTodo(Number(event.target.dataset.id));
+  const todoId = Number(event.target.dataset.id);
+  const action = event.target.dataset.action;
+
+  if (action === "edit") {
+    const todo = window.todoState.todos.find((item) => item.id === todoId);
+
+    if (!todo) {
+      return;
+    }
+
+    const nextText = window.prompt("Edit task", todo.text);
+
+    if (nextText === null) {
+      return;
+    }
+
+    const trimmedText = nextText.trim();
+
+    if (!trimmedText) {
+      return;
+    }
+
+    window.todoActions.updateTodo(todoId, trimmedText);
+  }
+
+  if (action === "delete") {
+    window.todoActions.deleteTodo(todoId);
+  }
+
   render();
 });
 

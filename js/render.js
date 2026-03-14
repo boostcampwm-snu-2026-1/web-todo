@@ -18,12 +18,21 @@ window.renderTodos = function renderTodos(todoList, todos) {
       label.classList.add("completed");
     }
 
-    const button = document.createElement("button");
-    button.type = "button";
-    button.textContent = "Delete";
-    button.dataset.id = todo.id;
+    const editButton = document.createElement("button");
+    editButton.type = "button";
+    editButton.textContent = "Edit";
+    editButton.dataset.id = todo.id;
+    editButton.dataset.action = "edit";
+    editButton.className = "edit-button";
 
-    item.append(checkbox, label, button);
+    const deleteButton = document.createElement("button");
+    deleteButton.type = "button";
+    deleteButton.textContent = "Delete";
+    deleteButton.dataset.id = todo.id;
+    deleteButton.dataset.action = "delete";
+    deleteButton.className = "delete-button";
+
+    item.append(checkbox, label, editButton, deleteButton);
     todoList.append(item);
   });
 };

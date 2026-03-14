@@ -77,7 +77,8 @@ li label.completed {
   color: #777;
 }
 
-li button {
+.edit-button,
+.delete-button {
   padding: 8px 12px;
   border: 1px solid #ccc;
   border-radius: 10px;
