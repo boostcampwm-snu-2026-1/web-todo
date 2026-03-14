@@ -12,18 +12,37 @@ const todoValue = document.getElementById("todo-input"),
 function CreateToDoData() {
     if(todoValue.value===""){
         alert("Please Enter your todo text");
-        todoValue.focus(); // ?
+        todoValue.focus(); // 클릭하는 수고를 덜어주는 서비스
+        return;
     }
 
     let li = document.createElement("li");
-        const todoItems = `<div title="Hit Double Click and Complete" ondblclick="CompletedToDoItems(this)">${todoValue.value}</div><div>
-                    <img class="edit todo-controls" onclick="UpdateToDoItems(this)" src="image/pencil.png" />
-                    <img class="delete todo-controls" onclick="DeleteToDoItems(this)" src="image/delete.png" /></div></div>`; // class의 어미 부분만 같아도 같은 클래스??
+        const todoItems = `
+            <div class="todo-left-side">
+                <img src="image/check.png" class="check-icon" onclick="CompletedToDoItems(this)" />
+                <div title="Click to Complete" class="todo-text">${todoValue.value}</div>
+            </div>
+            <div class="todo-controls">
+                <img class="edit" onclick="UpdateToDoItems(this)" src="image/pencil.png" />
+                <img class="delete" onclick="DeleteToDoItems(this)" src="image/delete.png" />
+            </div>`;
     li.innerHTML = todoItems;
     listItems.appendChild(li);
     todoValue.value = "";
 
 }
 
+function CompletedToDoItems(e) {
+    const todoText = e.nextElementSibling;
+
+    if (todoText.style.textDecoration === "line-through") {
+        todoText.style.textDecoration = "";
+        e.src = "image/check.png";
+    } 
+    else {
+        todoText.style.textDecoration = "line-through";
+        e.src = "image/cancel.png";
+    }
+}
 
 

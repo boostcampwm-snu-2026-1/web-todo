@@ -76,7 +76,25 @@ li{
     border-radius: 5px;
 }
 
-.todo-controls{
+.todo-left-side{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.todo-controls{    
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.todo-left-side img{
+    width: 25px;
+    height: 25px;
+    padding: 3px;
+}
+
+.todo-controls img{
     width: 25px;
     height: 25px;
     padding: 3px;
