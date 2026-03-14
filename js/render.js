@@ -1,6 +1,14 @@
 window.renderTodos = function renderTodos(todoList, todos, editingTodoId) {
   todoList.innerHTML = "";
 
+  if (todos.length === 0) {
+    const emptyItem = document.createElement("li");
+    emptyItem.className = "empty-state";
+    emptyItem.textContent = "There is no task to do!";
+    todoList.append(emptyItem);
+    return;
+  }
+
   todos.forEach((todo) => {
     const item = document.createElement("li");
     const isEditing = todo.id === editingTodoId;

@@ -67,6 +67,12 @@ li {
   background: #fff;
 }
 
+li.empty-state {
+  justify-content: center;
+  color: #666;
+  text-align: center;
+}
+
 li.dragging {
   opacity: 0.55;
 }
