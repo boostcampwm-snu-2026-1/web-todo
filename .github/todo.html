@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>To Do List</title>
+  </head>
+  <body>
+    <div class="todo-container">
+      <h1 class="title">To Do List</h1>
+      <p class="date">  </p><!--나중에 JS로 날짜 정보 넣기-->
+      <form id="todo-form">  <!-- form 태그는 정보를 제출하기 위한 대화형 컨트롤을 포함하는 문서 구획을 나타낸다 -->
+        <input type="text" id="todo-input" placeholder="Add a new task...?" />
+        <button type="submit" id="+">Add</button>
+      </form>
+      <ul id="todo-list"> <!--ul 태그는 순서가 중요하지 않은 목록을 정의하는 데 사용된다-->
+        <li class="todo-item">
+            <input type="checkbox" class="item-checkbox"/>
+            <span class="item-title">HTML 뼈대 잡기</span>
+            <button class="edit-btn">Edit</button>
+            <button class="delete-btn">Delete</button>
+        </li>
+      </ul>
+    </div>
+  </body>
+</html>
