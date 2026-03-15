@@ -3,7 +3,7 @@ const todoValue = document.getElementById("todo-input"),
     addUpdateClick = document.getElementById("AddUpdateClick");
     
 
-    todoValue.addEventListener("keypress", function(e){ // enter 누를 때도 list에 추가
+    todoValue.addEventListener("keypress", function(e){ // append to list when push Enter
         if(e.key === "Enter"){
             addUpdateClick.click();
         }
@@ -17,7 +17,7 @@ if(!todo){
 function CreateToDoData() {
     if(todoValue.value===""){
         alert("Please Enter your todo text");
-        todoValue.focus(); // 클릭하는 수고를 덜어주는 서비스
+        todoValue.focus(); // back to input box
         return;
     }
 
@@ -50,8 +50,65 @@ function CompletedToDoItems(e) {
     }
 }
 
-// function UpdateToDoItems(e) {
-// }
+function UpdateToDoItems(e) { //change text to input box, then return to text
+    const li = e.closest('li');
+    const todoTextDiv = li.querySelector(".todo-text");
+    const currentText = todoTextDiv.innerText; // original text
+
+    if (li.querySelector(".edit-input")) return; //if it has already another input box, cancel the job
+
+    // create new input box on memory
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "edit-input";
+    input.value = currentText;
+
+    todoTextDiv.style.display = "none"; // hide existing box 
+    todoTextDiv.parentElement.insertBefore(input, todoTextDiv);
+    input.focus();
+
+    input.addEventListener("keypress", function (event) { // monitor keyboard press
+        if (event.key === "Enter") {
+            const newText = input.value.trim(); // new text eliminated with each side blank
+            
+
+            //update currentText to newText
+            if (newText) {
+                todo = todo.filter(el => {
+                    if (el.item === currentText) {
+                        el.item = newText;
+                    }
+                    return true;
+                });
+
+                todoTextDiv.innerText = newText;
+                finalizeUpdate();
+            }
+        }
+    });
+
+    //another event listner, finish update when click the out of input box
+    input.addEventListener("blur", function () {
+        const newText = input.value.trim();
+        if (newText) {
+            todo = todo.filter(el => {
+                if (el.item === currentText) {
+                    el.item = newText;
+                }
+                return true;
+            });
+            todoTextDiv.innerText = newText;
+            finalizeUpdate();
+        }
+    });
+
+
+    //eliminate input box
+    function finalizeUpdate() {
+        input.remove();
+        todoTextDiv.style.display = "block";
+    }
+}
 
 function DeleteToDoItems(e) {
     const li = e.closest('li');
