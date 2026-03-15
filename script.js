@@ -6,6 +6,7 @@ let todos = [];
 let currentId = 1;
 
 function renderTodos() {
+    todoList.innerHTML = "";
     todos.forEach((todo) => {
         const li = document.createElement("li");
 
