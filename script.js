@@ -12,10 +12,21 @@ function renderTodos() {
 
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
+        checkbox.className = "checkbox";
         checkbox.checked = todo.completed;
 
         const span = document.createElement("span");
         span.textContent = todo.content;
+
+        const deleteBtn = document.createElement("button");
+        deleteBtn.type = "button"
+        deleteBtn.textContent = "삭제";
+        deleteBtn.className = "deleteBtn";
+
+        deleteBtn.addEventListener("click", () => {
+            todos = todos.filter((item) => item.id != todo.id);
+            renderTodos();
+        })
 
         checkbox.addEventListener("change", () => {
             todo.completed = checkbox.checked;
@@ -24,6 +35,7 @@ function renderTodos() {
 
         li.appendChild(checkbox);
         li.appendChild(span);
+        li.appendChild(deleteBtn);
         todoList.appendChild(li);
     });
 }
