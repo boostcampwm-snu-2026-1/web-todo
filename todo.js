@@ -14,6 +14,14 @@ if(!todo){
     todo = [];
 }
 
+function displayTodayDate() {
+    const dateElement = document.querySelector(".date");
+    const today = new Date();
+    const options = {year: 'numeric', weekday: 'long', month: 'long', day: 'numeric' };
+    dateElement.innerText = today.toLocaleDateString('en', options);
+} displayTodayDate();
+
+
 function CreateToDoData() {
     //prevent adding empty tasks and return focus to input
     if (todoValue.value === "") { 
