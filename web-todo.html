@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"> <!--브라우저 크기 자동 조정-->
+    <title>Web Todo</title>
+    <link rel="stylesheet" href="Todo-list.css"> <!--Todo-list.css 파일을 연결하여 스타일 적용-->
+</head>
+<body>
+    <div class="container">
+        <main>
+            <div class="task-list">
+                <header>
+                    <h1>Todo list</h1>
+                </header>
+                <div class="input-layer">
+                    <input type="text" id="todo-input" placeholder="Add a new task">
+                    <button id="add-btn">Add</button>
+                <!-- todo-input 입력 내용 / add-btn 버튼 -->
+                </div> 
+                <ul id="todo-list" class="list-layer">
+                    <li>
+                        <input type="checkbox" class="checkbox">
+                        <span>Study</span>
+                        <button class='del-btn'>Delete</button>
+                    </li>
+                    <li>
+                        <input type="checkbox" class="checkbox">
+                        <span>Work out</span>
+                        <button class='del-btn'>Delete</button>
+                    </li>
+                </ul>
+                <!-- todo-list 목록-->
+            </div>
+        </main>
+    </div>
+        <footer>
+            <p> 서울대학교 컴퓨터공학부 정현우 | exile1111@snu.ac.kr </p>
+        </footer>
+    <script src="todo-list.js"></script> <!--todo-list.js 파일 연결-->
+</body>
+</html>
