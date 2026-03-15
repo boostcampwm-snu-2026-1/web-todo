@@ -1,117 +1,113 @@
-import fs from 'node:fs';
-import { get } from 'node:http';
-import { json } from 'node:stream/consumers';
-import { todo } from 'node:test';
+const STORAGE_KEY = 'todos';
 
-const FILE_TODO = 'todo.json'
-
-const args = process.argv.slice(2);
-const command = args[0];
-
-if (!fs.existsSync(FILE_TODO)) {
-    fs.writeFileSync(FILE_TODO, JSON.stringify([]));
-    console.log('Created todo.js')
-}
+const inputEl = document.getElementById('new-task-input');
+const addBtnEl = document.getElementById('add-task-button');
+const listEl = document.getElementById('todo-list');
 
 const getData = () => {
-    const data = fs.readFileSync(FILE_TODO, 'utf-8');
-    return JSON.parse(data)
+  const raw = localStorage.getItem(STORAGE_KEY);
+  if (!raw) return [];
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return [];
+  }
 };
 
-if (command === 'add') {
-    const task = args.slice(1).join('');
-    if (!task) {
-        console.log('No task provided.');
-        process.exit(1);
-    }
-    const fileJson = getData();
-    const newId = (fileJson.length > 0 ? Math.max(...fileJson.map(t => t.id)) : 0) + 1; 
+const setData = (todos) => {
+  localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
+};
 
-    const newTask = {
-        id: newId,
-        content: task,
-        done: false
-    };
+const render = () => {
+  const todos = getData();
+  listEl.innerHTML = '';
 
-    fileJson.push(newTask);
-    fs.writeFileSync(FILE_TODO, JSON.stringify(fileJson, null, 2));
-    
-    console.log(`Added: "${task}" (ID: ${newId})`);
-}
+  todos.forEach((todo) => {
+    const li = document.createElement('li');
+    li.className = `todo-item${todo.done ? ' done' : ''}`;
+    li.dataset.id = String(todo.id);
 
-if (command === 'list') {
-    const fileJson = getData();
+    li.innerHTML = `
+      <label>
+        <input type="checkbox" ${todo.done ? 'checked' : ''} />
+        <span></span>
+      </label>
+      <div class="todo-actions">
+        <button type="button" data-action="edit" aria-label="Edit task">Edit</button>
+        <button type="button" data-action="delete" aria-label="Delete task">Delete</button>
+      </div>
+    `;
+    li.querySelector('span').textContent = todo.content;
+    listEl.appendChild(li);
+  });
+};
 
-    if (fileJson.length ===0 ) {
-        console.log('TODO list is empty.');
-    } else {
-        console.log('<< TODO list >>');
-        fileJson.forEach(todo => {
-            const status = todo.done ? '[X]' : '[ ]';
-            console.log(`${status} ${todo.id}. ${todo.content}`);
-        });
-    }
-}
+const addTodo = () => {
+  const content = inputEl.value.trim();
+  if (!content) return;
 
-if (command === 'done') {    
-    const targetId = parseInt(args[1]);
-    
-    if (!targetId) {
-        console.log('No task ID provided.');
-        process.exit(1);
-    }
+  const todos = getData();
+  const newId = (todos.length ? Math.max(...todos.map((t) => t.id)) : 0) + 1;
+  todos.push({ id: newId, content, done: false });
+  setData(todos);
 
-    const fileJson = getData();
-    const target = fileJson.find(t => t.id === targetId);
+  inputEl.value = '';
+  render();
+};
 
-    if (!target) {
-        console.log(`Task ID${targetId} not found`);
-    } else {
-        target.done = true;
-        fs.writeFileSync(FILE_TODO, JSON.stringify(fileJson, null, 2));
-        console.log(`Task ${target.id}: "${target.content}" done.`);
-    }
-}
+const toggleTodo = (id, checked) => {
+  const todos = getData();
+  const target = todos.find((t) => t.id === id);
+  if (!target) return;
+  target.done = checked;
+  setData(todos);
+  render();
+};
 
-if (command === 'delete') {
-    const targetId = parseInt(args[1]);
-    
-    if (!targetId) {
-        console.log('No task ID provided.');
-        process.exit(1);
-    }
+const deleteTodo = (id) => {
+  const todos = getData().filter((t) => t.id !== id);
+  setData(todos);
+  render();
+};
 
-    const fileJson = getData();
-    const target = fileJson.find(t => t.id === targetId);
+const editTodo = (id) => {
+  const todos = getData();
+  const target = todos.find((t) => t.id === id);
+  if (!target) return;
 
-    if (!target) {
-        console.log(`Task ID${targetId} not found`);
-    } else {
-        const newFileJson = fileJson.filter(t => t.id !== targetId);
-        fs.writeFileSync(FILE_TODO, JSON.stringify(newFileJson, null, 2));
-        console.log(`Task ${target.id}: "${target.content}" deleted.`);
-    }
-}
+  const next = prompt('Edit task:', target.content);
+  if (next === null) return;
 
-if (command === 'update') {
-    const targetId = parseInt(args[1]);
-    const newContent = args.slice(2).join('');
-    
-    if (!targetId) {
-        console.log('No task ID provided.');
-        process.exit(1);
-    }
+  const content = next.trim();
+  if (!content) return;
 
-    const fileJson = getData();
-    const target = fileJson.find(t => t.id === targetId);
+  target.content = content;
+  setData(todos);
+  render();
+};
 
-    if (!target) {
-        console.log(`Task ID${targetId} not found`);
-    } else {
-        target.content = newContent;
-        target.done = false;
+addBtnEl.addEventListener('click', addTodo);
 
-        fs.writeFileSync(FILE_TODO, JSON.stringify(fileJson, null, 2));
-        console.log(`Task ${target.id}: updated to "${target.content}".`);
-    }
-}
+inputEl.addEventListener('keydown', (e) => {
+  if (e.key === 'Enter') addTodo();
+});
+
+listEl.addEventListener('change', (e) => {
+  const li = e.target.closest('.todo-item');
+  if (!li || e.target.type !== 'checkbox') return;
+  toggleTodo(Number(li.dataset.id), e.target.checked);
+});
+
+listEl.addEventListener('click', (e) => {
+  const button = e.target.closest('button[data-action]');
+  const li = e.target.closest('.todo-item');
+  if (!button || !li) return;
+
+  const id = Number(li.dataset.id);
+  const action = button.dataset.action;
+
+  if (action === 'delete') deleteTodo(id);
+  if (action === 'edit') editTodo(id);
+});
+
+render();
