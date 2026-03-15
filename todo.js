@@ -4,6 +4,7 @@ let todos = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
 const todoForm = document.getElementById('todo-form');
 const todoInput = document.getElementById('todo-input');
 const todoList = document.getElementById('todo-list');
+const currentDateElement = document.getElementById('current-date');
 
 function saveAndRender() {
     // 로컬 스토리지에 저장
@@ -52,6 +53,13 @@ function deleteTodo(targetId){
     saveAndRender();
 }
 
+function displayDate() {
+    const now = new Date();
+    const WEEKDAY = ['SUN', 'MON', 'TUE', 'WED', 'THU', 'FRI', 'SAT'];
+    const dateString = `${now.getFullYear()}.${now.getMonth()+1}.${now.getDate()} ${WEEKDAY[now.getDay()]}`;
+    currentDateElement.textContent = dateString;
+}
+
 function render() {
     todoList.innerHTML = ''; // 리스트 초기화
 
@@ -94,4 +102,5 @@ todoList.addEventListener('click', (e) => {
 });
 
 // 초기 실행
+displayDate();
 render();
