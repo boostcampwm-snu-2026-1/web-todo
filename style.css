@@ -1,0 +1,84 @@
+:root {
+    --primary-color: #5b6cf9;
+    --bg-color: #f6f8fb;
+    --card-bg: #ffffff;
+    --item-bg: #ffffff;
+    --text-main: #2d3139;
+    --text-sub: #9ea4b0;
+    --input-bg: #eaedf3;
+    --border-color: #eef0f5;
+}
+
+body {
+    background-color: var(--bg-color);
+    font-family: 'Pretendard', -apple-system, sans-serif;
+    display: flex; justify-content: center; align-items: center;
+    height: 100vh; margin: 0;
+}
+
+.todo-card {
+    background: var(--card-bg);
+    width: 420px; padding: 40px;
+    border-radius: 35px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.03);
+}
+
+header h1 { margin: 0; font-size: 26px; text-align: center; color: var(--text-main); }
+header p { text-align: center; color: var(--text-sub); margin: 8px 0 30px 0; font-size: 14px; }
+
+/* 입력창 & 버튼 (더 동그랗게) */
+#todo-form { display: flex; gap: 10px; margin-bottom: 30px; }
+
+#todo-input {
+    flex: 1; padding: 15px 25px;
+    border-radius: 50px; /* 완전 동그랗게 */
+    border: none; background: var(--input-bg);
+    font-size: 15px; outline: none;
+}
+
+.add-btn {
+    width: 50px; height: 50px;
+    border-radius: 50%; /* 완전 동그랗게 */
+    background: var(--primary-color);
+    color: white; border: none; cursor: pointer;
+    font-size: 24px; transition: transform 0.2s;
+}
+
+/* 할 일 목록 (개별 박스 형태) */
+#todo-list { list-style: none; padding: 0; margin: 0; }
+
+.todo-item {
+    display: flex; align-items: center;
+    padding: 16px 20px; margin-bottom: 12px;
+    background: var(--item-bg);
+    border: 1px solid var(--border-color); /* 박스 테두리 */
+    border-radius: 18px; /* 박스 모서리 */
+    transition: all 0.2s ease;
+}
+
+.todo-item:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0,0,0,0.02); }
+
+.checkbox {
+    width: 24px; height: 24px;
+    border: 2px solid #d1d5db; border-radius: 50%;
+    margin-right: 15px; cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: 0.2s;
+}
+
+.todo-item.completed .checkbox { background: var(--primary-color); border-color: var(--primary-color); }
+.todo-item.completed .checkbox::after { content: '✓'; color: white; font-size: 14px; }
+.todo-item.completed .todo-text { text-decoration: line-through; color: var(--text-sub); }
+
+.todo-text { flex: 1; font-size: 16px; color: var(--text-main); }
+
+/* 아이콘 버튼 스타일 */
+.action-btns { display: flex; gap: 4px; }
+.icon-btn {
+    background: none; border: none; cursor: pointer;
+    padding: 6px; border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    stroke: #b0b8c1; transition: 0.2s;
+}
+.icon-btn:hover { background: #f0f2f5; stroke: var(--text-main); }
+.icon-btn.delete:hover { stroke: #ff4d4f; }
