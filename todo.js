@@ -120,6 +120,9 @@ function createTodoItemElement(todo) {
   const itemElement = document.createElement("li");
   itemElement.className = "todo-item";
   itemElement.dataset.todoId = String(todo.id);
+  if (editingTodoId === todo.id) {
+    itemElement.classList.add("todo-item-editing");
+  }
 
   const checkboxElement = document.createElement("input");
   checkboxElement.className = "todo-checkbox";
