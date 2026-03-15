@@ -15,3 +15,16 @@
     const remaining = todos.filter(t => !t.completed).length;
     todoCount.textContent = remaining;
 }
+
+export function displayDate(dateElement) {
+    const now = new Date();
+    
+    const options = { 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric', 
+        weekday: 'long' 
+    };
+    
+    dateElement.textContent = now.toLocaleDateString('ko-KR', options);
+}
