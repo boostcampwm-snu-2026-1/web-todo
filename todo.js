@@ -223,6 +223,17 @@ function confirmDeleteTask(todoText) {
   return confirm(`Would you like to delete the task?\n${todoText}`);
 }
 
+function confirmResetAllTasks() {
+  return confirm("Would you like to reset all tasks?");
+}
+
+function resetAllTasks() {
+  localStorage.removeItem(TODO_STORAGE_KEY);
+  editingTodoId = null;
+  renderTodoList([]);
+  showToastMessage("All tasks have been reset.");
+}
+
 function startEditing(todoId) {
   editingTodoId = todoId;
   renderTodoList(loadTodos());
@@ -295,6 +306,7 @@ function handleTodoListClick(event) {
   if (!shouldDelete) return;
 
   deleteTodo(todoId);
+  showToastMessage("Task has been deleted.");
 }
 
 function handleTodoListKeydown(event) {
@@ -338,6 +350,11 @@ function handleTodoSubmit(event) {
   showToastMessage("New task has been successfully added!");
 }
 
+function handleResetAllClick() {
+  if (!confirmResetAllTasks()) return;
+  resetAllTasks();
+}
+
 function registerEvents() {
   const formElement = document.getElementById("todo-form");
   if (!formElement) return;
@@ -350,6 +367,11 @@ function registerEvents() {
   listElement.addEventListener("change", handleTodoListChange);
   listElement.addEventListener("click", handleTodoListClick);
   listElement.addEventListener("keydown", handleTodoListKeydown);
+
+  const resetAllButton = document.getElementById("reset-all-button");
+  if (!resetAllButton) return;
+
+  resetAllButton.addEventListener("click", handleResetAllClick);
 }
 
 renderTodayDate();
