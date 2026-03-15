@@ -9,7 +9,7 @@
     <div class="div-background">
         <div class="main-title">
             <h4>Today's tasks</h4>
-            <p>today's date~~~</p>
+            <p id="today-date">today's date~~~</p>
         </div>
 
         <div class="main-content">
@@ -17,19 +17,62 @@
                 <input type="text" placeholder="Add a new task..." class="input-task">
                 <button class="add-task"></button>
             </form>
-            <div class="div-task">
-                <form class="relative">
-                    <label class="finish-task">
-                        <input type="checkbox">
-                        <span class="checkmark"></span>
-                    </label>
-                    <p class="todo-task">Example</p>
-                    <button class="delete-btn">삭제</button>
-                    <button class="edit-btn">편집</button>
-                </form>
+            <div class="container-box">
+                <!-- <div class="div-task">
+                    <form class="relative">
+                        <label class="finish-task">
+                            <input type="checkbox">
+                            <span class="checkmark"></span>
+                        </label>
+                        <p class="todo-task">Example</p>
+                        <button class="delete-btn">삭제</button>
+                        <button class="edit-btn">편집</button>
+                    </form>
+                </div> -->
             </div>
         </div>
     </div> 
+
+    <script>
+        const today = new Date()
+        const date = today.toLocaleDateString('ko-KR');
+
+        const days = ['일', '월', '화', '수', '목', '금', '토'];
+        const day = days[today.getDay()];
+
+        document.querySelector('#today-date').textContent = `${date} (${day})`;
+
+        const addBtn = document.querySelector('.add-task');
+        const input = document.querySelector('.input-task');
+        const taskContainer = document.querySelector('.container-box');
+
+        addBtn.addEventListener('click', function(e) {
+            e.preventDefault();
+            const text = input.value;
+
+            if (text === '') {
+                process.exit();
+            }
+
+            const taskHTML = `
+                <div class="div-task">
+                    <form class="relative">
+                        <label class="finish-task">
+                            <input type="checkbox">
+                            <span class="checkmark"></span>
+                        </label>
+                        <p class="todo-task">${text}</p>
+                        <button class="delete-btn">삭제</button>
+                        <button class="edit-btn">편집</button>
+                    </form>
+                </div>
+            `;
+
+            taskContainer.innerHTML += `${taskHTML}`;
+
+            input.value = '';
+        });
+    </script>
     
 </body>
 </html>
