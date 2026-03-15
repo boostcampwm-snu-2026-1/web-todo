@@ -63,9 +63,3 @@ web-todo/
 - **CSS Custom Properties** — Gruvbox 색상 팔레트를 토큰으로 관리
 - **이벤트 위임** — 동적 목록을 효율적으로 처리
 - **DocumentFragment** — DOM 조작 시 리플로우 최소화
-
----
-
-## 라이선스
-
-MIT
