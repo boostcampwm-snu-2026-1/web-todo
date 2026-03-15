@@ -61,8 +61,11 @@ function render() {
         li.dataset.id = todo.id;
 
         li.innerHTML = `
-            <span class="todo-text">${todo.done ? '✅' : '⬜'} ${todo.content}</span>
-            <button class="delete-btn">삭제</button>
+            <button class="toggle-btn" title="${todo.done ? '취소' : '완료'}">
+                ${todo.done ? '✓' : ''}
+            </button>
+            <span class="todo-text">${todo.content}</span>
+            <button class="delete-btn" title="삭제">🗑</button>
         `;
         todoList.appendChild(li);
     });
@@ -80,9 +83,12 @@ todoList.addEventListener('click', (e) => {
     
     const id = Number(li.dataset.id);
 
+    // 삭제 버튼 클릭 시
     if (e.target.classList.contains('delete-btn')) {
         deleteTodo(id);
-    } else {
+    } 
+    // 완료/취소 버튼 클릭 시
+    else if (e.target.classList.contains('toggle-btn')) {
         toggleTodo(id);
     }
 });
