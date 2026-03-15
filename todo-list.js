@@ -10,6 +10,11 @@ function addTodo(){ //add-btn 동작 함수
     }
 
     let li = document.createElement('li');
+
+    let checkbox = document.createElement('input');
+    checkbox.type ='checkbox';
+    checkbox.classList.add('checkbox');
+
     let span = document.createElement('span');
     span.textContent = text;
 
@@ -17,6 +22,7 @@ function addTodo(){ //add-btn 동작 함수
     deleteBtn.textContent = 'Delete';
     deleteBtn.classList.add('del-btn');
     
+    li.appendChild(checkbox);
     li.appendChild(span);
     li.appendChild(deleteBtn); //li에 span(text), button 추가
     
@@ -41,4 +47,22 @@ function deleteTodo(event){
     }
 }
 
-todoList.addEventListener('click', deleteTodo);
+function doneTodo(event){
+    let li = event.target.parentElement;
+    let span = li.querySelector('span');
+
+    if (event.target.checked){
+        span.classList.add('done');
+    } else {
+        span.classList.remove('done');
+    }
+}
+
+todoList.addEventListener('click', function (event){
+    if (event.target.classList.contains('del-btn')){
+        deleteTodo(event);
+    }
+    else if (event.target.classList.contains('checkbox')){
+        doneTodo(event);
+    }
+});
