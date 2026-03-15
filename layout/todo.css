@@ -51,7 +51,7 @@ button {
 .input-task {
     width: 82%;
     padding: 10px;
-    border: 1px black solid;
+    border: none;
     border-radius: 20px;
     background-color: #eee;
     vertical-align: top;
@@ -115,9 +115,10 @@ button {
     border-radius: 10px;
     box-shadow: 2px 2px 4px #8c8c8c;
     transition: all 0.25s;
+    cursor: pointer;
 }
 
-.div-task:hover {
+.div-task:hover:not(:has(button:hover)) {
     background-color: #eee;
     box-shadow: 0.5px 0.5px 2px #8c8c8c;
 }
@@ -188,6 +189,35 @@ button {
     border-radius: 10px;
     margin-bottom: 10px;
     display: none;
+}
+
+.close-btn {
+    width: 23px;
+    height: 23px;
+    border: none;
+    vertical-align: bottom;
+    float: right;
+    background-color: #f8d7da;
+    position: relative;
+}
+
+.close-btn::before,
+.close-btn::after {
+    content: "";
+    width: 18px;
+    height: 2px;
+    background: #9c9c9c;
+    position: absolute;
+    width: 18px;
+    height: 2px;
+}
+
+.close-btn::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.close-btn::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
 }
 
 .show {
