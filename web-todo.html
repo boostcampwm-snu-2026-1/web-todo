@@ -7,25 +7,25 @@
     <link rel="stylesheet" href="Todo-list.css"> <!--Todo-list.css 파일을 연결하여 스타일 적용-->
 </head>
 <body>
-    <header>
-        <h1>Web Todo</h1>
-    </header>
-    <nav>
-        <ul>
-            <li><a href="/">Main</a></li>
-            <li><a href="/tasks">Tasks</a></li>
-        </ul>
-    </nav>
-    <main>
-        <h2>Task list</h2>
-        <ul>
-            <li>Task 1</li>
-            <li>Task 2</li>
-            <li>Task 3</li>
-        </ul>
-    </main>
-     <footer>
-        <p> 서울대학교 컴퓨터공학부 정현우 | exile1111@snu.ac.kr </p>
-    </footer>
+    <div class="container">
+        <main>
+            <div class="task-list">
+                <header>
+                    <h1>Todo-list</h1>
+                </header>
+                <div class="input-layer">
+                    <input type="text" placeholder="Add a new task">
+                    <button>Add</button>
+                </div>  
+                <ul class="list-layer">
+                    <li><span>Study</span><button>Delete</button></li>
+                    <li><span>Work out</span><button>Delete</button></li>
+                </ul>
+            </div>
+        </main>
+    </div>
+        <footer>
+            <p> 서울대학교 컴퓨터공학부 정현우 | exile1111@snu.ac.kr </p>
+        </footer>
 </body>
 </html>
