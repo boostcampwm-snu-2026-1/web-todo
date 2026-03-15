@@ -1,0 +1,533 @@
+/*
+  todo.css — Seonuk's TODO 앱 스타일시트
+  ═══════════════════════════════════════════════════════
+
+  테마: Gruvbox Dark
+    레트로한 느낌의 따뜻한 색상 팔레트. 어두운 배경에 황토색 계열 전경색.
+    https://github.com/morhetz/gruvbox
+
+  파일 구성:
+    1. CSS Custom Properties (디자인 토큰)
+         색상 팔레트 변수, 시맨틱 토큰, 공통 크기·폰트 변수
+    2. Reset & Base
+         기본 여백 초기화, body 기본 스타일
+    3. 배경 노이즈 오버레이
+    4. 레이아웃 (.app)
+    5. 헤더 (.app-header, .app-title, .stats)
+    6. 입력 영역 (.input-area, .todo-input, .add-btn)
+    7. 필터 탭 바 (.filter-bar, .filter-btn)
+    8. 할일 목록 (.todo-list)
+    9. 할일 항목 (.todo-item, .todo-check, .todo-text, .delete-btn)
+   10. 푸터 (.app-footer, .clear-btn)
+   11. 스크롤바 커스터마이징 (Webkit 전용)
+   12. 반응형 (480px 이하 모바일)
+*/
+
+
+/* ════════════════════════════════════════════
+   1. CSS Custom Properties (디자인 토큰)
+   ────────────────────────────────────────────
+   :root에 선언한 변수는 모든 요소에서 var()로 참조할 수 있다.
+   색상을 한 곳에서 관리하므로 테마 변경 시 이 블록만 수정하면 된다.
+════════════════════════════════════════════ */
+:root {
+  /* ── Gruvbox Dark 원색 팔레트 ── */
+  /* 배경색 (어두운 순서대로 bg0-h → bg4) */
+  --bg0-h:    #1d2021; /* 가장 어두운 배경 — body 배경에 사용 */
+  --bg0:      #282828; /* 기본 배경 */
+  --bg1:      #3c3836; /* 약간 밝은 배경 — 카드·입력창 배경 */
+  --bg2:      #504945; /* 테두리·구분선 */
+  --bg3:      #665c54; /* 비활성 테두리 */
+  --bg4:      #7c6f64; /* 아이콘·보조 색상 */
+
+  /* 전경색 (밝은 순서대로 fg4 → fg0) */
+  --fg4:      #a89984; /* 흐린 텍스트 (placeholder, 보조 레이블) */
+  --fg3:      #bdae93;
+  --fg2:      #d5c4a1;
+  --fg1:      #ebdbb2; /* 기본 본문 텍스트 */
+  --fg0:      #fbf1c7; /* 가장 밝은 전경 */
+
+  /* 강조색 */
+  --red:      #cc241d;
+  --red-b:    #fb4934; /* 삭제 버튼 hover 색상 */
+  --green:    #98971a;
+  --green-b:  #b8bb26; /* 완료 통계 숫자 */
+  --yellow:   #d79921; /* 액센트(dim) — 추가 버튼 배경 */
+  --yellow-b: #fabd2f; /* 액센트 — 포커스 테두리, 활성 필터 */
+  --blue:     #458588;
+  --blue-b:   #83a598;
+  --purple:   #b16286;
+  --purple-b: #d3869b;
+  --aqua:     #689d6a;
+  --aqua-b:   #8ec07c; /* 체크박스 완료 색상 */
+  --orange:   #d65d0e;
+  --orange-b: #fe8019;
+
+  /* ── 시맨틱 토큰 ── */
+  /* 원색 변수를 직접 쓰는 대신 역할 기반 이름으로 한 번 감싼다.
+     "어디에 쓰이는가"를 이름으로 표현해 가독성을 높인다. */
+  --surface:        var(--bg0);   /* 기본 배경면 */
+  --surface-raised: var(--bg1);   /* 카드·입력창처럼 살짝 올라온 배경 */
+  --surface-float:  var(--bg2);   /* 활성 필터 버튼처럼 더 올라온 배경 */
+  --border:         var(--bg3);   /* 일반 테두리 */
+  --muted:          var(--fg4);   /* 흐린(비강조) 텍스트 */
+  --body:           var(--fg1);   /* 기본 본문 텍스트 */
+  --accent:         var(--yellow-b); /* 주 강조색 (포커스 링, 활성 필터 텍스트) */
+  --accent-dim:     var(--yellow);   /* 보조 강조색 (추가 버튼 기본 배경) */
+  --done-color:     var(--aqua);     /* 완료 상태 체크박스 */
+  --delete-color:   var(--red-b);    /* 삭제 버튼 hover */
+
+  /* ── 공통 크기 변수 ── */
+  --radius-sm: 4px;  /* 작은 모서리 (필터 버튼, 체크박스) */
+  --radius-md: 8px;  /* 중간 모서리 (입력 폼, 할일 카드) */
+  --radius-lg: 12px; /* 큰 모서리 (현재 미사용, 확장용) */
+
+  /* ── 폰트 스택 ── */
+  --font-mono:    'IBM Plex Mono', 'Courier New', monospace; /* 본문·UI 전반 */
+  --font-display: 'Unbounded', sans-serif;                   /* 헤더 타이틀 */
+}
+
+
+/* ════════════════════════════════════════════
+   2. Reset & Base
+   ────────────────────────────────────────────
+   브라우저마다 다른 기본 스타일을 초기화하고
+   앱 전체에 적용할 기본값을 설정한다.
+════════════════════════════════════════════ */
+
+/* 모든 요소의 box-sizing을 border-box로 통일한다.
+   border-box: padding과 border를 width/height 안에 포함시켜
+   레이아웃 계산이 직관적으로 된다. */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html {
+  font-size: 16px; /* 1rem 기준값. em/rem 단위의 기준점이 된다 */
+  height: 100%;    /* body의 min-height:100%가 뷰포트 전체를 채울 수 있도록 */
+}
+
+body {
+  min-height: 100%;                /* 콘텐츠가 적어도 화면 전체를 채운다 */
+  background-color: var(--bg0-h);  /* Gruvbox 가장 어두운 배경 */
+  color: var(--body);              /* 기본 텍스트 색상 */
+  font-family: var(--font-mono);   /* 고정폭 폰트 적용 */
+  line-height: 1.6;                /* 줄 간격 */
+  position: relative;              /* .bg-noise의 position:fixed 기준점 */
+  overflow-x: hidden;              /* 가로 스크롤 방지 */
+}
+
+
+/* ════════════════════════════════════════════
+   3. 배경 노이즈 오버레이
+   ────────────────────────────────────────────
+   SVG feTurbulence 필터로 생성한 노이즈 패턴을 배경에 깔아
+   평면적인 색상에 질감(텍스처)을 더하는 장식 레이어.
+════════════════════════════════════════════ */
+.bg-noise {
+  position: fixed; /* 스크롤해도 항상 화면 전체를 덮는다 */
+  inset: 0;        /* top/right/bottom/left 모두 0 (= position:fixed 전체 화면) */
+  pointer-events: none; /* 마우스·터치 이벤트를 통과시켜 아래 요소가 클릭되게 한다 */
+  z-index: 0;      /* .app(z-index:1) 아래에 위치 */
+  opacity: 0.035;  /* 거의 투명하게 — 은은한 질감만 남긴다 */
+  /* SVG 기반 노이즈 패턴을 data URI로 인라인 삽입해 외부 파일 요청을 없앤다 */
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  background-size: 200px; /* 패턴 타일 크기 */
+}
+
+
+/* ════════════════════════════════════════════
+   4. 앱 레이아웃 (.app)
+   ────────────────────────────────────────────
+   콘텐츠를 화면 가운데 정렬하고 세로로 쌓이게 한다.
+════════════════════════════════════════════ */
+.app {
+  position: relative; /* z-index가 적용되려면 position이 필요하다 */
+  z-index: 1;         /* .bg-noise(z-index:0) 위에 표시 */
+  max-width: 640px;   /* 넓은 화면에서 콘텐츠가 너무 넓어지지 않도록 제한 */
+  margin: 0 auto;     /* 수평 가운데 정렬 */
+  padding: 3rem 1.5rem 6rem; /* 위·좌우·아래 여백 */
+  min-height: 100vh;  /* 콘텐츠가 적어도 뷰포트 높이를 채운다 */
+  display: flex;
+  flex-direction: column; /* 자식 요소들(헤더·폼·목록·푸터)을 세로로 쌓는다 */
+  gap: 0; /* 자식 간격은 각 요소의 margin-bottom으로 개별 조정 */
+}
+
+
+/* ════════════════════════════════════════════
+   5. 헤더
+════════════════════════════════════════════ */
+.app-header {
+  display: flex;
+  align-items: baseline;       /* 타이틀과 통계 숫자의 베이스라인을 맞춘다 */
+  justify-content: space-between;
+  margin-bottom: 2.5rem;
+  padding-bottom: 1.25rem;
+  border-bottom: 2px solid var(--bg1); /* 헤더와 본문을 구분하는 구분선 */
+}
+
+.app-title {
+  font-family: var(--font-display);
+  /* clamp(최솟값, 선호값, 최댓값): 뷰포트 너비에 따라 글자 크기가 유동적으로 변한다 */
+  font-size: clamp(2rem, 6vw, 3.2rem);
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--fg0);
+
+  /*
+    그라디언트 텍스트 효과 (Webkit + 표준)
+    background-clip:text 로 배경 그라디언트를 텍스트 모양으로 자른 뒤
+    -webkit-text-fill-color:transparent 로 텍스트 자체를 투명하게 만들어
+    배경이 텍스트를 통해 보이도록 한다.
+  */
+  background: linear-gradient(
+    to right,
+    var(--yellow-b) 0%,
+    var(--orange-b) 100%
+  );
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* 통계 영역: "2 / 5 done" */
+.stats {
+  font-size: 0.85rem;
+  color: var(--muted);
+  display: flex;
+  align-items: baseline;
+  gap: 0.2em;
+}
+
+.stats-done  { color: var(--green-b); font-weight: 600; } /* 완료 개수: 초록 */
+.stats-total { color: var(--fg2);     font-weight: 600; } /* 전체 개수: 밝은 회색 */
+.stats-sep   { color: var(--bg3); }                        /* "/" 구분자: 어두운 색 */
+.stats-label { margin-left: 0.3em; }                       /* "done" 레이블 */
+
+
+/* ════════════════════════════════════════════
+   6. 입력 영역
+   ────────────────────────────────────────────
+   .input-area: 입력창과 + 버튼을 감싸는 컨테이너.
+     overflow:hidden + border-radius 로 자식 요소들이 모서리를 벗어나지 않게 한다.
+════════════════════════════════════════════ */
+.input-area {
+  display: flex;
+  gap: 0;
+  margin-bottom: 1.25rem;
+  border: 2px solid var(--bg2);
+  border-radius: var(--radius-md);
+  overflow: hidden; /* 자식의 배경이 모서리 밖으로 삐져나오지 않도록 */
+  transition: border-color 0.18s;
+}
+
+/* 내부 요소에 포커스가 있을 때 컨테이너 테두리를 강조한다 */
+.input-area:focus-within {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(250, 189, 47, 0.12); /* 부드러운 외곽 글로우 */
+}
+
+.todo-input {
+  flex: 1;           /* 남은 공간을 모두 차지 (+ 버튼 옆) */
+  padding: 0.75rem 1rem;
+  background: var(--surface-raised);
+  border: none;
+  outline: none;     /* 포커스 링은 .input-area:focus-within이 대신 처리 */
+  font-family: var(--font-mono);
+  font-size: 0.95rem;
+  color: var(--body);
+  caret-color: var(--accent); /* 커서(캐럿) 색상을 액센트 색으로 */
+}
+
+.todo-input::placeholder { color: var(--bg4); } /* placeholder를 흐리게 */
+
+/* 추가(+) 버튼 */
+.add-btn {
+  display: grid;
+  place-items: center; /* 아이콘을 가로·세로 가운데 정렬 */
+  padding: 0 1.1rem;
+  background: var(--accent-dim);
+  border: none;
+  cursor: pointer;
+  color: var(--bg0); /* 아이콘 색 — 배경(황토색)과 대비되는 어두운 색 */
+  transition: background 0.15s, transform 0.1s;
+  flex-shrink: 0; /* 버튼이 찌그러지지 않도록 */
+}
+
+.add-btn:hover  { background: var(--accent); }          /* hover: 더 밝은 노란색 */
+.add-btn:active { transform: scale(0.93); }             /* 클릭 시 살짝 줄어드는 피드백 */
+
+
+/* ════════════════════════════════════════════
+   7. 필터 탭 바
+════════════════════════════════════════════ */
+.filter-bar {
+  display: flex;
+  gap: 0.25rem;
+  margin-bottom: 1.5rem;
+}
+
+.filter-btn {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding: 0.35em 0.85em;
+  border: 1px solid var(--bg3);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.02em;
+}
+
+.filter-btn:hover {
+  border-color: var(--fg4);
+  color: var(--fg2);
+}
+
+/* JS가 클릭된 버튼에 .active 클래스를 추가하면 이 스타일이 적용된다 */
+.filter-btn.active {
+  background: var(--surface-float);
+  border-color: var(--accent-dim);
+  color: var(--accent);
+  font-weight: 600;
+}
+
+
+/* ════════════════════════════════════════════
+   8. 할일 목록
+════════════════════════════════════════════ */
+.todo-list {
+  flex: 1;          /* 남은 세로 공간을 모두 차지해 푸터를 아래로 밀어낸다 */
+  list-style: none; /* <ul>의 기본 불릿 제거 */
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem; /* 항목 사이 간격 */
+}
+
+/*
+  목록이 비었을 때 CSS 가상 요소로 안내 문구를 표시한다.
+  JS 없이 CSS만으로 처리해 렌더링 깜빡임이 없다.
+*/
+.todo-list:empty::after {
+  content: '— 할 일 없음 —';
+  display: block;
+  text-align: center;
+  margin-top: 4rem;
+  color: var(--bg3);
+  font-size: 0.85rem;
+  letter-spacing: 0.08em;
+}
+
+
+/* ════════════════════════════════════════════
+   9. 할일 항목
+   ────────────────────────────────────────────
+   JS의 createTodoItem()이 생성하는 <li> 구조:
+     .todo-item
+       input.todo-check  (커스텀 체크박스)
+       span.todo-text    (할일 텍스트)
+       button.delete-btn (삭제 버튼, hover 시만 표시)
+════════════════════════════════════════════ */
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 1rem;
+  background: var(--surface-raised);
+  border: 1px solid var(--bg2);
+  border-radius: var(--radius-md);
+  cursor: default;
+  transition: border-color 0.15s, transform 0.12s, opacity 0.2s;
+  /* 항목 추가 시 위에서 살짝 내려오며 등장하는 애니메이션 */
+  animation: item-in 0.22s cubic-bezier(0.34, 1.56, 0.64, 1) both;
+}
+
+/* 등장 애니메이션: 위에서 약간 내려오면서 scale이 커진다 (스프링 느낌) */
+@keyframes item-in {
+  from { opacity: 0; transform: translateY(-8px) scale(0.98); }
+  to   { opacity: 1; transform: none; }
+}
+
+/* hover: 오른쪽으로 2px 이동해 "선택된" 느낌을 준다 */
+.todo-item:hover {
+  border-color: var(--bg3);
+  transform: translateX(2px);
+}
+
+/* 완료 상태: 흐릿하게 처리해 완료됨을 시각적으로 구분 */
+.todo-item.done {
+  opacity: 0.55;
+  border-color: var(--bg1);
+}
+
+/* 완료 상태의 텍스트: 취소선 + 색상 흐리게 */
+.todo-item.done .todo-text {
+  text-decoration: line-through;
+  color: var(--muted);
+}
+
+/*
+  커스텀 체크박스
+  브라우저 기본 체크박스(appearance:none)를 완전히 숨기고
+  CSS로 직접 모양을 그린다.
+  display:grid + place-items:center 로 체크마크(::after)를 가운데 정렬한다.
+*/
+.todo-check {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  border: 2px solid var(--bg3);
+  border-radius: var(--radius-sm);
+  flex-shrink: 0;  /* 텍스트가 길어도 체크박스가 찌그러지지 않도록 */
+  cursor: pointer;
+  display: grid;
+  place-items: center;
+  transition: background 0.15s, border-color 0.15s;
+  position: relative;
+}
+
+/* 체크마크: CSS border로 만든 L자 회전 (✓ 모양) */
+.todo-check::after {
+  content: '';
+  width: 5px;
+  height: 9px;
+  border-right: 2.5px solid var(--bg0);  /* L자의 세로선 */
+  border-bottom: 2.5px solid var(--bg0); /* L자의 가로선 */
+  transform: rotate(45deg) translate(-1px, -1px); /* 45도 회전으로 체크마크 완성 */
+  opacity: 0;           /* 기본: 체크마크 숨김 */
+  transition: opacity 0.12s;
+}
+
+/* 체크된 상태: 배경색 채우기 */
+.todo-check:checked {
+  background: var(--done-color);
+  border-color: var(--done-color);
+}
+
+/* 체크된 상태: 체크마크 표시 */
+.todo-check:checked::after {
+  opacity: 1;
+}
+
+/* 키보드 포커스 링 — 마우스 클릭 시에는 표시되지 않는다 (:focus-visible) */
+.todo-check:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+/* 할일 텍스트 */
+.todo-text {
+  flex: 1;       /* 남은 공간을 모두 차지 */
+  font-size: 0.93rem;
+  color: var(--fg1);
+  word-break: break-word; /* 긴 단어(URL 등)가 컨테이너를 벗어나지 않도록 줄바꿈 */
+  transition: color 0.15s;
+}
+
+/*
+  삭제 버튼 — 평소에는 숨겨두고 hover 시에만 표시한다.
+  opacity:0 으로 시각적으로만 숨긴다 (visibility:hidden과 달리 공간은 유지).
+*/
+.delete-btn {
+  opacity: 0;
+  flex-shrink: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--bg4);
+  padding: 4px;
+  border-radius: var(--radius-sm);
+  display: grid;
+  place-items: center;
+  transition: opacity 0.15s, color 0.15s, background 0.15s;
+}
+
+/* 부모 항목에 hover 시 삭제 버튼을 드러낸다 */
+.todo-item:hover .delete-btn {
+  opacity: 1;
+}
+
+.delete-btn:hover {
+  color: var(--delete-color);
+  background: rgba(251, 73, 52, 0.1); /* 붉은색 반투명 배경 */
+}
+
+/* 키보드로 삭제 버튼에 포커스 시 항상 표시 + 포커스 링 */
+.delete-btn:focus-visible {
+  opacity: 1;
+  outline: 2px solid var(--delete-color);
+  outline-offset: 2px;
+}
+
+/* SVG 아이콘이 inline 여백 없이 정확히 렌더링되도록 */
+.delete-btn svg {
+  display: block;
+}
+
+
+/* ════════════════════════════════════════════
+   10. 푸터
+════════════════════════════════════════════ */
+.app-footer {
+  margin-top: 2rem;
+  display: flex;
+  justify-content: flex-end; /* 버튼을 오른쪽으로 정렬 */
+}
+
+/* "완료 항목 삭제" 버튼 */
+.clear-btn {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding: 0.4em 0.9em;
+  border: 1px solid var(--bg3);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: all 0.15s;
+  letter-spacing: 0.02em;
+}
+
+/* hover: 붉은 계열로 변해 삭제 동작임을 암시 */
+.clear-btn:hover {
+  border-color: var(--red-b);
+  color: var(--red-b);
+  background: rgba(204, 36, 29, 0.06);
+}
+
+/* 완료 항목이 없을 때 버튼을 비활성화 (JS에서 disabled 속성을 토글하면 적용됨) */
+.clear-btn:disabled {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+
+/* ════════════════════════════════════════════
+   11. 스크롤바 커스터마이징 (Webkit 전용)
+   ────────────────────────────────────────────
+   Chrome, Safari, Edge(Webkit 기반)에서 스크롤바를 Gruvbox 테마에 맞게 꾸민다.
+   Firefox는 scrollbar-width/color 속성을 사용하지만 여기서는 생략한다.
+════════════════════════════════════════════ */
+::-webkit-scrollbar       { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg0-h); }
+::-webkit-scrollbar-thumb { background: var(--bg3); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--bg4); }
+
+
+/* ════════════════════════════════════════════
+   12. 반응형 (모바일)
+   ────────────────────────────────────────────
+   480px 이하 작은 화면에서 여백을 줄이고
+   헤더를 가로 배치 대신 세로 배치로 전환한다.
+════════════════════════════════════════════ */
+@media (max-width: 480px) {
+  /* 좌우·아래 여백 축소 */
+  .app { padding: 2rem 1rem 4rem; }
+
+  /* 제목과 통계를 가로 → 세로로 재배치 */
+  .app-header {
+    flex-direction: column;
+    gap: 0.5rem;
+    align-items: flex-start;
+  }
+}

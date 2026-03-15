@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<!--
+  todo.html — Seonuk's TODO 앱의 뼈대(마크업)
+  ═══════════════════════════════════════════════════════
+
+  역할:
+    이 파일은 앱의 구조(HTML)만 담당한다.
+    스타일은 todo.css, 동작 로직은 todo.js가 각각 담당한다.
+
+  페이지 구조 요약:
+    <head>   — 문자셋·뷰포트 설정, CSS·폰트 연결
+    <body>
+      .bg-noise        — 배경 노이즈 텍스처 오버레이 (장식용)
+      <main .app>      — 앱 전체를 감싸는 중앙 컨테이너
+        <header>       — 제목 + 완료/전체 통계 숫자
+        <form>         — 할일 입력창 + 추가(+) 버튼
+        <nav>          — 전체·진행 중·완료 필터 탭
+        <ul>           — 할일 목록 (항목은 JS가 동적으로 생성)
+        <footer>       — "완료 항목 삭제" 버튼
+      <script>         — 앱 로직 (todo.js, 모듈 방식 X)
+-->
+<html lang="ko">
+<head>
+  <!-- 브라우저가 문자를 올바르게 해석하도록 UTF-8 선언 (한글 깨짐 방지) -->
+  <meta charset="UTF-8" />
+
+  <!-- 모바일 브라우저가 화면 너비에 맞게 렌더링하도록 지정 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- 브라우저 탭에 표시되는 페이지 제목 -->
+  <title>Seonuk's TODO</title>
+
+  <!-- 앱 전용 스타일시트 -->
+  <link rel="stylesheet" href="todo.css" />
+
+  <!--
+    Google Fonts 연결 (성능 최적화)
+    preconnect: 폰트 서버와 미리 연결해 글꼴 로딩 지연을 줄인다.
+    사용 폰트:
+      IBM Plex Mono (400·600) — 본문·UI 전반에 사용하는 고정폭 폰트
+      Unbounded (700)         — 헤더 타이틀에 사용하는 디스플레이 폰트
+  -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Unbounded:wght@700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!--
+    배경 노이즈 텍스처 오버레이
+    CSS에서 position:fixed + pointer-events:none 으로 설정해
+    화면 전체를 덮되 클릭 등 사용자 인터랙션을 방해하지 않는다.
+    순수 장식 요소이므로 접근성 트리에서 숨겨도 무방하다.
+  -->
+  <div class="bg-noise"></div>
+
+  <!--
+    앱 전체를 감싸는 중앙 컨테이너
+    CSS에서 max-width로 너비를 제한하고 margin:auto로 가운데 정렬한다.
+    z-index:1 로 bg-noise(z-index:0) 위에 표시되도록 쌓임 맥락을 설정한다.
+  -->
+  <main class="app">
+
+    <!-- ── 헤더: 제목 + 통계 ─────────────────────────── -->
+    <header class="app-header">
+      <!-- 앱 제목. CSS에서 그라디언트 텍스트 효과 적용 -->
+      <h1 class="app-title">Seonuk's TODO</h1>
+
+      <!--
+        완료/전체 통계 표시 영역.
+        숫자 부분(id="stats-done", id="stats-total")은
+        todo.js의 renderStats()가 동적으로 업데이트한다.
+        표시 형식: "2 / 5 done"
+      -->
+      <div class="stats">
+        <span class="stats-done"  id="stats-done">0</span>
+        <span class="stats-sep">/</span>
+        <span class="stats-total" id="stats-total">0</span>
+        <span class="stats-label">done</span>
+      </div>
+    </header>
+
+    <!--
+      할일 입력 폼
+      novalidate: 브라우저 기본 유효성 검사 팝업을 비활성화한다.
+                  유효성 검사는 JS(addTodo의 trim 체크)가 담당한다.
+      id="todo-form": todo.js에서 submit 이벤트 리스너를 등록할 때 사용한다.
+    -->
+    <form class="input-area" id="todo-form" novalidate>
+      <!--
+        텍스트 입력창
+        id="todo-input"  : JS에서 입력값을 읽을 때 참조
+        autocomplete="off": 브라우저 자동완성 드롭다운이 UI를 가리지 않도록 끔
+        maxlength="120"  : store의 최대 길이 정책과 맞춤
+      -->
+      <input
+        class="todo-input"
+        id="todo-input"
+        type="text"
+        placeholder="새 할 일을 입력하세요..."
+        autocomplete="off"
+        aria-label="새 할 일 입력"
+        maxlength="120"
+      />
+
+      <!--
+        추가(+) 버튼
+        type="submit": 클릭 시 부모 <form>의 submit 이벤트를 발생시킨다.
+        SVG 아이콘은 장식이므로 aria-hidden="true"로 스크린 리더에서 숨긴다.
+      -->
+      <button class="add-btn" type="submit" aria-label="할 일 추가">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M9 2v14M2 9h14" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"/>
+        </svg>
+      </button>
+    </form>
+
+    <!--
+      필터 탭 바
+      role="tablist" + role="tab": 스크린 리더가 탭 컨트롤로 인식하도록 ARIA 역할 지정
+      data-filter 속성: todo.js의 handleFilterClick이 어떤 필터를 선택했는지 읽는 데 사용한다.
+      aria-selected: 현재 활성 필터를 스크린 리더에 알린다. JS가 동적으로 갱신한다.
+    -->
+    <nav class="filter-bar" role="tablist" aria-label="할 일 필터">
+      <button class="filter-btn active" data-filter="all"    role="tab" aria-selected="true">전체</button>
+      <button class="filter-btn"        data-filter="active" role="tab" aria-selected="false">진행 중</button>
+      <button class="filter-btn"        data-filter="done"   role="tab" aria-selected="false">완료</button>
+    </nav>
+
+    <!--
+      할일 목록
+      이 <ul> 자체는 빈 상태로 시작한다.
+      todo.js의 renderList()가 <li> 항목들을 동적으로 삽입한다.
+      aria-live="polite": 목록이 바뀔 때 스크린 리더가 변경 내용을 읽어준다.
+      CSS의 :empty::after 가상 요소로 목록이 비었을 때 안내 문구를 표시한다.
+    -->
+    <ul class="todo-list" id="todo-list" aria-label="할 일 목록" aria-live="polite">
+      <!-- 항목은 todo.js가 동적으로 생성한다 -->
+    </ul>
+
+    <!-- ── 푸터: 완료 항목 일괄 삭제 ────────────────── -->
+    <footer class="app-footer">
+      <!--
+        완료된 할일을 한 번에 삭제하는 버튼.
+        todo.js의 handleClearDone이 클릭 이벤트를 처리한다.
+      -->
+      <button class="clear-btn" id="clear-done-btn" aria-label="완료된 항목 모두 삭제">
+        완료 항목 삭제
+      </button>
+    </footer>
+  </main>
+
+  <!--
+    앱 로직 스크립트
+    type="module"을 쓰지 않는 이유:
+      ES 모듈은 CORS 정책 때문에 file:// 프로토콜(로컬 직접 열기)에서 동작하지 않는다.
+      모든 JS를 이 하나의 파일에 합쳐 일반 스크립트로 로드한다.
+    <body> 맨 끝에 두는 이유:
+      스크립트가 실행될 때 이미 위의 HTML 요소들이 파싱되어 있으므로
+      getElementById 등이 null을 반환하지 않는다.
+  -->
+  <script src="todo.js"></script>
+</body>
+</html>
