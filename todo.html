@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Today's Tasks</title>
+    <link rel="stylesheet" href="./todo.css" />
+  </head>
+
+  <body>
+    <header class="app-header">
+      <h1 class="app-title">Today's Tasks</h1>
+      <p id="today-date" class="app-date"></p>
+    </header>
+
+    <div class="todo-board">
+      <section class="todo-input-section" aria-label="Add new task">
+        <form id="todo-form" class="todo-form" autocomplete="off">
+          <label for="todo-input" class="sr-only">Add new task</label>
+          <input
+            id="todo-input"
+            class="todo-input"
+            type="text"
+            placeholder="Add new task here..."
+            maxlength="100"
+            required
+          />
+          <button type="submit" class="add-button" aria-label="Add task">+</button>
+        </form>
+      </section>
+
+      <section class="todo-list-section" aria-label="Task list">
+        <ul id="todo-list" class="todo-list"></ul>
+      </section>
+    </div>
+
+    <div id="toast-message" class="toast" role="status" aria-live="polite"></div>
+    <button id="reset-all-button" class="reset-all-button" type="button">Reset All</button>
+
+    <script src="./todo.js"></script>
+  </body>
+</html>
