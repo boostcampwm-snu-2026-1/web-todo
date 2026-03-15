@@ -17,7 +17,10 @@
                 <input type="text" placeholder="Add a new task..." class="input-task">
                 <button class="add-task"></button>
             </form>
+            <div class="error-empty">할 일을 입력해주세요.</div>
             <div class="container-box">
+
+                <!-- task div layout -->
                 <!-- <div class="div-task">
                     <form class="relative">
                         <label class="finish-task">
@@ -29,6 +32,7 @@
                         <button class="edit-btn">편집</button>
                     </form>
                 </div> -->
+
             </div>
         </div>
     </div> 
@@ -51,8 +55,11 @@
             const text = input.value;
 
             if (text === '') {
-                process.exit();
+                document.querySelector('.error-empty').classList.add('show');
+                return;
             }
+
+            document.querySelector('.error-empty').classList.remove('show');
 
             const taskHTML = `
                 <div class="div-task">
