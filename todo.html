@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <link rel="stylesheet" href="todo.css"> <!-- 스타일 파일 연결 -->
+</head>
+<body>
+    <div id="todo-app">
+        <h1>오늘의 할 일</h1>
+
+        <div class="input-section">
+            <input type="text" id="todo-input" placeholder="새로운 할 일을 추가해보세요!">
+            <button id="add-btn">추가</button>
+        </div>
+
+        <ul id="todo-list"> <!-- ul(Unordered List)은 순서가 중요하지 않은 목록 전체를 담는 큰 상자 해당 -->
+            <!-- 내용물에 해당하는 li는 자바스크립트로 구현 -->
+        </ul>
+    </div>
+
+    <script src="todo.js"></script> <!-- 자바스크립트 파일 연결 -->
+</body>
+</html>
