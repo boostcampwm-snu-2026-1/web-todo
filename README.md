@@ -26,7 +26,7 @@ Gruvbox Dark 테마의 심플한 할일 관리 웹 앱.
 
 ```bash
 # 저장소 클론
-git clone https://github.com/your-username/web-todo.git
+git clone https://github.com/snkii/web-todo.git
 cd web-todo
 ```
 
