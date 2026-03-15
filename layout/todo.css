@@ -6,6 +6,10 @@ div, button {
     box-sizing: border-box;
 }
 
+button {
+    cursor: pointer;
+}
+
 .div-background {
     background-color: #c2d3de;
     width: 520px;
@@ -41,6 +45,7 @@ div, button {
     margin-bottom: 10px;
     width: 100%;
     vertical-align: middle;
+    padding-bottom: 2px;
 }
 
 .input-task {
@@ -51,6 +56,11 @@ div, button {
     background-color: #eee;
     vertical-align: top;
     font-size: 13px;
+    transition: all 0.25s;
+}
+
+.input-task:hover {
+    box-shadow: 3px 3px 4px #8c8c8c;
 }
 
 .add-task {
@@ -63,6 +73,7 @@ div, button {
     vertical-align: top;
     position: relative;
     margin-left: 3px;
+    transition: all 0.25s;
 
     font-size: 25px;
     font-weight: 300;
@@ -91,13 +102,24 @@ div, button {
     transform: translate(-50%, -50%);
 }
 
+.add-task:hover {
+    background-color: #0d6ef2;
+    box-shadow: 2px 2px 4px #8c8c8c;
+}
+
 .div-task {
     width: 100%;
-    border: 2px black solid;
     margin: 5px 0px;
     padding: 10px;
     background-color: white;
     border-radius: 10px;
+    box-shadow: 2px 2px 4px #8c8c8c;
+    transition: all 0.25s;
+}
+
+.div-task:hover {
+    background-color: #eee;
+    box-shadow: 0.5px 0.5px 2px #8c8c8c;
 }
 
 .relative {
@@ -136,6 +158,11 @@ div, button {
     border-radius: 5px;
     float: right;
     margin-left: 5px;
+    transition: all 0.25s;
+}
+
+.edit-btn:hover {
+    background-color: #0b5ed7;
 }
 
 .delete-btn {
@@ -147,4 +174,9 @@ div, button {
     border-radius: 5px;
     float: right;
     margin-left: 5px;
+    transition: all 0.25s;
+}
+
+.delete-btn:hover {
+    background-color: #b02a37;
 }
