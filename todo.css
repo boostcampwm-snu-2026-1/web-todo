@@ -1,0 +1,161 @@
+:root {
+    --primary-color: #38c87b;
+    --bg-color: #f4f7f6;
+    --text-color: #333;
+}
+
+body {
+    font-family: 'Segoe UI', sans-serif;
+    background-color: var(--bg-color);
+    display: flex;
+    justify-content: center;
+    padding-top: 50px;
+}
+
+#app {
+    width: 100%;
+    max-width: 400px;
+    background: white;
+    padding: 2rem;
+    border-radius: 12px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+#title {
+    text-align: center;
+    margin-bottom: 0px;
+}
+
+#todo-form {
+    display: flex;
+    gap: 12px;
+    margin-bottom: 30px;
+    align-items: center;
+}
+
+#todo-form button {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    border: none;
+    background-color: var(--primary-color);
+    color: white;
+    font-size: 20px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s, background-color 0.2s;
+    flex-shrink: 0;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+#todo-form button:hover {
+    transform: scale(1.1);
+    background-color: #2fb06b;
+}
+
+#todo-input {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#todo-list {
+    list-style: none;
+    padding: 0;
+}
+
+.toggle-btn {
+    background-color: #eee;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%; /* 완벽한 원 */
+    border: 2px solid #ddd;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+    padding: 0;
+    flex-shrink: 0; /* 원 모양이 찌그러지지 않게 방지 */
+    margin-right: 15px;
+}
+
+/* 마우스를 올렸을 때 */
+.toggle-btn:hover {
+    background-color: #e0e0e0;
+    border-color: var(--primary-color);
+}
+
+/* 완료된 상태 (체크 표시 버튼) */
+.todo-item.completed .toggle-btn {
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
+    color: white;
+}
+
+.todo-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 5px;
+    border-bottom: 1px solid #eee;
+    gap: 12px;
+}
+
+.todo-text {
+    flex: 1; 
+    font-size: 16px;
+    cursor: default;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.todo-item.completed span {
+    text-decoration: line-through;
+    color: #888;
+}
+
+.delete-btn {
+    background: #ff5f56;
+    color: #f6f6f6;
+    border: 1px solid #ff5f56;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    transition: all 0.2s;
+    opacity: 0.6;
+}
+
+.delete-btn:hover {
+    opacity: 1;
+    background-color: #ff5f56;
+    color: white;
+}
+
+.todo-item span {
+    font-size: 16px;
+    color: var(--text-color);
+}
+
+#current-date {
+    text-align: center;
+    color: #666;
+    margin-bottom: 20px;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin-top: 0px;
+}
+
+#current-date span {
+    color: var(--primary-color);
+    font-weight: bold;
+}
