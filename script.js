@@ -15,7 +15,7 @@ function renderTodos() {
         checkbox.checked = todo.completed;
 
         const span = document.createElement("span");
-        span.value = todo.content;
+        span.textContent = todo.content;
 
         checkbox.addEventListener("change", () => {
             todo.completed = checkbox.checked;
