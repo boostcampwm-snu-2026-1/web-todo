@@ -2,7 +2,7 @@ const todoInput = document.getElementById('todo-input');
 const addBtn = document.getElementById('add-btn');
 const todoList = document.getElementById('todo-list');
 
-function addTodo(){
+function addTodo(){ //add-btn 동작 함수
     let text = todoInput.value.trim();
     if(text === ''){ // 빈 입력 예외처리
         alert('Tasks cannot be empty!');
@@ -15,6 +15,7 @@ function addTodo(){
 
     let deleteBtn = document.createElement('button');
     deleteBtn.textContent = 'Delete';
+    deleteBtn.classList.add('del-btn');
     
     li.appendChild(span);
     li.appendChild(deleteBtn); //li에 span(text), button 추가
@@ -27,8 +28,17 @@ function addTodo(){
 
 addBtn.addEventListener('click', addTodo);
 
-todoInput.addEventListener('keypress', function(event){
+todoInput.addEventListener('keypress', function(event){ //enter의 경우에도 click과 같이 동작함
     if(event.key === 'Enter'){
         addTodo();
     }
 });
+
+function deleteTodo(event){
+    if(event.target.classList.contains('del-btn')){
+        let li = event.target.parentElement;
+        li.remove();
+    }
+}
+
+todoList.addEventListener('click', deleteTodo);
