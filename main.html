@@ -1,0 +1,29 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Todo List</title>
+    <link rel="stylesheet" href="main.css" />
+  </head>
+  <body>
+    <main class="todo-container">
+      <header>
+        <h1>Today's Tasks</h1>
+        <p id="current-date">Monday, November 13</p>
+      </header>
+
+      <form id="todo-form">
+        <input
+          type="text"
+          id="todo-input"
+          placeholder="Add a new task..."
+          aria-label="New task name"
+        />
+        <button type="submit" id="add-btn" aria-label="Add task">+</button>
+      </form>
+
+      <ul id="todo-list" role="list"></ul>
+    </main>
+    <script type="module" src="main.js"></script>
+  </body>
+</html>
