@@ -1,0 +1,109 @@
+* {
+    margin : 0;
+    padding : 0;
+    box-sizing: border-box;
+}
+
+body{
+    background: #aabbcc;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.todo-container {
+    background: #fff;
+    padding: 25px;
+    width: 500px;
+    border-radius: 10px;
+}
+
+.todo-title{
+    display: flex;
+    gap:10px;
+    align-items: center;
+    justify-content: center;
+}
+
+.date{
+    align-items: center;
+    justify-self: center;
+    margin-bottom: 20px;
+
+}
+
+.todo-body{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #aabbcc;
+    border-radius: 30px;
+}
+.todo-body input{
+    flex : 1;
+    border : none;
+    outline : none;
+    background: transparent;
+    padding :15px;
+    font-size : 20px;
+}
+
+.todo-body img{
+    cursor: pointer;
+    height:55px;
+    width:55px;
+    padding:15px;
+    background : skyblue;
+    border-radius: 40px;
+}
+
+ul li{
+    margin-top: 10px;
+    list-style: none;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 10px;
+}
+
+li{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #aabbcc;
+    margin-bottom: 10px;
+    border-radius: 5px;
+}
+
+.todo-left-side{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.todo-controls{    
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.todo-left-side img{
+    width: 25px;
+    height: 25px;
+    padding: 3px;
+}
+
+.todo-controls img{
+    width: 25px;
+    height: 25px;
+    padding: 3px;
+}
+
+.edit-input {
+    background: transparent;
+    border: none;
+    font-family: inherit;
+    font-size: 18px;
+    outline: none;
+}
