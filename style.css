@@ -1,0 +1,4 @@
+li.done span {
+  text-decoration: line-through;
+  color: gray;
+}
