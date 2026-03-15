@@ -150,6 +150,36 @@ button {
     vertical-align: top;
 }
 
+.completed .todo-task {
+    text-decoration: line-through;
+    color: #888;
+}
+
+.completed .checkmark {
+    background-color: #aaa;
+}
+
+.completed .checkmark::after {
+    content: "";
+    position: absolute;
+
+    width: 6px;
+    height: 10px;
+
+    border: solid white;
+    border-width: 0 2px 2px 0;
+
+    transform: rotate(45deg);
+
+    left: 6px;
+    top: 2px;
+}
+
+.completed {
+    background-color: #eee;
+    box-shadow: 0.5px 0.5px 2px #8c8c8c;
+}
+
 .edit-btn {
     border: none;
     background-color: #0d6ef2;

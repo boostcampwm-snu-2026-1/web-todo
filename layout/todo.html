@@ -75,7 +75,6 @@
                 <div class="div-task" id="task${taskCounter}">
                     <form class="relative">
                         <label class="finish-task">
-                            <input type="checkbox">
                             <span class="checkmark"></span>
                         </label>
                         <p class="todo-task">${text}</p>
@@ -91,12 +90,28 @@
             taskCounter++;
         });
 
-        // 할 일 삭제
         taskContainer.addEventListener('click', function(e) {
 
-            if (e.target.classList.contains('delete-btn')) {
+            const target = e.target.classList
+
+            // 할 일 삭제
+            if (target.contains("delete-btn")) {
+
+                e.stopPropagation();
                 const taskID = e.target.dataset.task;
                 document.getElementById(taskID).remove();
+                return ;
+            }
+
+            if (target.contains("edit-btn")) {
+                return ;
+            }
+
+            // 할 일 완료
+            const task = e.target.closest('.div-task');
+
+            if (task) {
+                task.classList.toggle('completed');
             }
         });
     </script>
