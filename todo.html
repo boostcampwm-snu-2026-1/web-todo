@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang = "ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name = "viewport" content = "width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <link rel = "stylesheet" href = "todo.css">
+</head>
+<body>
+    <div class = "app-container">
+        
+        <header class="app-header">
+            <div id="current-date" class="date-display"></div>
+            <h1>My Todo</h1>
+        </header>
+        
+        <main class = "app-main">
+            
+            <section class = "input-section">
+                <input type = "text" id = "todo-input" placeholder = "새로운 할 일을 입력하세요" autofocus>
+                <button id = "add-btn">추가</button>
+            </section>
+
+            <section class = "filter-section">
+                <span id = "todo-count">전체 0개</span>
+            </section>
+
+            <section class = "list-section">
+                <ul id = "todo-list"></ul>
+            </section>
+        </main>
+    </div>
+
+    <script src = "todo.js"></script>
+</body>
+</html>
