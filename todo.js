@@ -15,26 +15,33 @@ if(!todo){
 }
 
 function CreateToDoData() {
-    if(todoValue.value===""){
+    //prevent adding empty tasks and return focus to input
+    if (todoValue.value === "") { 
         alert("Please Enter your todo text");
-        todoValue.focus(); // back to input box
+        todoValue.focus(); 
         return;
     }
 
+    //create a new list item container
     let li = document.createElement("li");
-        const todoItems = `
-            <div class="todo-left-side">
-                <img src="image/check.png" class="check-icon" onclick="CompletedToDoItems(this)" />
-                <div title="Click to Complete" class="todo-text">${todoValue.value}</div>
-            </div>
-            <div class="todo-controls">
-                <img class="edit" onclick="UpdateToDoItems(this)" src="image/pencil.png" />
-                <img class="delete" onclick="DeleteToDoItems(this)" src="image/delete.png" />
-            </div>`;
+
+    //define the internal structure using a template literal
+    const todoItems = `
+        <div class="todo-left-side">
+            <img src="image/check.png" class="check-icon" onclick="CompletedToDoItems(this)" />
+            <div title="Click to Complete" class="todo-text">${todoValue.value}</div>
+        </div>
+        <div class="todo-controls">
+            <img class="edit" onclick="UpdateToDoItems(this)" src="image/pencil.png" />
+            <img class="delete" onclick="DeleteToDoItems(this)" src="image/delete.png" />
+        </div>`;
+
+    //inject the HTML structure and append to the list
     li.innerHTML = todoItems;
     listItems.appendChild(li);
-    todoValue.value = "";
 
+    //clear the input field for the next entry
+    todoValue.value = "";
 }
 
 function CompletedToDoItems(e) {
@@ -114,14 +121,12 @@ function DeleteToDoItems(e) {
     const li = e.closest('li');
     const deleteValue = li.querySelector(".todo-text").innerText;
 
-    if (confirm(`Do you want to delete this?`)) {
-        li.classList.add("deleted-item");
+   
+    if (confirm(`Do you want to delete this?`)) { // Browser-native confirmation dialog to prevent accidental deletion
         todoValue.focus();
-
         todo = todo.filter(el => el.item !== deleteValue);
-
         setTimeout(() => {
             li.remove();
-        }, 100);
+        }, 100); // 100ms delay
     }
 }
