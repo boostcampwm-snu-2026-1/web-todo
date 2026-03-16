@@ -1,0 +1,255 @@
+body {
+    margin: 0px;
+}
+
+div, button {
+    box-sizing: border-box;
+}
+
+button {
+    cursor: pointer;
+}
+
+.div-background {
+    background-color: #c2d3de;
+    width: 520px;
+    margin: 0px auto;
+    vertical-align: top;
+    padding-top: 1px;
+    padding-bottom: 40px;
+    border-radius: 5px;
+}
+
+.main-title {
+    width: 400px;
+    margin: auto;
+    text-align: center;
+}
+
+.main-title h4{
+    font-size: 30px;
+    margin-bottom: 0;
+}
+
+.main-title p {
+    font-size: 20px;
+    margin-top: 5px;
+}
+
+.main-content {
+    width: 400px;
+    margin: auto;
+}
+
+.main-form {
+    margin-bottom: 10px;
+    width: 100%;
+    vertical-align: middle;
+    padding-bottom: 2px;
+}
+
+.input-task {
+    width: 82%;
+    padding: 10px;
+    border: none;
+    border-radius: 20px;
+    background-color: #eee;
+    vertical-align: top;
+    font-size: 13px;
+    transition: all 0.25s;
+}
+
+.input-task:hover {
+    box-shadow: 3px 3px 4px #8c8c8c;
+}
+
+.add-task {
+    width: 37.5px;
+    height: 37.5px;
+    border: none;
+    border-radius: 50%;
+    background-color: #0d6ef2;
+    color: white;
+    vertical-align: top;
+    position: relative;
+    margin-left: 3px;
+    transition: all 0.25s;
+
+    font-size: 25px;
+    font-weight: 300;
+}
+
+.add-task::before,
+.add-task::after {
+    content: "";
+    position: absolute;
+    background: white;
+}
+
+.add-task::before {
+    width: 16px;
+    height: 1.5px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.add-task::after {
+    width: 1.5px;
+    height: 16px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.add-task:hover {
+    background-color: #3b85ed;
+    box-shadow: 2px 2px 4px #8c8c8c;
+}
+
+.div-task {
+    width: 100%;
+    margin: 10px 0px;
+    padding: 10px;
+    background-color: white;
+    border-radius: 10px;
+    box-shadow: 2px 2px 4px #8c8c8c;
+    transition: all 0.25s;
+    cursor: pointer;
+}
+
+.div-task:hover:not(:has(button:hover)) {
+    background-color: #eee;
+    box-shadow: 0.5px 0.5px 2px #8c8c8c;
+}
+
+.relative {
+    position: relative;
+}
+
+.finish-task input {
+    display: none;
+}
+
+.checkmark {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #aaa;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+}
+
+.todo-task {
+    margin: 0;
+    display: inline-block;
+    font-size: 15px;
+    margin-left: 30px;
+    vertical-align: top;
+}
+
+.completed .todo-task {
+    text-decoration: line-through;
+    color: #888;
+}
+
+.completed .checkmark {
+    background-color: #aaa;
+}
+
+.completed .checkmark::after {
+    content: "";
+    position: absolute;
+
+    width: 6px;
+    height: 10px;
+
+    border: solid white;
+    border-width: 0 2px 2px 0;
+
+    transform: rotate(45deg);
+
+    left: 6px;
+    top: 2px;
+}
+
+.completed {
+    background-color: #eee;
+    box-shadow: 0.5px 0.5px 2px #8c8c8c;
+}
+
+.edit-btn {
+    border: none;
+    background-color: #0d6ef2;
+    color: white;
+    height: 22px;
+    line-height: 22px;
+    border-radius: 5px;
+    float: right;
+    margin-left: 5px;
+    transition: all 0.25s;
+}
+
+.edit-btn:hover {
+    background-color: #0b5ed7;
+}
+
+.delete-btn {
+    border: none;
+    background-color: #dc3545;
+    color: white;
+    height: 22px;
+    line-height: 22px;
+    border-radius: 5px;
+    float: right;
+    margin-left: 5px;
+    transition: all 0.25s;
+}
+
+.delete-btn:hover {
+    background-color: #b02a37;
+}
+
+.error-empty {
+    background-color: #f8d7da;
+    padding: 16px;
+    border: 1px solid #f1aeb5;
+    border-radius: 10px;
+    margin-bottom: 10px;
+    display: none;
+}
+
+.close-btn {
+    width: 23px;
+    height: 23px;
+    border: none;
+    vertical-align: bottom;
+    float: right;
+    background-color: #f8d7da;
+    position: relative;
+}
+
+.close-btn::before,
+.close-btn::after {
+    content: "";
+    width: 18px;
+    height: 2px;
+    background: #9c9c9c;
+    position: absolute;
+    width: 18px;
+    height: 2px;
+}
+
+.close-btn::before {
+    transform: translate(-50%, -50%) rotate(45deg);
+}
+
+.close-btn::after {
+    transform: translate(-50%, -50%) rotate(-45deg);
+}
+
+.show {
+    display: block;
+}
