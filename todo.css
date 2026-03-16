@@ -1,0 +1,95 @@
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: sans-serif;
+  background-color: white;
+}
+
+.todo-app {
+  max-width: 600px;
+  margin: 40px auto;
+  padding: 20px;
+}
+
+.todo-card {
+  border: 1px solid #cccccc;
+  padding: 20px;
+}
+
+.title-box {
+  margin-bottom: 20px;
+}
+
+.eyebrow {
+  margin: 0 0 10px;
+  font-size: 14px;
+}
+
+.title-box h1 {
+  margin: 0 0 10px;
+  font-size: 28px;
+}
+
+.sub-text {
+  margin: 0;
+  font-size: 14px;
+}
+
+.todo-form {
+  margin-bottom: 15px;
+}
+
+.todo-input {
+  width: 70%;
+  padding: 8px;
+  font-size: 14px;
+}
+
+.add-button {
+  padding: 8px 12px;
+  font-size: 14px;
+}
+
+.todo-info {
+  margin-bottom: 15px;
+}
+
+.empty-message {
+  margin: 10px 0;
+}
+
+.empty-message.hide {
+  display: none;
+}
+
+.todo-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.todo-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 0;
+  border-bottom: 1px solid #dddddd;
+}
+
+.todo-text {
+  flex: 1;
+}
+
+.todo-item.is-done .todo-text {
+  text-decoration: line-through;
+  color: gray;
+}
+
+.toggle-button,
+.delete-button {
+  padding: 6px 10px;
+  font-size: 13px;
+}
