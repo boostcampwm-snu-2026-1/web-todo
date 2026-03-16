@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Todo App</title>
+    <link rel="stylesheet" href="./todo.css" />
+  </head>
+  <body>
+    <main class="app">
+      <section class="todo-card">
+        <header class="todo-header">
+          <h1 class="todo-title">TODO LIST</h1>
+          <p class="todo-subtitle">A simple and clean task manager</p>
+        </header>
+
+        <form class="todo-form" id="todo-form">
+          <label for="todo-input" class="sr-only">Enter a todo</label>
+          <input
+            id="todo-input"
+            class="todo-input"
+            type="text"
+            placeholder="Enter a new task"
+            autocomplete="off"
+          />
+          <button type="submit" class="add-button">Add</button>
+        </form>
+
+        <section class="todo-summary" id="todo-summary">
+          Total 0 / Completed 0 / Remaining 0
+        </section>
+
+        <ul class="todo-list" id="todo-list"></ul>
+      </section>
+    </main>
+
+    <script src="./todo.js"></script>
+  </body>
+</html>
