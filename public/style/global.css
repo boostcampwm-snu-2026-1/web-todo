@@ -1,0 +1,39 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=DM+Serif+Display&display=swap');
+
+html {
+  font-size: 62.5%;
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  font-family: inherit;
+  font-weight: inherit;
+  line-height: inherit;
+}
+
+:root {
+  --bg: #eef0f5;
+  --card-bg: #ffffff;
+  --accent: #4a55e0;
+  --accent-hover: #3a44cc;
+  --text-primary: #1a1d2e;
+  --text-secondary: #8a8fa8;
+  --text-muted: #b0b5c8;
+  --item-bg: #f7f8fc;
+  --item-bg-done: #f0f1f8;
+  --item-border: #ececf5;
+  --danger: #e84040;
+  --shadow-card:
+    0 0.8rem 4rem rgba(74, 85, 224, 0.1), 0 0.2rem 0.8rem rgba(0, 0, 0, 0.06);
+  --shadow-item: 0 0.1rem 0.4rem rgba(74, 85, 224, 0.06);
+  --radius-card: 2.4rem;
+  --radius-item: 1.4rem;
+  --radius-input: 5rem;
+}
+
+body {
+  font-size: 1.6rem;
+  font-family: 'DM Sans', sans-serif;
+}
