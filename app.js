@@ -3,22 +3,14 @@ import { fetchTodos, createTodo, toggleTodo, deleteTodo } from './api.js';
 const form = document.querySelector('#todo-form');
 const input = document.querySelector('#todo-input');
 const list = document.querySelector('#todo-list');
-const filterButtons = document.querySelectorAll('.filter-btn');
 const countAll = document.querySelector('#count-all');
 const countActive = document.querySelector('#count-active');
 
 let todos = [];
-let currentFilter = 'all'
 
 function render() {
-    const filtered = todos.filter(todo => {
-        if (currentFilter === 'active') return !todo.done;
-        if (currentFilter === 'done') return todo.done;
-        return true;
-    });
-
     list.innerHTML = '';
-    filtered.forEach(todo => {
+    todos.forEach(todo => {
         const li = document.createElement('li');
         li.classList.add('todo-item');
         if (todo.done) li.classList.add('done');
@@ -77,16 +69,6 @@ list.addEventListener('click', async (e) => {
         todos = todos.map(t => t.id === id ? updated : t);
         render();
     }
-});
-
-filterButtons.forEach(btn => {
-    btn.addEventListener('click', () => {
-        filterButtons.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-
-        currentFilter = btn.dataset.filter;
-        render();
-    });
 });
 
 async function init() {
