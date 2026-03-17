@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>오늘의 퀘스트</title>
+    <link rel="stylesheet" href="./css/todo.css" />
+    <script type="module" src="./js/main.js" defer></script>
+  </head>
+  <body>
+    <main class="app">
+      <section class="quest-window" aria-label="오늘의 퀘스트 앱">
+        <header class="quest-window__header pixel-panel">
+          <p class="quest-window__badge">모험가 수첩</p>
+          <h1 class="quest-window__title">오늘의 퀘스트</h1>
+          <p class="quest-window__subtitle">
+            모험가님, 오늘도 해야 할 일을 완료해 주세요!
+          </p>
+        </header>
+
+        <section
+          class="quest-status pixel-panel"
+          aria-labelledby="quest-status-title"
+        >
+          <div class="quest-status__top">
+            <h2 id="quest-status-title" class="section-title">
+              오늘의 진행 현황
+            </h2>
+            <p class="quest-status__message" id="questStatusMessage">
+              새로운 의뢰를 받아 보세요!
+            </p>
+          </div>
+
+          <div class="quest-status__stats">
+            <div class="stat-box">
+              <span class="stat-box__label">전체 퀘스트</span>
+              <strong class="stat-box__value" id="totalQuestCount">0</strong>
+            </div>
+            <div class="stat-box">
+              <span class="stat-box__label">진행 중</span>
+              <strong class="stat-box__value" id="activeQuestCount">0</strong>
+            </div>
+            <div class="stat-box">
+              <span class="stat-box__label">클리어</span>
+              <strong class="stat-box__value" id="completedQuestCount">0</strong>
+            </div>
+          </div>
+
+          <div
+            class="quest-progress"
+            role="progressbar"
+            aria-label="퀘스트 달성률"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            aria-valuenow="0"
+          >
+            <div class="quest-progress__track">
+              <div class="quest-progress__fill" id="questProgressFill"></div>
+            </div>
+            <p class="quest-progress__text" id="questProgressText">달성률 0%</p>
+          </div>
+        </section>
+
+        <section
+          class="quest-form-section pixel-panel"
+          aria-labelledby="quest-form-title"
+        >
+          <h2 id="quest-form-title" class="section-title">새 의뢰 등록</h2>
+
+          <form class="quest-form" id="questForm">
+            <label class="sr-only" for="questInput">새 퀘스트 입력</label>
+            <input
+              type="text"
+              id="questInput"
+              name="quest"
+              class="quest-form__input"
+              placeholder="예) GitHub에 과제 업로드하기"
+              maxlength="50"
+              autocomplete="off"
+            />
+            <button type="submit" class="quest-form__submit">
+              퀘스트 수락
+            </button>
+          </form>
+        </section>
+
+        <section
+          class="quest-list-section pixel-panel"
+          aria-labelledby="quest-list-title"
+        >
+          <div class="quest-list-section__header">
+            <h2 id="quest-list-title" class="section-title">
+              진행 중인 퀘스트
+            </h2>
+            <p class="quest-list-section__guide">
+              수락한 퀘스트를 하나씩 완료해 보세요.
+            </p>
+          </div>
+
+          <p class="quest-empty" id="questEmptyMessage">
+            아직 수락한 퀘스트가 없습니다. 새로운 의뢰를 받아 보세요!
+          </p>
+
+          <ul class="quest-list" id="questList" aria-live="polite"></ul>
+        </section>
+      </section>
+    </main>
+  </body>
+</html>
