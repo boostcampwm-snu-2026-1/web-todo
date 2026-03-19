@@ -1,3 +1,13 @@
+import {
+  addTodo,
+  deleteTodo,
+  getTodos,
+  reorderTodos,
+  toggleTodo,
+  updateTodo,
+} from "./api.js";
+import { renderTodos } from "./render.js";
+
 const todoForm = document.querySelector("#todo-form");
 const todoInput = document.querySelector("#todo-input");
 const todoList = document.querySelector("#todo-list");
@@ -11,8 +21,9 @@ function clearDropIndicator() {
   });
 }
 
-function render() {
-  window.renderTodos(todoList, window.todoState.todos, editingTodoId);
+async function render() {
+  const todos = await getTodos();
+  renderTodos(todoList, todos, editingTodoId);
 
   if (editingTodoId !== null) {
     const activeInput = todoList.querySelector(".edit-input");
@@ -24,26 +35,26 @@ function render() {
   }
 }
 
-todoForm.addEventListener("submit", (event) => {
+todoForm.addEventListener("submit", async (event) => {
   event.preventDefault();
 
-  const text = todoInput.value.trim();
+  const title = todoInput.value.trim();
 
-  if (!text) {
+  if (!title) {
     return;
   }
 
-  window.todoActions.addTodo(text);
+  await addTodo(title);
   todoInput.value = "";
-  render();
+  await render();
 });
 
-todoList.addEventListener("click", (event) => {
+todoList.addEventListener("click", async (event) => {
   if (event.target.tagName !== "BUTTON") {
     return;
   }
 
-  const todoId = Number(event.target.dataset.id);
+  const todoId = event.target.dataset.id;
   const action = event.target.dataset.action;
 
   if (action === "edit") {
@@ -51,7 +62,7 @@ todoList.addEventListener("click", (event) => {
   }
 
   if (action === "delete") {
-    window.todoActions.deleteTodo(todoId);
+    await deleteTodo(todoId);
 
     if (editingTodoId === todoId) {
       editingTodoId = null;
@@ -65,14 +76,14 @@ todoList.addEventListener("click", (event) => {
       return;
     }
 
-    const trimmedText = editInput.value.trim();
+    const trimmedTitle = editInput.value.trim();
 
-    if (!trimmedText) {
+    if (!trimmedTitle) {
       editInput.focus();
       return;
     }
 
-    window.todoActions.updateTodo(todoId, trimmedText);
+    await updateTodo(todoId, trimmedTitle);
     editingTodoId = null;
   }
 
@@ -80,40 +91,40 @@ todoList.addEventListener("click", (event) => {
     editingTodoId = null;
   }
 
-  render();
+  await render();
 });
 
-todoList.addEventListener("change", (event) => {
+todoList.addEventListener("change", async (event) => {
   if (event.target.type !== "checkbox") {
     return;
   }
 
-  window.todoActions.toggleTodo(Number(event.target.dataset.id));
-  render();
+  await toggleTodo(event.target.dataset.id);
+  await render();
 });
 
-todoList.addEventListener("keydown", (event) => {
+todoList.addEventListener("keydown", async (event) => {
   if (!event.target.classList.contains("edit-input")) {
     return;
   }
 
-  const todoId = Number(event.target.dataset.id);
+  const todoId = event.target.dataset.id;
 
   if (event.key === "Enter") {
-    const trimmedText = event.target.value.trim();
+    const trimmedTitle = event.target.value.trim();
 
-    if (!trimmedText) {
+    if (!trimmedTitle) {
       return;
     }
 
-    window.todoActions.updateTodo(todoId, trimmedText);
+    await updateTodo(todoId, trimmedTitle);
     editingTodoId = null;
-    render();
+    await render();
   }
 
   if (event.key === "Escape") {
     editingTodoId = null;
-    render();
+    await render();
   }
 });
 
@@ -125,7 +136,7 @@ todoList.addEventListener("dragstart", (event) => {
     return;
   }
 
-  draggedTodoId = Number(item.dataset.id);
+  draggedTodoId = item.dataset.id;
   item.classList.add("dragging");
   event.dataTransfer.effectAllowed = "move";
   event.dataTransfer.setData("text/plain", String(draggedTodoId));
@@ -149,7 +160,7 @@ todoList.addEventListener("dragover", (event) => {
   item.classList.add(isAfter ? "drop-after" : "drop-before");
 });
 
-todoList.addEventListener("drop", (event) => {
+todoList.addEventListener("drop", async (event) => {
   const item = event.target.closest("li");
 
   if (!item || draggedTodoId === null) {
@@ -158,11 +169,11 @@ todoList.addEventListener("drop", (event) => {
 
   event.preventDefault();
 
-  const targetTodoId = Number(item.dataset.id);
-  window.todoActions.reorderTodos(draggedTodoId, targetTodoId, dropPosition);
+  const targetTodoId = item.dataset.id;
+  await reorderTodos(draggedTodoId, targetTodoId, dropPosition);
   draggedTodoId = null;
   clearDropIndicator();
-  render();
+  await render();
 });
 
 todoList.addEventListener("dragend", () => {
