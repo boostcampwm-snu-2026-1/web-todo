@@ -82,29 +82,9 @@ export async function deleteTodo(id) {
   await request(`/${id}`, { method: "DELETE" });
 }
 
-export async function reorderTodos(draggedId, targetId, position) {
-  if (draggedId === targetId) {
-    return null;
-  }
-
-  const todos = await getTodos();
-  const draggedIndex = todos.findIndex((todo) => todo.id === draggedId);
-  const targetIndex = todos.findIndex((todo) => todo.id === targetId);
-
-  if (draggedIndex === -1 || targetIndex === -1) {
-    throw new Error(`Unable to reorder todos from ${API_ENDPOINT}.`);
-  }
-
-  const nextTodos = [...todos];
-  const [draggedTodo] = nextTodos.splice(draggedIndex, 1);
-  const adjustedTargetIndex = nextTodos.findIndex((todo) => todo.id === targetId);
-  const insertIndex =
-    position === "after" ? adjustedTargetIndex + 1 : adjustedTargetIndex;
-
-  nextTodos.splice(insertIndex, 0, draggedTodo);
-
+export async function reorderTodos(todos) {
   return Promise.all(
-    nextTodos.map((todo, index) =>
+    todos.map((todo, index) =>
       putTodo({
         ...todo,
         order: index + 1,

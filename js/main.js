@@ -11,6 +11,7 @@ import { renderTodos } from "./render.js";
 const todoForm = document.querySelector("#todo-form");
 const todoInput = document.querySelector("#todo-input");
 const todoList = document.querySelector("#todo-list");
+let todos = [];
 let editingTodoId = null;
 let draggedTodoId = null;
 let dropPosition = "before";
@@ -21,8 +22,34 @@ function clearDropIndicator() {
   });
 }
 
-async function render() {
-  const todos = await getTodos();
+function reorderLocally(currentTodos, draggedId, targetId, position) {
+  if (draggedId === targetId) {
+    return currentTodos;
+  }
+
+  const nextTodos = [...currentTodos];
+  const draggedIndex = nextTodos.findIndex((todo) => todo.id === draggedId);
+  const targetIndex = nextTodos.findIndex((todo) => todo.id === targetId);
+
+  if (draggedIndex === -1 || targetIndex === -1) {
+    return currentTodos;
+  }
+
+  const [draggedTodo] = nextTodos.splice(draggedIndex, 1);
+  const adjustedTargetIndex = nextTodos.findIndex((todo) => todo.id === targetId);
+  const insertIndex =
+    position === "after" ? adjustedTargetIndex + 1 : adjustedTargetIndex;
+
+  nextTodos.splice(insertIndex, 0, draggedTodo);
+
+  return nextTodos.map((todo, index) => ({
+    ...todo,
+    order: index + 1,
+  }));
+}
+
+async function render(nextTodos) {
+  todos = nextTodos ?? (await getTodos());
   renderTodos(todoList, todos, editingTodoId);
 
   if (editingTodoId !== null) {
@@ -169,11 +196,27 @@ todoList.addEventListener("drop", async (event) => {
 
   event.preventDefault();
 
+  const nextDraggedTodoId = draggedTodoId;
   const targetTodoId = item.dataset.id;
-  await reorderTodos(draggedTodoId, targetTodoId, dropPosition);
+  const previousTodos = [...todos];
+  const optimisticTodos = reorderLocally(
+    todos,
+    nextDraggedTodoId,
+    targetTodoId,
+    dropPosition
+  );
+
   draggedTodoId = null;
   clearDropIndicator();
-  await render();
+  await render(optimisticTodos);
+
+  try {
+    await reorderTodos(optimisticTodos);
+    await render();
+  } catch (error) {
+    await render(previousTodos);
+    throw error;
+  }
 });
 
 todoList.addEventListener("dragend", () => {
