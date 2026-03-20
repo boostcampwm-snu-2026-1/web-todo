@@ -1,174 +1,120 @@
-const STORAGE_KEY = 'vanilla-todo-items';
+const API_URL = 'https://69bd09772bc2a25b22ad23e1.mockapi.io/api/todos';
 
 const todoForm = document.querySelector('#todo-form');
 const todoInput = document.querySelector('#todo-input');
 const todoList = document.querySelector('#todo-list');
 const taskCount = document.querySelector('#task-count');
-const clearCompletedButton = document.querySelector('#clear-completed-button');
+const reloadButton = document.querySelector('#reload-button');
 const todoItemTemplate = document.querySelector('#todo-item-template');
 
-let todos = loadTodos();
+let todos = [];
 
-renderTodos();
 bindEvents();
+loadTodos();
 
 function bindEvents() {
   todoForm.addEventListener('submit', handleSubmit);
-  todoList.addEventListener('click', handleTodoListClick);
-  todoList.addEventListener('change', handleTodoListChange);
-  clearCompletedButton.addEventListener('click', handleClearCompleted);
+  reloadButton.addEventListener('click', loadTodos);
 }
 
-function handleSubmit(event) {
-  event.preventDefault();
+async function handleSubmit(e) {
+  e.preventDefault();
 
   const text = todoInput.value.trim();
+  if (!text) return;
 
-  if (!text) {
-    todoInput.focus();
-    return;
-  }
-
-  const newTodo = createTodo(text);
-  todos = [newTodo, ...todos];
-  saveTodos();
-  renderTodos();
-  todoForm.reset();
-  todoInput.focus();
-}
-
-function handleTodoListClick(event) {
-  const deleteButton = event.target.closest('.delete-button');
-
-  if (!deleteButton) {
-    return;
-  }
-
-  const todoItem = event.target.closest('.todo-item');
-  const todoId = Number(todoItem.dataset.id);
-
-  removeTodo(todoId);
-}
-
-function handleTodoListChange(event) {
-  const checkbox = event.target.closest('.todo-checkbox');
-
-  if (!checkbox) {
-    return;
-  }
-
-  const todoItem = event.target.closest('.todo-item');
-  const todoId = Number(todoItem.dataset.id);
-
-  toggleTodo(todoId);
-}
-
-function handleClearCompleted() {
-  todos = todos.filter((todo) => !todo.completed);
-  saveTodos();
-  renderTodos();
-}
-
-function createTodo(text) {
-  return {
-    id: Date.now() + Math.floor(Math.random() * 1000),
-    text,
-    completed: false,
-  };
-}
-
-function toggleTodo(todoId) {
-  todos = todos.map((todo) => {
-    if (todo.id === todoId) {
-      return {
-        ...todo,
-        completed: !todo.completed,
-      };
-    }
-
-    return todo;
+  const res = await fetch(API_URL, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({
+      name: text,
+      completed: false
+    })
   });
 
-  saveTodos();
+  const data = await res.json();
+  todos = [normalizeTodo(data), ...todos];
+
+  renderTodos();
+  todoForm.reset();
+}
+
+async function loadTodos() {
+  const res = await fetch(API_URL);
+  const data = await res.json();
+
+  todos = data.map(normalizeTodo);
   renderTodos();
 }
 
-function removeTodo(todoId) {
-  todos = todos.filter((todo) => todo.id !== todoId);
-  saveTodos();
+async function deleteTodo(id) {
+  await fetch(`${API_URL}/${id}`, {
+    method: 'DELETE'
+  });
+
+  todos = todos.filter(todo => todo.id !== id);
   renderTodos();
+}
+
+async function toggleTodo(id, completed) {
+  const res = await fetch(`${API_URL}/${id}`, {
+    method: 'PUT',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ completed })
+  });
+
+  const updated = await res.json();
+
+  todos = todos.map(todo =>
+    todo.id === id ? normalizeTodo(updated) : todo
+  );
+
+  renderTodos();
+}
+
+function normalizeTodo(item) {
+  return {
+    id: item.id,
+    text: item.name || '',
+    completed: item.completed || false
+  };
 }
 
 function renderTodos() {
   todoList.innerHTML = '';
 
-  if (todos.length === 0) {
-    todoList.appendChild(createEmptyMessage());
-    updateTaskCount();
-    return;
-  }
-
-  const fragment = document.createDocumentFragment();
-
-  todos.forEach((todo) => {
-    fragment.appendChild(createTodoElement(todo));
+  todos.forEach(todo => {
+    const el = createTodoElement(todo);
+    todoList.appendChild(el);
   });
 
-  todoList.appendChild(fragment);
-  updateTaskCount();
+  taskCount.textContent = `전체 ${todos.length}개`;
 }
 
 function createTodoElement(todo) {
-  const todoElement = todoItemTemplate.content.firstElementChild.cloneNode(true);
-  const checkbox = todoElement.querySelector('.todo-checkbox');
-  const text = todoElement.querySelector('.todo-text');
+  const el = todoItemTemplate.content.firstElementChild.cloneNode(true);
+  const checkbox = el.querySelector('.todo-checkbox');
+  const text = el.querySelector('.todo-text');
+  const deleteButton = el.querySelector('.delete-button');
 
-  todoElement.dataset.id = String(todo.id);
   text.textContent = todo.text;
   checkbox.checked = todo.completed;
 
   if (todo.completed) {
-    todoElement.classList.add('completed');
+    el.classList.add('completed');
   }
 
-  return todoElement;
-}
+  checkbox.addEventListener('change', (e) => {
+    toggleTodo(todo.id, e.target.checked);
+  });
 
-function createEmptyMessage() {
-  const emptyItem = document.createElement('li');
-  emptyItem.className = 'empty-message';
-  emptyItem.textContent = '아직 등록된 할 일이 없습니다.';
-  return emptyItem;
-}
+  deleteButton.addEventListener('click', () => {
+    deleteTodo(todo.id);
+  });
 
-function updateTaskCount() {
-  const totalCount = todos.length;
-  const completedCount = todos.filter((todo) => todo.completed).length;
-  const remainingCount = totalCount - completedCount;
-
-  taskCount.textContent = `전체 ${totalCount}개 · 남은 작업 ${remainingCount}개`;
-}
-
-function saveTodos() {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
-}
-
-function loadTodos() {
-  const storedTodos = localStorage.getItem(STORAGE_KEY);
-
-  if (!storedTodos) {
-    return [];
-  }
-
-  try {
-    const parsedTodos = JSON.parse(storedTodos);
-
-    if (!Array.isArray(parsedTodos)) {
-      return [];
-    }
-
-    return parsedTodos;
-  } catch {
-    return [];
-  }
+  return el;
 }
