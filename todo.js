@@ -40,6 +40,24 @@ function deleteTodo(id) {
   });
 }
 
+// TOGGLE todo
+function toggleTodo(id, done) {
+  fetch(`https://69b9372ee69653ffe6a6f09a.mockapi.io/todos/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ done }),
+  }).then(() => {
+    const li = todoList.querySelector(`li[data-id="${id}"]`);
+    if (li) {
+      li.classList.toggle("done", done);
+      const toggleButton = li.querySelector(".toggle-button");
+      if (toggleButton) toggleButton.textContent = done ? "Undo" : "Done";
+    }
+  });
+}
+
 // todo 데이터를 DOM 으로 변환
 function createTodoItem(todo) {
   const li = document.createElement("li");
@@ -86,7 +104,7 @@ todoList.addEventListener("click", (e) => {
   // toggleTodo(id) 구현
   if (e.target.classList.contains("toggle-button")) {
     const isDone = li.classList.toggle("done");
-    e.target.textContent = isDone ? "Undo" : "Done";
+    toggleTodo(id, isDone);
   }
 });
 
