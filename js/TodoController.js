@@ -20,8 +20,18 @@ export default class TodoController {
     }
 
     async handleAdd(text) {
-        const newTodo = await todoAPI.createTodo(text);
-        this.model.addTodo(newTodo);
+        const nextId = this.model.todos.length > 0
+            ? Math.max(...this.model.todos.map(t => Number(t.id))) + 1
+            : 1;
+        
+        const newTodoData = {
+            id: String(nextId),
+            createdAt: new Date().toISOString(),
+            content: text,
+            completed: false
+        }
+        const responseTodo = await todoAPI.createTodo(newTodoData);
+        this.model.addTodo(responseTodo);
         this.view.render(this.model.todos);
     }
 

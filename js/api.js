@@ -5,11 +5,11 @@ export const todoAPI = {
         const response = await fetch(BASE_URL);
         return await response.json();
     },
-    async createTodo(text) {
+    async createTodo(newTodo) {
         const response = await fetch(BASE_URL, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ content: text, completed: false })
+            body: JSON.stringify(newTodo)
         });
         return await response.json();
     },

@@ -21,9 +21,9 @@ export default class TodoModel {
         this._commit(this.todos);
     }
 
-    editTodo(id, newText) {
+    editTodo(id, newContent) {
         this.todos = this.todos.map(todo => 
-            todo.id === id ? { ...todo, text: newText } : todo
+            todo.id === id ? { ...todo, content: newContent } : todo
         );
         this._commit(this.todos);
     }
