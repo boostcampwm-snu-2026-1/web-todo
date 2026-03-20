@@ -8,10 +8,23 @@ const todos = [];
 // todo 데이터 객체 생성
 function createTodo(text) {
   return {
-    id: Date.now(),
+    id: todos.length ? todos[todos.length - 1].id + 1 : 1, // 간단한 ID 생성
     text,
     done: false,
   };
+}
+
+// GET todos
+function getTodos() {
+  fetch("https://69b9372ee69653ffe6a6f09a.mockapi.io/todos")
+    .then((res) => res.json())
+    .then((result) => {
+      todos.push(...result);
+      for (const todo of todos) {
+        const item = createTodoItem(todo);
+        todoList.appendChild(item);
+      }
+    });
 }
 
 // todo 데이터를 DOM 으로 변환
@@ -26,7 +39,7 @@ function createTodoItem(todo) {
   toggleButton.textContent = "Done";
   toggleButton.classList.add("toggle-button");
 
-  span.textContent = todo.text;
+  span.textContent = todo.content;
   deleteButton.textContent = "Delete";
   deleteButton.classList.add("delete-button");
 
@@ -46,6 +59,9 @@ function addTodo(text) {
 
   input.value = "";
 }
+
+// 초기 데이터 로드
+getTodos();
 
 // 이벤트 위임 - 추후 delete/toggle 여기서 처리
 todoList.addEventListener("click", (e) => {
