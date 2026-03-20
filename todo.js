@@ -2,28 +2,31 @@ const input = document.querySelector("#new-task");
 const addButton = document.querySelector("#add-task");
 const todoList = document.querySelector("#task-list");
 
-// 데이터 저장소
-const todos = [];
-
-// todo 데이터 객체 생성
-function createTodo(text) {
-  return {
-    id: todos.length ? todos[todos.length - 1].id + 1 : 1, // 간단한 ID 생성
-    text,
-    done: false,
-  };
-}
-
 // GET todos
 function getTodos() {
   fetch("https://69b9372ee69653ffe6a6f09a.mockapi.io/todos")
     .then((res) => res.json())
     .then((result) => {
-      todos.push(...result);
-      for (const todo of todos) {
+      for (const todo of result) {
         const item = createTodoItem(todo);
         todoList.appendChild(item);
       }
+    });
+}
+
+// POST todo
+function postTodo(todo) {
+  fetch("https://69b9372ee69653ffe6a6f09a.mockapi.io/todos", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(todo),
+  })
+    .then((res) => res.json())
+    .then((result) => {
+      const item = createTodoItem(result);
+      todoList.appendChild(item);
     });
 }
 
@@ -51,12 +54,7 @@ function createTodoItem(todo) {
 
 // todo 추가
 function addTodo(text) {
-  const todo = createTodo(text);
-  todos.push(todo);
-
-  const item = createTodoItem(todo);
-  todoList.appendChild(item);
-
+  postTodo({ content: text, done: false });
   input.value = "";
 }
 
@@ -68,26 +66,15 @@ todoList.addEventListener("click", (e) => {
   const li = e.target.closest("li");
   if (!li) return;
 
-  const id = Number(li.dataset.id);
-
   // deleteTodo(id) 구현
   if (e.target.classList.contains("delete-button")) {
-    todos.splice(
-      todos.findIndex((t) => t.id === id),
-      1,
-    );
     li.remove();
   }
 
   // toggleTodo(id) 구현
   if (e.target.classList.contains("toggle-button")) {
-    const todo = todos.find((t) => t.id === id);
-    if (todo) {
-      todo.done = !todo.done;
-      li.classList.toggle("done", todo.done);
-
-      e.target.textContent = todo.done ? "Undo" : "Done";
-    }
+    const isDone = li.classList.toggle("done");
+    e.target.textContent = isDone ? "Undo" : "Done";
   }
 });
 
