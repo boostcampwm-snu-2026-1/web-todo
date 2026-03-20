@@ -1,6 +1,6 @@
 import './style.css';
 import { renderTodos } from './render.js';
-import { fetchTodos } from './api.js';
+import { fetchTodos, createTodo } from './api.js';
 
 const app = document.querySelector('#app');
 
@@ -47,21 +47,21 @@ async function init() {
   }
 }
 
-todoFormElement.addEventListener('submit', (event) => {
+todoFormElement.addEventListener('submit', async (event) => {
   event.preventDefault();
 
   const title = todoInputElement.value.trim();
   if (!title) return;
 
-  const newTodo = {
-    id: String(Date.now()),
-    title,
-    completed: false,
-  };
-
-  todos.push(newTodo);
-  renderTodos(todoListElement, todos);
-  todoInputElement.value = '';
+  try {
+    const createdTodo = await createTodo(title);
+    todos.push(createdTodo);
+    renderTodos(todoListElement, todos);
+    todoInputElement.value = '';
+  } catch (error) {
+    console.error(error);
+    alert('할 일 추가에 실패했습니다.');
+  }
 });
 
 init();
