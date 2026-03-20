@@ -1,5 +1,6 @@
 import './style.css';
 import { renderTodos } from './render.js';
+import { fetchTodos } from './api.js';
 
 const app = document.querySelector('#app');
 
@@ -28,16 +29,23 @@ app.innerHTML = `
   </div>
 `;
 
-let todos = [
-  { id: '1', title: '자바스크립트 공부하기', completed: false },
-  { id: '2', title: 'Vite 프로젝트 익히기', completed: true },
-];
+let todos = [];
 
 const todoListElement = document.querySelector('#todo-list');
 const todoFormElement = document.querySelector('#todo-form');
 const todoInputElement = document.querySelector('#todo-input');
 
-renderTodos(todoListElement, todos);
+async function init() {
+  try {
+    todos = await fetchTodos();
+    renderTodos(todoListElement, todos);
+  } catch (error) {
+    console.error(error);
+    todoListElement.innerHTML = `
+      <li class="empty-message">할 일 목록을 불러오지 못했습니다.</li>
+    `;
+  }
+}
 
 todoFormElement.addEventListener('submit', (event) => {
   event.preventDefault();
@@ -55,3 +63,5 @@ todoFormElement.addEventListener('submit', (event) => {
   renderTodos(todoListElement, todos);
   todoInputElement.value = '';
 });
+
+init();
