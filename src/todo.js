@@ -2,6 +2,7 @@
 const todoInput = document.querySelector('#todo-input'); // todo 입력칸 
 const addBtn = document.querySelector('#add-btn'); // 추가 버튼
 const todoList = document.querySelector('#todo-list'); // todo 바구니
+const API_URL = 'https://69b93649e69653ffe6a6ebf9.mockapi.io/todoweb'; // 백엔드 API
 
 addBtn.addEventListener('click', function(){ // 버튼이 눌리면
     const text = todoInput.value.trim(); // 사용자가 입력칸에 적은 글자를 text 변수에 담음
