@@ -3,8 +3,9 @@ export default class TodoModel {
         this.todos = JSON.parse(localStorage.getItem('todos')) || [];
     }
 
-    _commit(todos) {
-        localStorage.setItem('todos', JSON.stringify(todos));
+    // 서버에서 가져온 전체 데이터를 모델에 저장
+    setTodos(todos) {
+        this.todos = todos;
     }
 
     addTodo(text) {

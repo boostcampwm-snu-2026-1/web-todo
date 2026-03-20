@@ -12,7 +12,7 @@ export default class TodoView {
         this.todoList.innerHTML = todos.map(todo => `
             <li class="todo-item ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
                 <div class="checkbox" data-action="toggle"></div>
-                <span class="todo-text">${todo.text}</span>
+                <span class="todo-text">${todo.content}</span>
                 <div class="action-btns">
                     <button class="icon-btn edit" data-action="edit">
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
@@ -28,6 +28,7 @@ export default class TodoView {
     bindEvents(handlers) {
         this.form.addEventListener('submit', (e) => {
             e.preventDefault();
+            if (e.isComposing) return;
             if (this._todoText.trim()) {
                 handlers.add(this._todoText);
                 this._resetInput();

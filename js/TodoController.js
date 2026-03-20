@@ -1,3 +1,5 @@
+import { todoAPI } from './api.js';
+
 export default class TodoController {
     constructor(model, view) {
         this.model = model;
@@ -8,15 +10,22 @@ export default class TodoController {
             click: (id, action) => this.handleClick(id, action)
         });
         
+        this.init()
+    }
+
+    async init() {
+        const todos = await todoAPI.fetchTodos();
+        this.model.setTodos(todos);
         this.view.render(this.model.todos);
     }
 
-    handleAdd(text) {
-        this.model.addTodo(text);
+    async handleAdd(text) {
+        const newTodo = await todoAPI.createTodo(text);
+        this.model.addTodo(newTodo);
         this.view.render(this.model.todos);
     }
 
-    handleClick(id, action) {
+    async handleClick(id, action) {
         if (action === 'delete') {
             this.model.deleteTodo(id);
         } else if (action === 'toggle') {
@@ -27,12 +36,13 @@ export default class TodoController {
         this.view.render(this.model.todos);
     }
 
-    handleEdit(id) {
+    async handleEdit(id) {
         const todo = this.model.todos.find(t => t.id === id);
-        const newText = prompt('할 일을 수정하세요:', todo.text);
+        const newText = prompt('할 일을 수정하세요:', todo.content);
         
         if (newText !== null && newText.trim() !== '') {
             this.model.editTodo(id, newText.trim());
+            this.view.render(this.model.todos);
         }
     }
 }
