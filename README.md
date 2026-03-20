@@ -1,6 +1,6 @@
 # Web Todo
 
-A simple todo application with an Express REST API backend and a vanilla JS frontend.
+A simple todo application using a vanilla JS frontend (Vite) with mockAPI.io as the backend.
 
 ## Setup
 
@@ -11,31 +11,43 @@ npm install
 ## Usage
 
 ```bash
-node server.js
+npm run dev
 ```
 
-Open http://localhost:3000 in your browser.
+Open http://localhost:5173 in your browser.
 
-## API Endpoints
+## API
+
+Data is stored and served by [mockAPI.io](https://mockapi.io).  
+Base URL: `https://69bd26262bc2a25b22ad7ca8.mockapi.io/todos`
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/todos` | Get all todos |
-| POST | `/api/todos` | Create a new todo |
-| PATCH | `/api/todos/:id/toggle` | Toggle todo done status |
-| DELETE | `/api/todos/:id` | Delete a todo |
+| GET | `/todos` | Get all todos |
+| POST | `/todos` | Create a new todo |
+| PUT | `/todos/:id` | Update a todo (toggle done) |
+| DELETE | `/todos/:id` | Delete a todo |
+
+### Todo Object
+
+```json
+{
+  "id": "1",
+  "content": "할 일 내용",
+  "done": false,
+  "createdAt": 1774004344
+}
+```
 
 ## Project Structure
 
 ```
-├── server.js          # Express API server
-├── todos.json         # Data store (auto-generated)
-└── public/
-    ├── index.html
-    ├── css/style.css
-    └── js/
-        ├── main.js    # App entry point
-        ├── api.js     # Fetch API calls
-        ├── render.js  # DOM rendering
-        └── events.js  # Event delegation
+├── index.html
+├── src/
+│   ├── main.js      # App entry point
+│   ├── api.js       # Fetch API calls (mockAPI.io)
+│   ├── render.js    # DOM rendering
+│   ├── events.js    # Event delegation
+│   └── style.css
+└── package.json     # vite devDependency
 ```
