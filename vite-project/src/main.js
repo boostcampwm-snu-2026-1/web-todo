@@ -1,6 +1,6 @@
 import './style.css';
 import { renderTodos } from './render.js';
-import { fetchTodos, createTodo } from './api.js';
+import { fetchTodos, createTodo, deleteTodo, updateTodo } from './api.js';
 
 const app = document.querySelector('#app');
 
@@ -35,6 +35,19 @@ const todoListElement = document.querySelector('#todo-list');
 const todoFormElement = document.querySelector('#todo-form');
 const todoInputElement = document.querySelector('#todo-input');
 
+function updateTodoState(updatedTodo) {
+  todos = todos.map((todo) => {
+    if (todo.id === updatedTodo.id) {
+      return updatedTodo;
+    }
+    return todo;
+  });
+}
+
+function removeTodoState(id) {
+  todos = todos.filter((todo) => todo.id !== id);
+}
+
 async function init() {
   try {
     todos = await fetchTodos();
@@ -61,6 +74,46 @@ todoFormElement.addEventListener('submit', async (event) => {
   } catch (error) {
     console.error(error);
     alert('할 일 추가에 실패했습니다.');
+  }
+});
+
+todoListElement.addEventListener('click', async (event) => {
+  const deleteButton = event.target.closest('.delete-button');
+  if (!deleteButton) return;
+
+  const todoItem = event.target.closest('.todo-item');
+  const id = todoItem.dataset.id;
+
+  try {
+    await deleteTodo(id);
+    removeTodoState(id);
+    renderTodos(todoListElement, todos);
+  } catch (error) {
+    console.error(error);
+    alert('할 일 삭제에 실패했습니다.');
+  }
+});
+
+todoListElement.addEventListener('change', async (event) => {
+  const checkbox = event.target.closest('.todo-checkbox');
+  if (!checkbox) return;
+
+  const todoItem = event.target.closest('.todo-item');
+  const id = todoItem.dataset.id;
+
+  const targetTodo = todos.find((todo) => todo.id === id);
+  if (!targetTodo) return;
+
+  try {
+    const updatedTodo = await updateTodo(id, {
+      completed: !targetTodo.completed,
+    });
+
+    updateTodoState(updatedTodo);
+    renderTodos(todoListElement, todos);
+  } catch (error) {
+    console.error(error);
+    alert('할 일 상태 변경에 실패했습니다.');
   }
 });
 
