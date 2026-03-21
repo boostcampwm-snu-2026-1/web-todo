@@ -14,3 +14,21 @@ export async function getTodo() {
         return [];
     }
 }
+
+export async function getTodo(itemText) {
+    try{
+        const response = await fetch(BASE_URL, {
+            method : 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                item: itemText,
+                completed: false
+            })
+        });
+        return await response.json();
+    }
+    catch(error){
+        console.error("Failed to fecth todo", error);
+    return [];
+    }
+}
