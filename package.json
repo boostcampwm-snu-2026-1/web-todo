@@ -2,7 +2,10 @@
   "name": "web-todo",
   "version": "1.0.0",
   "description": "",
-  "main": "todo.js",
+  "main": "src/todo.js",
+  "devDependencies": {
+    "vite": "^8.0.1"
+  },
   "scripts": {
     "dev": "vite"
   },
