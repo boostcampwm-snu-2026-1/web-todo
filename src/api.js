@@ -28,7 +28,18 @@ export async function createTodo(itemText) {
         return await response.json(); // get id number, meta data, receipt from server
     }
     catch(error){
-        console.error("Failed to fecth todo", error);
+        console.error("Failed to create", error);
     return [];
+    }
+}
+
+export async function deleteTodo(id) {
+    try {
+        const response = await fetch(`${BASE_URL}/${id}`, { // to pinpoint the id
+            method: 'DELETE'
+        });
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to delete", error);
     }
 }
