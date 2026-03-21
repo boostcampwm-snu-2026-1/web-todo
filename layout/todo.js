@@ -105,12 +105,31 @@ taskContainer.addEventListener('click', async function(e) {
                 console.log("삭제 실패:", error);
                 alert('할 일 삭제에 실패했습니다.');
         }
+        return ;
     }
 
     // 할 일 완료
-    const task = e.target.closest('.div-task');
+    const taskDiv = e.target.closest('.div-task');
 
-    if (task) {
-        task.classList.toggle('completed');
+    if (taskDiv) {
+        const id = taskDiv.dataset.id;
+        const isCurrentlyCompleted = taskDiv.classList.contains('completed');
+
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: 'PUT',
+                headers: {'Content-Type': 'application/json'},
+                body: JSON.stringify({
+                    completed: !isCurrentlyCompleted
+                })
+            });
+
+            if (response.ok) {
+                taskDiv.classList.toggle('completed');
+            }
+        } catch (error) {
+            console.log("완료 처리 실패:", error);
+            alert("서버 통신 중 오류가 발생했습니다.");
+        }
     }
 });
