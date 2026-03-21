@@ -12,6 +12,11 @@ export function getTodos() {
   return loadTodos();
 }
 
+export function setTodos(todos) {
+  saveTodos(todos);
+  return todos;
+}
+
 export function findTodoById(todoId) {
   const todos = loadTodos();
   return todos.find((todo) => todo.id === todoId);

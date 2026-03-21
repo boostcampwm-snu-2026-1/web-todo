@@ -4,9 +4,11 @@ import {
   findTodoById,
   getTodos,
   resetAllTodos,
+  setTodos,
   toggleTodoCompletion,
   updateTodoText,
 } from "../model/todos.js";
+import { fetchTodosFromServer } from "../api/todoApi.js";
 import { renderTodoList } from "../ui/todoView.js";
 import { showToastMessage } from "../ui/toast.js";
 import { renderTodayDate } from "../ui/date.js";
@@ -187,8 +189,19 @@ function registerEvents() {
   resetAllButton.addEventListener("click", handleResetAllClick);
 }
 
-export function initializeTodoApp() {
+async function loadInitialTodosFromServer() {
+  try {
+    const serverTodos = await fetchTodosFromServer();
+    setTodos(serverTodos);
+  } catch (error) {
+    console.error("Failed to load todos from server.", error);
+    showToastMessage("Failed to load server tasks. Showing local data.");
+  }
+}
+
+export async function initializeTodoApp() {
   renderTodayDate();
+  await loadInitialTodosFromServer();
   renderCurrentTodos();
   registerEvents();
 }
