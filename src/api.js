@@ -1,6 +1,6 @@
-//https://69b92c3ee69653ffe6a6cc3c.mockapi.io/api/v1/
+//https://69b92c3ee69653ffe6a6cc3c.mockapi.io/api/v1/todos
 
-const BASE_URL = 'https://69b92c3ee69653ffe6a6cc3c.mockapi.io/api/v1/';
+const BASE_URL = 'https://69b92c3ee69653ffe6a6cc3c.mockapi.io/api/v1/todos';
 
 export async function getTodo() {
     try {
@@ -47,7 +47,7 @@ export async function deleteTodo(id) {
 export async function toggleTodo(id, isCompleted) {
     try {
         const response = await fetch(`${BASE_URL}/${id}`, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ completed: isCompleted })
         });
