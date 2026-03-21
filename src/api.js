@@ -15,7 +15,7 @@ export async function getTodo() {
     }
 }
 
-export async function getTodo(itemText) {
+export async function createTodo(itemText) {
     try{
         const response = await fetch(BASE_URL, {
             method : 'POST',
@@ -25,7 +25,7 @@ export async function getTodo(itemText) {
                 completed: false
             })
         });
-        return await response.json();
+        return await response.json(); // get id number, meta data, receipt from server
     }
     catch(error){
         console.error("Failed to fecth todo", error);
