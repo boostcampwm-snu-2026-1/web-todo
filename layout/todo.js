@@ -29,7 +29,7 @@ function renderTodoItem(todo) {
     }
 
     const taskHTML = `
-        <div class="div-task">
+        <div class="div-task ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
             <form class="relative">
                 <label class="finish-task">
                     <span class="checkmark"></span>
@@ -76,32 +76,10 @@ addBtn.addEventListener('click', async function(e) {
         alert("서버 저장에 실패했습니다.");
     }
 
-    // else if (text.length > 15) {
-    //     truncatedText = truncatedText.slice(0, 15) + "...";
-    //     titleAttribute = `title="${text}"`
-    // }
-
-    // document.querySelector('.error-empty').classList.remove('show');
-
-    // const taskHTML = `
-    //     <div class="div-task">
-    //         <form class="relative">
-    //             <label class="finish-task">
-    //                 <span class="checkmark"></span>
-    //             </label>
-    //             <p class="todo-task" ${titleAttribute}>${truncatedText}</p>
-    //             <button type="button" class="delete-btn">삭제</button>
-    //         </form>
-    //     </div>
-    // `;
-
-    // taskContainer.innerHTML += `${taskHTML}`;
-
-    // input.value = '';
     // taskCounter++;
 });
 
-taskContainer.addEventListener('click', function(e) {
+taskContainer.addEventListener('click', async function(e) {
 
     const target = e.target.classList
 
@@ -110,8 +88,23 @@ taskContainer.addEventListener('click', function(e) {
 
         e.stopPropagation();
         const taskDiv = e.target.closest('.div-task');
-        taskDiv.remove();
-        return ;
+        const id = taskDiv.dataset.id;
+
+        if (!id) return;
+
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                taskDiv.remove();
+                console.log(`${id}번 할 일이 삭제되었습니다.`);
+            } 
+        } catch (error) {
+                console.log("삭제 실패:", error);
+                alert('할 일 삭제에 실패했습니다.');
+        }
     }
 
     // 할 일 완료
