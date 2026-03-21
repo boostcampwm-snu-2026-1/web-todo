@@ -27,7 +27,6 @@ listContainer.addEventListener('click', async (e) => {
         
         const success = await deleteTodo(id);
         if (success) {
-            // 메모리(배열)에서 제거 후 다시 그리기
             todoList = todoList.filter(todo => todo.id !== id);
             render(todoList, listContainer);
         }

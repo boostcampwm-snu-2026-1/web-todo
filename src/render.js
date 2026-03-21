@@ -7,7 +7,12 @@ export function render(todoList, container) {
     container.innerHTML = '';
 
     if (todoList.length === 0) {
-        container.innerHTML = '<li class="empty-msg"></li>';
+        container.classList.add('is-empty');
+        container.innerHTML = `
+            <div class="empty-view">
+                <h3>ADD</h3>
+            </div>
+        `;
         return;
     }
 

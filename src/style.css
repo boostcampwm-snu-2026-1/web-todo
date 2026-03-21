@@ -15,8 +15,8 @@ body{
 
 .todo-container {
     background: #fff;
-    padding: 25px;
-    width: 500px;
+    padding: 20px;
+    width: 400px;
     border-radius: 10px;
 }
 
@@ -106,4 +106,34 @@ li{
     font-family: inherit;
     font-size: 18px;
     outline: none;
+}
+
+.todo-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    min-height: 70px; 
+    display: flex;
+    flex-direction: column; 
+}
+
+.todo-list.is-empty {
+    justify-content: center; 
+    align-items: center; 
+}
+
+.empty-view {
+    text-align: center;
+    color: #888;
+}
+
+.empty-view h3 {
+    font-size: 20px;
+    margin-bottom: 10px;
+    color: #888;
+}
+
+.empty-view p {
+    font-size: 10px;
+    font-weight: 300;
 }
