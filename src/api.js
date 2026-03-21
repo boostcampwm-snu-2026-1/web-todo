@@ -47,7 +47,7 @@ export async function deleteTodo(id) {
 export async function toggleTodo(id, isCompleted) {
     try {
         const response = await fetch(`${BASE_URL}/${id}`, {
-            method: 'PATCH',
+            method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ completed: isCompleted })
         });
