@@ -1,0 +1,16 @@
+//https://69b92c3ee69653ffe6a6cc3c.mockapi.io/api/v1/
+
+const BASE_URL = 'https://69b92c3ee69653ffe6a6cc3c.mockapi.io/api/v1/';
+
+export async function getTodo() {
+    try {
+        const response = await fetch(BASE_URL);
+        if(!response.ok) throw new Error("Network error");
+
+        return await response.json();
+    }    
+    catch(error){
+        console.error("Failed to fecth todo", error);
+        return [];
+    }
+}
