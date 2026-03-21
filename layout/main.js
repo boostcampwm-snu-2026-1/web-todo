@@ -1,6 +1,14 @@
 import { todoApi } from './api.js';
 import {ui} from './ui.js';
 
+// 이벤트 초기 로드
+window.addEventListener('DOMContentLoaded', async function() {
+    const todos = await todoApi.getAll();
+    todos.forEach(function(todo) {
+        ui.renderTodoItem(todo);
+    })
+});
+
 // 에러 메시지 닫기
 document.querySelector('.close-btn').addEventListener('click', function () {
     ui.toggleError(false);
