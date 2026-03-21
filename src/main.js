@@ -2,7 +2,10 @@ import { getTodo, createTodo, deleteTodo, toggleTodo } from "./api.js";
 import {render, displayTodayDate} from "./render.js";
 
 let todoList = [];
+
 const listContainer = document.querySelector('#todo-list');
+const todoInput = document.getElementById("todo-input");
+const addUpdateClick = document.getElementById("AddUpdateClick");
 
 async function init(){
     displayTodayDate();
@@ -12,6 +15,35 @@ async function init(){
     todoList = await getTodo();
     render(todoList, listContainer);
 }
+
+//create
+
+async function createLi() {
+    const inputText = todoInput.value;
+    console.log("hi");
+    
+    if(inputText == ""){
+        alert("Please Enter your todo text");
+        return;
+    }
+
+    const newTodo = await createTodo(inputText);
+
+    if(newTodo){
+        todoList.push(newTodo);
+        render(todoList, listContainer);
+        todoInput.value = ""; // why?
+    }
+}
+
+//Event Listener for todo Input
+addUpdateClick.addEventListener("click", createLi);
+
+todoInput.addEventListener("keypress", (e) => {
+    if (e.key === "Enter") {
+        createLi();
+    }
+});
 
 listContainer.addEventListener('click', async (e) => {
     const target = e.target;
