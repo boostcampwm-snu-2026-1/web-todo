@@ -1,8 +1,10 @@
+import { getTodosAPI, createTodoAPI, deleteTodoAPI, updateTodoAPI } from './api.js';
+
 // html 파일에서 부품 가져오기
 const todoInput = document.querySelector('#todo-input'); // todo 입력칸 
 const addBtn = document.querySelector('#add-btn'); // 추가 버튼
 const todoList = document.querySelector('#todo-list'); // todo 바구니
-const API_URL = 'https://69b93649e69653ffe6a6ebf9.mockapi.io/todoweb'; // 백엔드 API
+
 
 addBtn.addEventListener('click', async function(){ // 서버 통신을 위해 async 함수로 교체
     const text = todoInput.value.trim(); // 버튼이 눌리면 사용자가 입력칸에 적은 글자를 text 변수에 담음
@@ -29,25 +31,16 @@ addEventLister을 달아두면 자바스크립트는 파일을 끝까지 다 읽
     };
 
     try {
-        const response = await fetch(API_URL, { // 서버 API에 데이터 저장해달라고 POST 요청을 보냄
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(newTodo)
-        });
-
-        if (response.ok) {
+        const isSuccess = await createTodoAPI(newTodo);
+        
+        if (isSuccess) {
             todoInput.value = '';
             todoInput.focus();
-
-            loadTodos(); // 화면에 방금 추가한 할일 목록을 보여주기 위해 최신 목록을 다시 가져옴
-        } else {
-            console.error("서버에 저장하는데 실패했습니다.");
+            loadTodos();
         }
 
     } catch (error) {
-        console.error("통신 에러가 발생했습니다!", error);
+        console.error("데이터 추가 실패!", error);
     }
 });
 
@@ -64,13 +57,12 @@ todoList.addEventListener('click', async function(event){
         const id = target.getAttribute('data-id');
         
         try {
-            const response = await fetch(`${API_URL}/${id}`, {
-                method: 'DELETE'
-            });
-
-            if (response.ok) {
+            const isSuccess = await deleteTodoAPI(id);
+            
+            if (isSuccess) {
                 loadTodos();
             }
+
         } catch (error) {
             console.error("삭제 중 에러가 발생했습니다!", error);
         }
@@ -79,22 +71,12 @@ todoList.addEventListener('click', async function(event){
     if (target.classList.contains('complete-checkbox')){ // 체크박스 클릭시
         const id = target.getAttribute('data-id');
         const isCompleted = target.checked;
-        
         const li = target.parentElement;
+
         li.classList.toggle('completed');
 
         try {
-            /* PUT 수정을 할 때는 POST와는 다르게 URL 뒤에 id를 붙여서 누구를 수정할지 정확히 타겟팅하고
-            바꾸고 싶은 속성(completed)만 골라서 보내주면 서버가 알아서 덮어쓰기 해줌 */
-            const response = await fetch(`${API_URL}/${id}`, {
-                method: 'PUT', 
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ completed: isCompleted }) 
-            });
-
-            if (!response.ok) {
-                console.error("서버 업데이트 실패!");
-            }
+            await updateTodoAPI(id, isCompleted);
         } catch (error) {
             console.error("수정 중 에러가 발생했습니다!", error);
         }
@@ -129,11 +111,9 @@ async function loadTodos() { // 비동기함수 : 이 함수 안에는 await 필
     동작 완료됐다면 await 다음 줄부터 다시 재생
     */
     try {
-        const response = await fetch(API_URL); // 서버에 데이터 달라고 요청
-        const data = await response.json();
+        const data = await getTodosAPI();
+        renderTodos(data);
         
-        renderTodos(data); // 렌더링 함수 호출
-
     } catch (error) {
         console.error("데이터를 가져오는 중 에러가 발생했습니다!", error);
     }
