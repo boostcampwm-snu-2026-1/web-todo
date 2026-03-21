@@ -16,6 +16,8 @@ export function render(todoList, container) {
         return;
     }
 
+    container.classList.remove('is-empty');
+
     todoList.forEach((todo) => {
         const li = document.createElement("li");
         li.setAttribute('data-id', todo.id); // serial number for server communication
