@@ -57,12 +57,23 @@ todoInput.addEventListener('keypress', function(event){ // 엔터 입력기능 �
     }
 });
 
-todoList.addEventListener('click', function(event){
+todoList.addEventListener('click', async function(event){
     const target = event.target;
 
     if (target.classList.contains('delete-btn')){ // 삭제 버튼 클릭시
-        const li = target.parentElement;
-        li.remove();
+        const id = target.getAttribute('data-id');
+        
+        try {
+            const response = await fetch(`${API_URL}/${id}`, {
+                method: 'DELETE'
+            });
+
+            if (response.ok) {
+                loadTodos();
+            }
+        } catch (error) {
+            console.error("삭제 중 에러가 발생했습니다!", error);
+        }
     }
 
     if (target.classList.contains('complete-checkbox')){ // 체크박스 클릭시
@@ -81,8 +92,8 @@ function renderTodos(todoArray){ // 렌더링 함수 -> 서버에서 데이터�
         li.innerHTML = `
             <input type="checkbox" class="complete-checkbox">
             <span class="todo-text">${todo.name}</span>
-            <button class="delete-btn">삭제</button>
-        `;
+            <button class="delete-btn" data-id="${todo.id}">삭제</button>
+        `; // todo.id로 각 데이터의 고유번호 숨겨놓음
         todoList.appendChild(li);
     });
 }
