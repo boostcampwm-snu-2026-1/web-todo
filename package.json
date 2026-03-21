@@ -1,0 +1,21 @@
+{
+  "name": "web-todo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "todo.js",
+  "scripts": {
+    "dev": "vite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LeeSeokWoo0326/web-todo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/LeeSeokWoo0326/web-todo/issues"
+  },
+  "homepage": "https://github.com/LeeSeokWoo0326/web-todo#readme"
+}
