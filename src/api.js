@@ -53,7 +53,23 @@ export async function toggleTodo(id, isCompleted) {
         });
         return await response.json();
     } catch (error) {
-        console.error("Failed to toggle todo:", error);
+        console.error("Failed to toggle", error);
+    }
+}
+
+export async function updateTodo(id, updateText, isCompleted){
+    try {
+        const response = await fetch(`${BASE_URL}/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                item : updateText,
+                completed: isCompleted 
+            })
+        });
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to update", error);
     }
 }
 
