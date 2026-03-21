@@ -3,6 +3,24 @@ export default class TodoView {
         this.form = document.getElementById('todo-form');
         this.input = document.getElementById('todo-input');
         this.todoList = document.getElementById('todo-list');
+
+        this.dateElement = document.getElementById('current-date')
+        this._displayCurrentDate();
+    }
+
+    _displayCurrentDate() {
+        const now = new Date();
+        const options = { 
+            weekday: 'long', 
+            month: 'long', 
+            day: 'numeric' 
+        };
+        
+        const formattedDate = now.toLocaleDateString('en-US', options);
+        
+        if (this.dateElement) {
+            this.dateElement.textContent = formattedDate;
+        }
     }
 
     get _todoText() { return this.input.value; }
