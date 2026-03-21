@@ -21,13 +21,17 @@ body {
     width: 420px; padding: 40px;
     border-radius: 35px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.03);
+
+    height: 600px;
+    display: flex;
+    flex-direction: column;
 }
 
 header h1 { margin: 0; font-size: 26px; text-align: center; color: var(--text-main); }
 header p { text-align: center; color: var(--text-sub); margin: 8px 0 30px 0; font-size: 14px; }
 
 /* 입력창 & 버튼 (더 동그랗게) */
-#todo-form { display: flex; gap: 10px; margin-bottom: 30px; }
+#todo-form { display: flex; gap: 10px; margin-bottom: 30px; flex-shrink: 0;}
 
 #todo-input {
     flex: 1; padding: 15px 25px;
@@ -45,7 +49,22 @@ header p { text-align: center; color: var(--text-sub); margin: 8px 0 30px 0; fon
 }
 
 /* 할 일 목록 (개별 박스 형태) */
-#todo-list { list-style: none; padding: 0; margin: 0; }
+#todo-list { 
+    list-style: none; padding: 0; margin: 0;
+
+    overflow-y: auto;
+    flex-grow: 1;
+
+    padding-right: 5px;
+}
+
+#todo-list::-webkit-scrollbar {
+    width: 5px;
+}
+#todo-list::-webkit-scrollbar-thumb {
+    background: #e0e6ed;
+    border-radius: 10px;
+}
 
 .todo-item {
     display: flex; align-items: center;

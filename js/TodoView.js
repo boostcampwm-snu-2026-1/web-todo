@@ -41,6 +41,11 @@ export default class TodoView {
                 </div>
             </li>
         `).join('');
+
+        this.todoList.scrollTo({
+            top: this.todoList.scrollHeight,
+            behavior: 'smooth'
+        });
     }
 
     bindEvents(handlers) {
@@ -50,6 +55,7 @@ export default class TodoView {
             if (this._todoText.trim()) {
                 handlers.add(this._todoText);
                 this._resetInput();
+                this.input.focus();
             }
         });
 
