@@ -43,3 +43,19 @@ export async function deleteTodo(id) {
         console.error("Failed to delete", error);
     }
 }
+
+export async function toggleTodo(id, isCompleted) {
+    try {
+        const response = await fetch(`${BASE_URL}/${id}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ completed: isCompleted })
+        });
+        return await response.json();
+    } catch (error) {
+        console.error("Failed to toggle todo:", error);
+    }
+}
+
+//todo
+//add updateTodo func
