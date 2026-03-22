@@ -1,4 +1,4 @@
-import { getTodo, addTodo } from "./api";
+import { getTodo, addTodo, deleteTodo } from "./api";
 
 const todoForm = document.getElementById("form");
 const todoInput = document.getElementById("input");
@@ -24,8 +24,9 @@ function renderTodos() {
         deleteBtn.textContent = "삭제";
         deleteBtn.className = "deleteBtn";
 
-        deleteBtn.addEventListener("click", () => {
-            todos = todos.filter((item) => item.id != todo.id);
+        deleteBtn.addEventListener("click", async () => {
+            await deleteTodo(todo.id);
+            todos = await getTodo();
             renderTodos();
         })
 

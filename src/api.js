@@ -11,9 +11,16 @@ export async function addTodo(content) {
         },
         body: JSON.stringify({
             content: content,
-            completes: false
+            completed: false
         })
     })
     .then((res) => res.json())
+    return(response)
+}
+
+export async function deleteTodo(id) {
+    const response = await fetch(`https://69b9371be69653ffe6a6eff1.mockapi.io/todos/${id}`, {
+        method: "DELETE",
+    })
     return(response)
 }
