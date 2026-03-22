@@ -50,7 +50,6 @@ function addTodo () {
     };
 };
 
-const deleteTodoBtn = document.querySelector(".delete-todo-btn");
 todoContainer.addEventListener("click", (e) => {
     if (e.target.classList.contains("delete-todo-btn")) {
         deleteTodo(e.target);
@@ -58,10 +57,9 @@ todoContainer.addEventListener("click", (e) => {
 })
 
 
-function deleteTodo (btn) {
+function deleteTodo (deleteBtn) {
     if (confirm("Are you sure you want to delete this task?")) {
-        const deleteBtn = btn;
-        const todoId = parseInt(deleteBtn.parentElement.parentElement.dataset.id);
+        const todoId = parseInt(deleteBtn.parentElement.parentElement.dataset.id, 10);
         const index = todoList.findIndex(todo => todo.id === todoId);
         if (index !== -1) {
             todoList.splice(index, 1);
@@ -70,6 +68,12 @@ function deleteTodo (btn) {
     }
 
 };
+
+todoContainer.addEventListener("click", (e) => {
+    if (e.target.classList.contains("edit-todo-btn")) {
+        editTodo(e.target);
+    }
+})
 
 
 
