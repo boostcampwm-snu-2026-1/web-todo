@@ -37,22 +37,42 @@ export default class TodoController {
 
     async handleClick(id, action) {
         if (action === 'delete') {
+            // 서버에서 삭제
+            await todoAPI.deleteTodo(id); 
+            //  모델(로컬 배열)에서 삭제
             this.model.deleteTodo(id);
         } else if (action === 'toggle') {
+            const todo = this.model.todos.find(t => t.id == id);
+            const updatedTodo = { ...todo, completed: !todo.completed };
+                
+            // 서버에 업데이트 요청
+            await todoAPI.updateTodo(id, updatedTodo);
+            // 모델 업데이트
             this.model.toggleTodo(id);
         } else if (action === 'edit') {
             await this.handleEdit(id);
         }
-        this.view.render(this.model.todos, false);
+            // 변경된 상태로 다시 그리기
+            this.view.render(this.model.todos, false);
     }
 
     async handleEdit(id) {
-        const todo = this.model.todos.find(t => t.id === id);
+        const todo = this.model.todos.find(t => t.id == id);
         const newText = prompt('할 일을 수정하세요:', todo.content);
         
         if (newText !== null && newText.trim() !== '') {
-            this.model.editTodo(id, newText.trim());
-            this.view.render(this.model.todos);
+            try {
+                const updatedData = { ...todo, content: newText.trim() };
+                
+                // 서버에 수정된 내용 보냄
+                await todoAPI.updateTodo(id, updatedData);
+                // 모델 업데이트
+                this.model.editTodo(id, newText.trim());
+                
+                this.view.render(this.model.todos, false);
+            } catch (error) {
+                console.error("수정 실패:", error);
+            }
         }
     }
 }
