@@ -12,6 +12,8 @@ function renderTodos () {
     todoList.forEach(todo => {
         const todoItem = document.createElement("li");
         todoItem.classList.add("todo-item");
+        todoItem.dataset.id = todo.id;
+
         todoItem.innerHTML = `<input type="checkbox" ${todo.completed ? "checked" : ""}>
         <span class="todo-text">${todo.text}</span>
         <div>
@@ -49,10 +51,24 @@ function addTodo () {
 };
 
 const deleteTodoBtn = document.querySelector(".delete-todo-btn");
-deleteTodoBtn.addEventListener("click", deleteTodo);
+todoContainer.addEventListener("click", (e) => {
+    if (e.target.classList.contains("delete-todo-btn")) {
+        deleteTodo(e.target);
+    }
+})
 
 
-function deleteTodo () {
+function deleteTodo (btn) {
+    if (confirm("Are you sure you want to delete this task?")) {
+        const deleteBtn = btn;
+        const todoId = parseInt(deleteBtn.parentElement.parentElement.dataset.id);
+        const index = todoList.findIndex(todo => todo.id === todoId);
+        if (index !== -1) {
+            todoList.splice(index, 1);
+            renderTodos();
+        }
+    }
+
 };
 
 
