@@ -47,7 +47,7 @@ let currentFilter = 'all';
 /**
  * 앱 시작 시 localStorage에서 이전에 저장한 할일 목록을 복원한다.
  * JSON 파싱 오류(손상된 데이터 등)가 발생하면 빈 배열로 초기화한다.
- * main.js에서 앱 부팅 첫 번째 단계로 호출된다.
+ * API 요청이 실패했을 때 폴백(fallback)으로 main.js에서 호출된다.
  */
 export function initStore() {
   try {
@@ -56,6 +56,17 @@ export function initStore() {
   } catch {
     todos = []; // 데이터가 손상된 경우 조용히 빈 상태로 시작
   }
+}
+
+/**
+ * 외부에서 가져온 데이터(예: API 응답)를 todos에 주입한다.
+ * API 요청이 성공했을 때 main.js에서 호출된다.
+ * 주입 후 persist()로 localStorage도 동기화해 다음 폴백에 최신 데이터가 쓰인다.
+ * @param {{ id: string, text: string, done: boolean, createdAt: number }[]} items
+ */
+export function loadTodos(items) {
+  todos = items;
+  persist(); // localStorage를 서버 데이터로 갱신 (오프라인 폴백 대비)
 }
 
 
