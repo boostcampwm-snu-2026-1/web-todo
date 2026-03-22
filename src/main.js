@@ -10,6 +10,8 @@ const currentDateElement = document.getElementById('current-date');
 async function fetchTodos() {
     try {
         const response = await fetch(BASE_URL);
+        if (!response.ok) throw new Error(`HTTP 에러. 상태: ${response.status}`);
+
         todos = await response.json();
         render();
     } catch (error) {
@@ -18,30 +20,34 @@ async function fetchTodos() {
 }
 
 async function addTodo(task){
-    if(!isEmpty(task)) {
-        const data = {
+    if(isEmpty(task)) return;
+
+    const data = {
             content: task,
             done: false,
             createdAt: new Date()
         };
 
-        try {
-            const response = await fetch(BASE_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(data)
-            });
-            const createdTodo = await response.json();
-            todos.push(createdTodo); // 로컬 배열 업데이트
-            render();
-        } catch (error) {
-            console.error("추가 실패:", error);
-        }
+    try {
+        const response = await fetch(BASE_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+
+        if (!response.ok) throw new Error("서버 저장 실패");
+
+        const createdTodo = await response.json();
+        todos.push(createdTodo); // 로컬 배열 업데이트
+        render();
+    } catch (error) {
+        console.error("추가 실패:", error);
     }
+    
 }
 
 async function toggleTodo(targetId) {
-    const index = todos.findIndex(t => t.id === targetId);
+    const index = todos.findIndex(t => String(t.id) === String(targetId));
     if (index === -1) return;
 
     try {
@@ -50,10 +56,12 @@ async function toggleTodo(targetId) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ done: !todos[index].done })
         });
+
+        if (!response.ok) throw new Error("수정 실패");
+
         const updatedTodo = await response.json();
         
         // 로컬 배열 업데이트
-        const index = todos.findIndex(t => t.id === targetId);
         todos[index] = updatedTodo;
         render();
     } catch (error) {
@@ -63,11 +71,14 @@ async function toggleTodo(targetId) {
 
 async function deleteTodo(targetId) {
     try {
-        await fetch(`${BASE_URL}/${targetId}`, {
+        const response = await fetch(`${BASE_URL}/${targetId}`, {
             method: 'DELETE'
         });
+
+        if (!response.ok) throw new Error("삭제 실패");
+
         // 서버에서 삭제 성공 시 로컬 배열에서 필터링
-        todos = todos.filter(t => t.id !== targetId);
+        todos = todos.filter(t => String(t.id) !== String(targetId));
         render();
     } catch (error) {
         console.error("삭제 실패:", error);
