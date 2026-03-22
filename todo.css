@@ -13,7 +13,7 @@ h3 {
     margin-bottom: 10px;
 }
 
-.add-task-container {
+.add-todo-container {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -22,7 +22,7 @@ h3 {
     margin-bottom: 0px;
 }
 
-.task-list {
+.todo-container {
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -31,7 +31,7 @@ h3 {
     margin-bottom: 0px;
 }
 
-.task-item {
+.todo-item {
     display: flex;
     flex-direction: row;
     justify-content: center;
@@ -45,7 +45,7 @@ h3 {
     gap: 10px;
 }
 
-.task-item .task-text {
+.todo-item .todo-text {
     background-color: #007BFF;
     color: white;
     border: none;
@@ -54,7 +54,7 @@ h3 {
     border-radius: 4px;
 }
 
-.task-item .task-btn {
+.todo-item .todo-btn {
     background-color: #007BFF;
     color: white;
     border: none;
