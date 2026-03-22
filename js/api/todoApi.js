@@ -127,3 +127,10 @@ export async function deleteTodoOnServer(todoId) {
     throw new Error(`Failed to delete todo: ${response.status}`);
   }
 }
+
+export async function resetAllTodosOnServer() {
+  const todos = await fetchTodosFromServer();
+  const validTodoIds = todos.map((todo) => normalizeTodoId(todo.id)).filter(Boolean);
+
+  await Promise.all(validTodoIds.map((todoId) => deleteTodoOnServer(todoId)));
+}

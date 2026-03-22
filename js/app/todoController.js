@@ -13,6 +13,7 @@ import {
   fetchTodosFromServer,
   putTodoCompletionOnServer,
   putTodoContentOnServer,
+  resetAllTodosOnServer,
 } from "../api/todoApi.js";
 import { renderTodoList } from "../ui/todoView.js";
 import { showToastMessage } from "../ui/toast.js";
@@ -205,13 +206,20 @@ async function handleTodoSubmit(event) {
   }
 }
 
-function handleResetAllClick() {
+async function handleResetAllClick() {
   if (!confirmResetAllTasks()) return;
 
-  resetAllTodos();
-  editingTodoId = null;
-  renderCurrentTodos();
-  showToastMessage("All tasks have been reset.");
+  try {
+    await resetAllTodosOnServer();
+    resetAllTodos();
+    editingTodoId = null;
+    renderCurrentTodos();
+    showToastMessage("All tasks have been reset.");
+  } catch (error) {
+    console.error("Failed to reset tasks on server.", error);
+    showToastMessage("Failed to reset tasks on server.");
+    renderCurrentTodos();
+  }
 }
 
 function registerEvents() {
