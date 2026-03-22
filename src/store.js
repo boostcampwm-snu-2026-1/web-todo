@@ -88,6 +88,14 @@ export function getFilteredTodos() {
   }
 }
 
+/**
+ * id로 특정 할일 객체를 반환한다.
+ * 삭제 실패 시 롤백을 위해 events.js에서 삭제 전에 호출한다.
+ * @param {string} id
+ * @returns {{ id: string, text: string, done: boolean, createdAt: number } | undefined}
+ */
+export function getTodoById(id) { return todos.find(t => t.id === id); }
+
 /** 전체 할일 개수를 반환한다 (통계 표시에 사용) */
 export function getTotalCount() { return todos.length; }
 

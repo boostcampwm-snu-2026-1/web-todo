@@ -16,7 +16,7 @@
  */
 
 import { postTodo, putTodo, removeTodo } from './api.js';
-import { addTodo, insertTodo, toggleTodo, deleteTodo, clearDone, setFilter } from './store.js';
+import { addTodo, insertTodo, getTodoById, toggleTodo, deleteTodo, clearDone, setFilter } from './store.js';
 import { renderAll, renderList, renderStats } from './render.js';
 
 
@@ -149,23 +149,31 @@ async function handleListClick(e) {
   }
 
   if (action === 'delete') {
-    // CSS 트랜지션으로 페이드 아웃 + 오른쪽으로 슬라이드
+    // ── DELETE 요청을 클릭 즉시 시작한다 ──
+    // 이전에는 transitionend 이벤트 안에서 요청했으나,
+    // 다른 DOM 업데이트로 인해 애니메이션이 중단되면 transitionend가
+    // 발화하지 않아 DELETE가 실행되지 않는 버그가 있었다.
+    // 요청을 먼저 띄우고 애니메이션은 병렬로 진행한다.
+    const deleteRequest = removeTodo(id);
+
+    // 롤백에 대비해 삭제 전 원본 객체를 보존해둔다
+    const saved = getTodoById(id);
+
+    // 낙관적으로 store에서 먼저 제거하고 애니메이션을 시작한다
+    deleteTodo(id);
     item.style.transition = 'opacity 0.18s, transform 0.18s';
     item.style.opacity    = '0';
     item.style.transform  = 'translateX(8px)';
 
-    // 애니메이션이 끝난 뒤 DELETE 요청을 보낸다.
-    // { once: true }로 리스너가 한 번만 실행되게 해 메모리 누수를 막는다.
-    item.addEventListener('transitionend', async () => {
-      try {
-        await removeTodo(id); // 서버에서 삭제 (DELETE /todos/:id)
-        deleteTodo(id);       // store에서도 제거
-      } catch (err) {
-        // DELETE 실패 시: store에 항목이 남아 있으므로 renderAll이 화면을 복원한다
-        console.warn('DELETE 실패, 항목을 복원합니다.', err.message);
-      }
-      renderAll(); // 성공·실패 모두 화면 갱신 (실패 시 복원 역할)
-    }, { once: true });
+    try {
+      await deleteRequest; // DELETE 서버 요청 완료 대기
+    } catch (err) {
+      // DELETE 실패 시: 보존해 둔 객체로 store를 복원하고 화면에 다시 표시한다
+      console.warn('DELETE 실패, 항목을 복원합니다.', err.message);
+      if (saved) insertTodo(saved);
+    }
+
+    renderAll(); // 성공·실패 모두 화면 갱신
   }
 }
 
