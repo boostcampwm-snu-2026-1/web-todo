@@ -5,18 +5,18 @@ export default class TodoController {
         this.model = model;
         this.view = view;
         
+        this.init();
+
         this.view.bindEvents({
             add: (text) => this.handleAdd(text),
             click: (id, action) => this.handleClick(id, action)
         });
-        
-        this.init()
     }
 
     async init() {
         const todos = await todoAPI.fetchTodos();
         this.model.setTodos(todos);
-        this.view.render(this.model.todos);
+        this.view.render(this.model.todos, false);
     }
 
     async handleAdd(text) {
@@ -32,7 +32,7 @@ export default class TodoController {
         }
         const responseTodo = await todoAPI.createTodo(newTodoData);
         this.model.addTodo(responseTodo);
-        this.view.render(this.model.todos);
+        this.view.render(this.model.todos, true);
     }
 
     async handleClick(id, action) {
@@ -43,7 +43,7 @@ export default class TodoController {
         } else if (action === 'edit') {
             this.handleEdit(id);
         }
-        this.view.render(this.model.todos);
+        this.view.render(this.model.todos, false);
     }
 
     async handleEdit(id) {

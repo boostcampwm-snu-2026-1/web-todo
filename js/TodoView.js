@@ -26,7 +26,7 @@ export default class TodoView {
     get _todoText() { return this.input.value; }
     _resetInput() { this.input.value = ''; }
 
-    render(todos) {
+    render(todos, isAdding=false) {
         this.todoList.innerHTML = todos.map(todo => `
             <li class="todo-item ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
                 <div class="checkbox" data-action="toggle"></div>
@@ -42,10 +42,16 @@ export default class TodoView {
             </li>
         `).join('');
 
-        this.todoList.scrollTo({
-            top: this.todoList.scrollHeight,
-            behavior: 'smooth'
-        });
+        if (isAdding) {
+            setTimeout(() => {
+                this.todoList.scrollTo({
+                    top: this.todoList.scrollHeight,
+                    behavior: 'smooth'
+                });
+            }, 0);
+        } else {
+            this.todoList.scrollTop = 0;
+        }
     }
 
     bindEvents(handlers) {
@@ -60,14 +66,14 @@ export default class TodoView {
         });
 
         this.todoList.addEventListener('click', (e) => {
-            const target = e.target;
-            const item = target.closest('.todo-item');
-            if (!item) return;
+        const actionBtn = e.target.closest('[data-action]');
+        if (!actionBtn) return;
 
-            const id = Number(item.dataset.id);
-            const action = target.dataset.action || target.parentElement.dataset.action;
-            
-            if (action) handlers.click(id, action);
-        });
+        const item = actionBtn.closest('.todo-item');
+        const id = Number(item.dataset.id);
+        const action = actionBtn.dataset.action;
+        
+        handlers.click(id, action);
+    });
     }
 }
