@@ -26,7 +26,9 @@ export default class TodoView {
     get _todoText() { return this.input.value; }
     _resetInput() { this.input.value = ''; }
 
-    render(todos, isAdding=false) {
+    render(todos, isAdding = false) {
+        const currentScrollPos = this.todoList.scrollTop;
+
         this.todoList.innerHTML = todos.map(todo => `
             <li class="todo-item ${todo.completed ? 'completed' : ''}" data-id="${todo.id}">
                 <div class="checkbox" data-action="toggle"></div>
@@ -50,7 +52,7 @@ export default class TodoView {
                 });
             }, 0);
         } else {
-            this.todoList.scrollTop = 0;
+            this.todoList.scrollTop = currentScrollPos;
         }
     }
 
