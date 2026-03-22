@@ -1,4 +1,6 @@
 import type { TodoUsecase } from '../../domain/todo-interface';
+import { EVENT_NAMES } from '../assets/event-name';
+import { COMPONENT_TAGS } from '../assets/tag-name';
 import { inject } from '../decorators/attr';
 import { customElement } from '../decorators/custom-element';
 import { errorDispatch } from '../decorators/event';
@@ -19,7 +21,7 @@ const isTodoUpdateDetail = (
   'newContent' in value &&
   typeof (value as Record<string, unknown>).newContent === 'string';
 
-@customElement('todo-list')
+@customElement(COMPONENT_TAGS.TODO_LIST)
 export class TodoList extends HTMLElement {
   @inject<TodoUsecase>('todoUsecase')
   accessor todoUsecase!: TodoUsecase;
@@ -28,7 +30,7 @@ export class TodoList extends HTMLElement {
     const result = await this.todoUsecase.listTodos();
     if (result.state === 'error') {
       this.dispatchEvent(
-        new CustomEvent('todo:error', {
+        new CustomEvent(EVENT_NAMES.TODO_ERROR, {
           bubbles: true,
           detail: { error: result.detailedError },
         })
@@ -38,7 +40,9 @@ export class TodoList extends HTMLElement {
 
     this.innerHTML = '<ul class="task-list"></ul>';
     const ul = this.querySelector('ul');
-    if (ul === null) return;
+    if (ul === null) {
+      return;
+    }
 
     for (const todo of result.data) {
       const item = new TodoItem();
@@ -48,26 +52,32 @@ export class TodoList extends HTMLElement {
   }
 
   connectedCallback() {
-    this.addEventListener('todo:added', this.handleAdded);
-    this.addEventListener('todo:added:rollback', this.handleAddRollback);
-    this.addEventListener('todo:toggle', this.handleToggle);
-    this.addEventListener('todo:edit', this.handleEdit);
-    this.addEventListener('todo:delete', this.handleDelete);
-    this.addEventListener('todo:update', this.handleUpdate);
-    this.addEventListener('todo:cancel', this.handleCancel);
+    this.addEventListener(EVENT_NAMES.TODO_ADDED, this.handleAdded);
+    this.addEventListener(
+      EVENT_NAMES.TODO_ADDED_ROLLBACK,
+      this.handleAddRollback
+    );
+    this.addEventListener(EVENT_NAMES.TODO_TOGGLE, this.handleToggle);
+    this.addEventListener(EVENT_NAMES.TODO_EDIT, this.handleEdit);
+    this.addEventListener(EVENT_NAMES.TODO_DELETE, this.handleDelete);
+    this.addEventListener(EVENT_NAMES.TODO_UPDATE, this.handleUpdate);
+    this.addEventListener(EVENT_NAMES.TODO_CANCEL, this.handleCancel);
   }
 
   disconnectedCallback() {
-    this.removeEventListener('todo:added', this.handleAdded);
-    this.removeEventListener('todo:added:rollback', this.handleAddRollback);
-    this.removeEventListener('todo:toggle', this.handleToggle);
-    this.removeEventListener('todo:edit', this.handleEdit);
-    this.removeEventListener('todo:delete', this.handleDelete);
-    this.removeEventListener('todo:update', this.handleUpdate);
-    this.removeEventListener('todo:cancel', this.handleCancel);
+    this.removeEventListener(EVENT_NAMES.TODO_ADDED, this.handleAdded);
+    this.removeEventListener(
+      EVENT_NAMES.TODO_ADDED_ROLLBACK,
+      this.handleAddRollback
+    );
+    this.removeEventListener(EVENT_NAMES.TODO_TOGGLE, this.handleToggle);
+    this.removeEventListener(EVENT_NAMES.TODO_EDIT, this.handleEdit);
+    this.removeEventListener(EVENT_NAMES.TODO_DELETE, this.handleDelete);
+    this.removeEventListener(EVENT_NAMES.TODO_UPDATE, this.handleUpdate);
+    this.removeEventListener(EVENT_NAMES.TODO_CANCEL, this.handleCancel);
   }
 
-  @errorDispatch('todo:error')
+  @errorDispatch(EVENT_NAMES.TODO_ERROR)
   private async handleAdded(e: Event) {
     if (!(e instanceof CustomEvent)) {
       return;
@@ -85,12 +95,12 @@ export class TodoList extends HTMLElement {
     await this.render();
   }
 
-  @errorDispatch('todo:error')
+  @errorDispatch(EVENT_NAMES.TODO_ERROR)
   private async handleAddRollback() {
     await this.render();
   }
 
-  @errorDispatch('todo:error')
+  @errorDispatch(EVENT_NAMES.TODO_ERROR)
   private handleToggle(e: Event) {
     if (!(e instanceof CustomEvent)) {
       return;
@@ -110,7 +120,7 @@ export class TodoList extends HTMLElement {
     return optimistic({ optimisticFn, asyncFn, rollbackFn });
   }
 
-  @errorDispatch('todo:error')
+  @errorDispatch(EVENT_NAMES.TODO_ERROR)
   private handleEdit(e: Event) {
     if (!(e instanceof CustomEvent)) {
       return;
@@ -135,7 +145,7 @@ export class TodoList extends HTMLElement {
     editEl.setTodo({ id: Number(id), content, done });
   }
 
-  @errorDispatch('todo:error')
+  @errorDispatch(EVENT_NAMES.TODO_ERROR)
   private handleUpdate(e: Event) {
     if (!(e instanceof CustomEvent)) {
       return;
@@ -177,15 +187,19 @@ export class TodoList extends HTMLElement {
     const { id } = e.detail;
 
     const editEl = this.querySelector(`todo-edit[data-id="${id}"]`);
-    if (editEl === null) return;
+    if (editEl === null) {
+      return;
+    }
 
     const original = (editEl as TodoEdit).getOriginalItem();
-    if (original === null) return;
+    if (original === null) {
+      return;
+    }
 
     editEl.replaceWith(original);
   };
 
-  @errorDispatch('todo:error')
+  @errorDispatch(EVENT_NAMES.TODO_ERROR)
   private handleDelete(e: Event) {
     if (!(e instanceof CustomEvent)) {
       return;

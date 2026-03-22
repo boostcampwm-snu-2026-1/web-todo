@@ -1,8 +1,25 @@
 import type { Todo } from '../../domain/todo-interface';
 import { ASSET_LINK } from '../assets/asset-link';
+import { EVENT_NAMES } from '../assets/event-name';
+import { COMPONENT_TAGS } from '../assets/tag-name';
 import { customElement } from '../decorators/custom-element';
 
-@customElement('todo-item')
+const ACTIONS = {
+  EDIT: 'edit',
+  DELETE: 'delete',
+} as const;
+
+type Action = (typeof ACTIONS)[keyof typeof ACTIONS];
+
+const ACTION_EVENT_MAP: Record<Action, string> = {
+  [ACTIONS.EDIT]: EVENT_NAMES.TODO_EDIT,
+  [ACTIONS.DELETE]: EVENT_NAMES.TODO_DELETE,
+} as const;
+
+const isAction = (value: unknown): value is Action =>
+  typeof value === 'string' && value in ACTION_EVENT_MAP;
+
+@customElement(COMPONENT_TAGS.TODO_ITEM)
 export class TodoItem extends HTMLElement {
   setTodo(todo: Todo) {
     this.dataset.id = String(todo.id);
@@ -18,12 +35,12 @@ export class TodoItem extends HTMLElement {
         </div>
         <span class="task-label">${todo.content}</span>
         <div class="task-actions">
-          <button class="action-btn" data-action="edit" aria-label="Edit">
+          <button class="action-btn" data-action="${ACTIONS.EDIT}" aria-label="Edit">
             <svg>
               <use href=${ASSET_LINK.EDIT_ICON} />
             </svg>
           </button>
-          <button class="action-btn" data-action="delete" aria-label="Delete">
+          <button class="action-btn" data-action="${ACTIONS.DELETE}" aria-label="Delete">
             <svg>
               <use href=${ASSET_LINK.DELETE_ICON} />
             </svg>
@@ -51,7 +68,7 @@ export class TodoItem extends HTMLElement {
 
     if (btn === null) {
       this.dispatchEvent(
-        new CustomEvent('todo:toggle', {
+        new CustomEvent(EVENT_NAMES.TODO_TOGGLE, {
           bubbles: true,
           detail: { id: this.dataset.id },
         })
@@ -60,12 +77,12 @@ export class TodoItem extends HTMLElement {
     }
 
     const action = btn.dataset.action;
-    if (action === undefined) {
+    if (!isAction(action)) {
       return;
     }
 
     this.dispatchEvent(
-      new CustomEvent(`todo:${action}`, {
+      new CustomEvent(ACTION_EVENT_MAP[action], {
         bubbles: true,
         detail: { id: this.dataset.id },
       })

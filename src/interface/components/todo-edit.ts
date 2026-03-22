@@ -1,8 +1,10 @@
 import type { Todo } from '../../domain/todo-interface';
 import { ASSET_LINK } from '../assets/asset-link';
+import { EVENT_NAMES } from '../assets/event-name';
+import { COMPONENT_TAGS } from '../assets/tag-name';
 import { customElement } from '../decorators/custom-element';
 
-@customElement('todo-edit')
+@customElement(COMPONENT_TAGS.TODO_EDIT)
 export class TodoEdit extends HTMLElement {
   private originalItem: Element | null = null;
 
@@ -47,10 +49,16 @@ export class TodoEdit extends HTMLElement {
   }
 
   private handleKeydown = (e: Event) => {
-    if (!(e instanceof KeyboardEvent)) return;
+    if (!(e instanceof KeyboardEvent)) {
+      return;
+    }
 
-    if (e.key === 'Enter') this.handleCommit();
-    if (e.key === 'Escape') this.handleCancel();
+    if (e.key === 'Enter') {
+      this.handleCommit();
+    }
+    if (e.key === 'Escape') {
+      this.handleCancel();
+    }
   };
 
   private handleClick = (e: MouseEvent) => {
@@ -75,7 +83,7 @@ export class TodoEdit extends HTMLElement {
     if (newContent.length === 0) return;
 
     this.dispatchEvent(
-      new CustomEvent('todo:update', {
+      new CustomEvent(EVENT_NAMES.TODO_UPDATE, {
         bubbles: true,
         detail: { id: this.dataset.id, newContent },
       })
@@ -84,7 +92,7 @@ export class TodoEdit extends HTMLElement {
 
   private handleCancel() {
     this.dispatchEvent(
-      new CustomEvent('todo:cancel', {
+      new CustomEvent(EVENT_NAMES.TODO_CANCEL, {
         bubbles: true,
         detail: { id: this.dataset.id },
       })

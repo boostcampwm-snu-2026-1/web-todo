@@ -1,5 +1,7 @@
 import type { DateUsecase } from '../../domain/date-interface';
 import type { TodoUsecase } from '../../domain/todo-interface';
+import { EVENT_NAMES } from '../assets/event-name';
+import { COMPONENT_TAGS } from '../assets/tag-name';
 import { inject } from '../decorators/attr';
 import { customElement } from '../decorators/custom-element';
 import { ErrorModal } from './error-modal';
@@ -7,7 +9,7 @@ import { TodoHeader } from './todo-header';
 import { TodoInput } from './todo-input';
 import { TodoList } from './todo-list';
 
-@customElement('todo-app')
+@customElement(COMPONENT_TAGS.TODO_APP)
 export class TodoApp extends HTMLElement {
   @inject<TodoUsecase>('todoUsecase')
   accessor todoUsecase!: TodoUsecase;
@@ -17,18 +19,18 @@ export class TodoApp extends HTMLElement {
   connectedCallback() {
     this.innerHTML = this.template();
     this.injectDependencies();
-    this.addEventListener('todo:added', this.handleAdded);
-    this.addEventListener('todo:error', this.handleError);
+    this.addEventListener(EVENT_NAMES.TODO_ADDED, this.handleAdded);
+    this.addEventListener(EVENT_NAMES.TODO_ERROR, this.handleError);
   }
 
   disconnectedCallback() {
-    this.removeEventListener('todo:added', this.handleAdded);
-    this.removeEventListener('todo:error', this.handleError);
+    this.removeEventListener(EVENT_NAMES.TODO_ADDED, this.handleAdded);
+    this.removeEventListener(EVENT_NAMES.TODO_ERROR, this.handleError);
   }
 
   private handleError = (e: Event) => {
     if (!(e instanceof CustomEvent)) return;
-    const modal = this.querySelector<ErrorModal>('error-modal');
+    const modal = this.querySelector<ErrorModal>(COMPONENT_TAGS.ERROR_MODAL);
     if (modal === null) {
       return;
     }
@@ -36,9 +38,11 @@ export class TodoApp extends HTMLElement {
   };
 
   private injectDependencies() {
-    const todoInput = this.querySelector<TodoInput>('todo-input');
-    const todoHeader = this.querySelector<TodoHeader>('todo-header');
-    const todoList = this.querySelector<TodoList>('todo-list');
+    const todoInput = this.querySelector<TodoInput>(COMPONENT_TAGS.TODO_INPUT);
+    const todoHeader = this.querySelector<TodoHeader>(
+      COMPONENT_TAGS.TODO_HEADER
+    );
+    const todoList = this.querySelector<TodoList>(COMPONENT_TAGS.TODO_LIST);
 
     if (todoInput == null) throw new Error('todo-input을 찾을 수 없어요.');
     if (todoHeader == null) throw new Error('todo-header를 찾을 수 없어요.');
@@ -53,8 +57,12 @@ export class TodoApp extends HTMLElement {
 
   private handleAdded = (e: Event) => {
     if (!(e instanceof CustomEvent)) return;
-    this.querySelector('todo-list')?.dispatchEvent(
-      new CustomEvent('todo:added', {
+    const todoList = this.querySelector(COMPONENT_TAGS.TODO_LIST);
+    if (todoList === null) {
+      return;
+    }
+    todoList.dispatchEvent(
+      new CustomEvent(EVENT_NAMES.TODO_ADDED, {
         detail: e.detail,
         bubbles: false,
       })
@@ -65,12 +73,12 @@ export class TodoApp extends HTMLElement {
     return /* html */ `
       <div class="background">
         <div class="card">
-          <todo-header></todo-header>
-          <todo-input></todo-input>
-          <todo-list></todo-list>
+          <${COMPONENT_TAGS.TODO_HEADER}></${COMPONENT_TAGS.TODO_HEADER}>
+          <${COMPONENT_TAGS.TODO_INPUT}></${COMPONENT_TAGS.TODO_INPUT}>
+          <${COMPONENT_TAGS.TODO_LIST}></${COMPONENT_TAGS.TODO_LIST}>
         </div>
       </div>
-      <error-modal></error-modal>
+      <${COMPONENT_TAGS.ERROR_MODAL}></${COMPONENT_TAGS.ERROR_MODAL}>
     `;
   }
 }

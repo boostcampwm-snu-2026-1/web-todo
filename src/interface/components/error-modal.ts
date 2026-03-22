@@ -1,13 +1,18 @@
 import type { DetailedError } from '../../domain/detailed-error';
 import { ERROR_MESSAGES } from '../assets/detailed-error-message';
+import { COMPONENT_TAGS } from '../assets/tag-name';
 import { customElement } from '../decorators/custom-element';
 
-@customElement('error-modal')
+@customElement(COMPONENT_TAGS.ERROR_MODAL)
 export class ErrorModal extends HTMLElement {
   show(error: DetailedError) {
     const message = ERROR_MESSAGES[error] ?? '알 수 없는 오류가 발생했어요.';
     this.render(message);
-    this.querySelector('dialog')?.showModal();
+    const modal = this.querySelector('dialog');
+    if (modal === null) {
+      return;
+    }
+    modal.showModal();
   }
 
   private render(message: string) {
