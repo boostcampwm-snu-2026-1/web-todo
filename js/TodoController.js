@@ -41,7 +41,7 @@ export default class TodoController {
         } else if (action === 'toggle') {
             this.model.toggleTodo(id);
         } else if (action === 'edit') {
-            this.handleEdit(id);
+            await this.handleEdit(id);
         }
         this.view.render(this.model.todos, false);
     }

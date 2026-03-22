@@ -70,7 +70,8 @@ export default class TodoView {
         if (!actionBtn) return;
 
         const item = actionBtn.closest('.todo-item');
-        const id = Number(item.dataset.id);
+
+        const id = item.dataset.id;
         const action = actionBtn.dataset.action;
         
         handlers.click(id, action);
