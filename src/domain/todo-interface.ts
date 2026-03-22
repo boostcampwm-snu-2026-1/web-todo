@@ -1,7 +1,7 @@
 import type {
   RepositoryResponseType,
   UseCaseResponseType,
-} from './response-type.js';
+} from './response-type';
 
 export type Todo = {
   id: number;

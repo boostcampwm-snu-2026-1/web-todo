@@ -1,7 +1,7 @@
-import { implDateUsecase } from './application/date-usecase.js';
-import { implTodoUsecase } from './application/todo-usecase.js';
-import { implDateRepository } from './infrastructure/date-repository.js';
-import { implTodoRepository } from './infrastructure/todo-repository.js';
+import { implDateUsecase } from './application/date-usecase';
+import { implTodoUsecase } from './application/todo-usecase';
+import { implDateRepository } from './infrastructure/date-repository';
+import { implTodoRepository } from './infrastructure/todo-repository';
 
 import { TodoApp } from './interface/components/todo-app.js';
 

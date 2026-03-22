@@ -1,5 +1,5 @@
-import type { Todo, TodoRepository } from '../domain/todo-interface.js';
-import { implIndexedDBRepository } from './db-repository.js';
+import type { Todo, TodoRepository } from '../domain/todo-interface';
+import { implIndexedDBRepository } from './db-repository';
 
 const STORE_NAME = 'todos';
 

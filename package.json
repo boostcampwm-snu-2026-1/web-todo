@@ -1,32 +1,23 @@
 {
-  "name": "week2",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "name": "week3",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "dev": "esbuild src/main.ts --bundle --outfile=dist/main.js --watch --target=es2022",
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "preview": "vite preview",
     "check:type": "tsc --noEmit",
     "check:lint": "biome lint .",
     "check:format": "biome check .",
-    "check-all": "npm run check:type && npm run check:lint && npm run check:format"
+    "check-all": "pnpm check:type && pnpm check:lint && pnpm check:format"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/Yeonu-Kim/web-todo.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/Yeonu-Kim/web-todo/issues"
-  },
-  "homepage": "https://github.com/Yeonu-Kim/web-todo#readme",
   "devDependencies": {
-    "@types/node": "^25.4.0",
-    "esbuild": "^0.27.4",
-    "typescript": "^5.9.3"
-  },
-  "dependencies": {
-    "@biomejs/biome": "^2.4.6"
+    "@babel/core": "^7.29.0",
+    "@babel/plugin-proposal-decorators": "^7.29.0",
+    "@biomejs/biome": "2.4.8",
+    "@rolldown/plugin-babel": "^0.2.2",
+    "typescript": "~5.9.3",
+    "vite": "^8.0.1"
   }
 }

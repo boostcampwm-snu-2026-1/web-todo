@@ -1,6 +1,6 @@
 import type { DateUsecase } from '../../domain/date-interface';
 import type { TodoUsecase } from '../../domain/todo-interface';
-import { inject } from '../decorators/attr.js';
+import { inject } from '../decorators/attr';
 import { customElement } from '../decorators/custom-element';
 import { TodoHeader } from './todo-header';
 import { TodoInput } from './todo-input';
