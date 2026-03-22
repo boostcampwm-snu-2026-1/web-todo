@@ -15,7 +15,8 @@
  *   import { initEvents } from './events.js';
  */
 
-import { addTodo, toggleTodo, deleteTodo, clearDone, setFilter } from './store.js';
+import { postTodo } from './api.js';
+import { addTodo, insertTodo, toggleTodo, deleteTodo, clearDone, setFilter } from './store.js';
 import { renderAll, renderList, renderStats } from './render.js';
 
 
@@ -66,17 +67,38 @@ export function initEvents() {
 /**
  * 폼 제출 처리 — 할일 추가.
  *
- * e.preventDefault()로 기본 동작(페이지 새로 고침)을 막고,
- * 입력값을 store에 넘긴다. 추가에 성공하면 입력창을 비우고 화면을 갱신한다.
+ * e.preventDefault()로 기본 동작(페이지 새로 고침)을 막는다.
+ * 입력값을 먼저 검증한 뒤 서버에 POST 요청을 보낸다.
+ *
+ * 처리 흐름:
+ *   1. 입력창이 비어 있으면 아무것도 하지 않는다.
+ *   2. 입력창을 즉시 비워 연속 입력이 가능하게 한다.
+ *   3. postTodo()로 서버에 새 항목을 생성한다.
+ *       ├─ 성공 → insertTodo()로 서버가 부여한 id·createdAt을 그대로 store에 삽입
+ *       └─ 실패 → addTodo()로 로컬에서 항목을 생성해 폴백 (서비스 지속성 보장)
+ *   4. renderAll()로 목록과 통계를 갱신한다.
+ *
+ * async로 선언한 이유: postTodo()가 Promise를 반환하므로 await로 결과를 기다린다.
  * @param {SubmitEvent} e
  */
-function handleFormSubmit(e) {
+async function handleFormSubmit(e) {
   e.preventDefault();
-  const added = addTodo(input.value);
-  if (added) {
-    input.value = ''; // 추가 성공 시 입력창 초기화
-    renderAll();
+
+  const trimmed = input.value.trim();
+  if (!trimmed) return; // 빈 입력이면 무시
+
+  input.value = ''; // 입력창을 먼저 비워 빠른 연속 입력을 허용
+
+  try {
+    const todo = await postTodo(trimmed); // 서버에 POST 요청
+    insertTodo(todo);                     // 서버가 부여한 id·createdAt으로 store에 삽입
+  } catch (err) {
+    // 네트워크 오류 등 POST 실패 시 로컬에서 항목 생성 (폴백)
+    console.warn('POST 실패, 로컬에서 항목을 생성합니다.', err.message);
+    addTodo(trimmed);
   }
+
+  renderAll();
 }
 
 /**

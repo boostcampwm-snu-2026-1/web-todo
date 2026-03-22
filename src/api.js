@@ -12,7 +12,7 @@
  *   { id: string, text: string, done: boolean, createdAt: number(Unix ms) }
  *
  * 다른 모듈에서 import해 사용한다:
- *   import { fetchTodos } from './api.js';
+ *   import { fetchTodos, postTodo } from './api.js';
  */
 
 
@@ -77,4 +77,42 @@ export async function fetchTodos() {
 
   // 배열의 각 항목을 앱 내부 형식으로 일괄 변환해 반환
   return data.map(transformTodo);
+}
+
+/**
+ * 새 할일을 서버에 저장한다 (POST /todos).
+ *
+ * 서버에 보내는 body:
+ *   { content: string, completed: false }
+ *   - content   : 사용자가 입력한 할일 텍스트
+ *   - completed : 새 항목은 항상 미완료 상태로 생성
+ *
+ * 서버 응답 (생성된 항목 전체):
+ *   { id: string, content: string, completed: boolean, createdAt: string }
+ *   - id, createdAt 은 서버가 자동으로 부여한다.
+ *
+ * 응답을 transformTodo로 변환해 앱 내부 형식으로 반환한다.
+ * 호출부(events.js)에서 반환된 객체를 store에 삽입해 UI를 갱신한다.
+ *
+ * @param {string} text — 사용자가 입력한 할일 내용
+ * @returns {Promise<{ id: string, text: string, done: boolean, createdAt: number }>}
+ * @throws {Error} 네트워크 오류 또는 HTTP 오류 상태일 때
+ */
+export async function postTodo(text) {
+  const response = await fetch(`${BASE_URL}/todos`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    // 서버 필드명(content, completed)으로 변환해서 전송
+    body: JSON.stringify({ content: text, completed: false }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`API 오류: ${response.status} ${response.statusText}`);
+  }
+
+  const data = await response.json();
+
+  // 서버가 반환한 생성 항목을 앱 내부 형식으로 변환해 반환
+  // (id, createdAt은 서버가 부여한 값을 그대로 사용)
+  return transformTodo(data);
 }

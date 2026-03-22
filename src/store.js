@@ -100,7 +100,19 @@ export function getDoneCount()  { return todos.filter(t => t.done).length; }
 ════════════════════════════════════════════ */
 
 /**
- * 새 할일을 목록 맨 앞에 추가한다 (최신 항목이 위에 표시되도록 unshift 사용).
+ * 서버에서 받은 완성된 할일 객체를 목록 맨 앞에 삽입한다.
+ * POST 요청이 성공했을 때 events.js에서 호출한다.
+ * id·createdAt은 서버가 부여한 값을 그대로 사용한다.
+ * @param {{ id: string, text: string, done: boolean, createdAt: number }} todo
+ */
+export function insertTodo(todo) {
+  todos.unshift(todo);
+  persist();
+}
+
+/**
+ * 새 할일을 로컬에서 생성해 목록 맨 앞에 추가한다.
+ * POST 요청이 실패했을 때 폴백으로 events.js에서 호출한다.
  * 빈 문자열이면 추가하지 않고 false를 반환한다.
  * @param {string} text — 입력창에서 받은 할일 내용
  * @returns {boolean} 추가 성공 여부
