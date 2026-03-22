@@ -21,35 +21,62 @@ async function handleFetchTodos() {
 
 async function handleAddTodo(task) {
     if (isEmpty(task)) return;
-    const data = { content: task, done: false, createdAt: new Date() };
+
+    const tempId = `temp-${Date.now()}`; // 낙관적 업데이트를 위한 임시 ID
+    const newTodo = { 
+        id: tempId, 
+        content: task, 
+        done: false
+    };
+
+    todos.push(newTodo); // 낙관적 업데이트
+    render();
+
     try {
-        const createdTodo = await addTodoApi(data);
-        todos.push(createdTodo); // 로컬 배열 업데이트
+        const createdTodo = await addTodoApi({ content: task, done: false });
+        const index = todos.findIndex(t => t.id === tempId);
+        todos[index] = createdTodo; //임시 ID를 서버로부터 받은 실제 ID로 교체
         render();
     } catch (error) { 
+        // 롤백 필요
         console.error("추가 실패:", error); 
+        todos = todos.filter(t => t.id !== tempId);
+        render();
     }
 }
 
 async function handleToggleTodo(targetId) {
     const index = todos.findIndex(t => String(t.id) === String(targetId));
     if (index === -1) return;
+
+    const oldStatus = todos[index].done; // 업데이트 이전 상태 저장
+    todos[index].done = !oldStatus; // 낙관적 업데이트
+    render();
+
     try {
-        const updatedTodo = await toggleTodoApi(targetId, !todos[index].done);
-        todos[index] = updatedTodo; // 로컬 배열 업데이트
-        render();
+        await toggleTodoApi(targetId, todos[index].done);
+        // 성공할 경우 아무것도 할 필요 없음
     } catch (error) {
+        // 롤백 필요
         console.error("수정 실패:", error);
+        todos[index].done = oldStatus;
+        render();
     }
 }
 
 async function handleDeleteTodo(targetId) {
+    const previousTodos = [...todos]; // 업데이트 이전 상태 저장
+    todos = todos.filter(t => String(t.id) !== String(targetId)); // 낙관적 업데이트
+    render();
+
     try {
         await deleteTodoApi(targetId);
-        todos = todos.filter(t => String(t.id) !== String(targetId)); // 서버에서 삭제 성공 시 로컬 배열에서 필터링
-        render();
+        // 성공할 경우 아무것도 할 필요 없음
     } catch (error) {
+        // 롤백 필요
         console.error("삭제 실패:", error);
+        todos = previousTodos;
+        render();
     }
 }
 
