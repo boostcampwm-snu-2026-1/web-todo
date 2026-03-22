@@ -1,5 +1,10 @@
 let editingTodoId = null;
 
+const editingActions = [
+  { action: "save-edit", label: "저장" },
+  { action: "cancel-edit", label: "취소" },
+];
+
 function escapeHtml(value) {
   return value
     .replaceAll("&", "&amp;")
@@ -15,6 +20,51 @@ export function startEditingTodo(id) {
 
 export function stopEditingTodo() {
   editingTodoId = null;
+}
+
+function renderActionButton(todoId, action, label) {
+  return `
+    <button
+      class="todo-action"
+      type="button"
+      data-action="${action}"
+      data-id="${todoId}"
+    >
+      ${label}
+    </button>
+  `;
+}
+
+function renderTodoContent(todoId, safeTask, isEditing) {
+  if (!isEditing) {
+    return `<span class="todo-text">${safeTask}</span>`;
+  }
+
+  return `
+    <input
+      class="todo-edit-input"
+      data-id="${todoId}"
+      type="text"
+      value="${safeTask}"
+      maxlength="200"
+    />
+  `;
+}
+
+function renderTodoActions(todo, isEditing) {
+  if (isEditing) {
+    return editingActions
+      .map(({ action, label }) => renderActionButton(todo.id, action, label))
+      .join("");
+  }
+
+  return [
+    { action: "edit", label: "수정" },
+    { action: "toggle", label: todo.done ? "되돌리기" : "완료" },
+    { action: "delete", label: "삭제" },
+  ]
+    .map(({ action, label }) => renderActionButton(todo.id, action, label))
+    .join("");
 }
 
 export function renderTodos(todos) {
@@ -36,68 +86,8 @@ export function renderTodos(todos) {
           <li class="todo-item ${todo.done ? "is-done" : ""} ${
             isEditing ? "is-editing" : ""
           }">
-            ${
-              isEditing
-                ? `
-                  <input
-                    class="todo-edit-input"
-                    data-id="${todo.id}"
-                    type="text"
-                    value="${safeTask}"
-                    maxlength="200"
-                  />
-                `
-                : `<span class="todo-text">${safeTask}</span>`
-            }
-            <div class="todo-actions">
-              ${
-                isEditing
-                  ? `
-                    <button
-                      class="todo-action todo-action--save"
-                      type="button"
-                      data-action="save-edit"
-                      data-id="${todo.id}"
-                    >
-                      저장
-                    </button>
-                    <button
-                      class="todo-action todo-action--cancel"
-                      type="button"
-                      data-action="cancel-edit"
-                      data-id="${todo.id}"
-                    >
-                      취소
-                    </button>
-                  `
-                  : `
-                    <button
-                      class="todo-action todo-action--edit"
-                      type="button"
-                      data-action="edit"
-                      data-id="${todo.id}"
-                    >
-                      수정
-                    </button>
-                    <button
-                      class="todo-action todo-action--toggle"
-                      type="button"
-                      data-action="toggle"
-                      data-id="${todo.id}"
-                    >
-                      ${todo.done ? "되돌리기" : "완료"}
-                    </button>
-                    <button
-                      class="todo-action todo-action--delete"
-                      type="button"
-                      data-action="delete"
-                      data-id="${todo.id}"
-                    >
-                      삭제
-                    </button>
-                  `
-              }
-            </div>
+            ${renderTodoContent(todo.id, safeTask, isEditing)}
+            <div class="todo-actions">${renderTodoActions(todo, isEditing)}</div>
           </li>
         `;
       },
