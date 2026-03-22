@@ -36,6 +36,7 @@ async function addTodo(){ //add-btn 동작 함수
             createdAt: new Date().toISOString(),
             content: text,
             completed: false
+            //id는 서버에서 정리함
     })
     });
 
@@ -58,6 +59,19 @@ function renderTodos(){ // 화면에 todos를 렌더링하는 함수
         if (todo.completed) {
             span.classList.add('done');
         }
+        
+        const createdAt = new Date(todo.createdAt);
+        const now = createdAt.toLocaleString('ko-KR', {
+            month: '2-digit',
+            day: '2-digit',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: false
+        });
+
+        const timeSpan = document.createElement('span');
+        timeSpan.className = 'todo-time';
+        timeSpan.textContent = `(${now})`;
 
         const delBtn = document.createElement('button');
         delBtn.textContent = '🗑';
@@ -65,6 +79,7 @@ function renderTodos(){ // 화면에 todos를 렌더링하는 함수
 
         li.appendChild(checkbox);
         li.appendChild(span);
+        li.appendChild(timeSpan);
         li.appendChild(delBtn);
 
         todoList.appendChild(li);

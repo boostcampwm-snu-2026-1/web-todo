@@ -59,6 +59,14 @@ h2{ /* date */
     font-size: 15px;
     color: #333;
 }
+.todo-time {
+    margin-left: auto;
+    margin-right: 15px;
+    font-size: 12px !important;
+    color: #999 !important;
+    font-weight: 300 !important;
+    white-space: nowrap;
+}
 .input-layer input{
     flex-grow: 1;
 }
@@ -74,7 +82,6 @@ h2{ /* date */
     margin-bottom: 12px;
     padding: 14px 18px;
     display: flex;
-    justify-content: space-between;
     align-items: center;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
     transition: all 0.2s ease;
@@ -84,9 +91,9 @@ h2{ /* date */
     transform: translateY(-1px);
 }
 .list-layer li span {
-    flex-grow: 1;
     font-size: 15px;
     color: #333;
+    margin-right : 10px;
 }
 
 footer{
