@@ -6,13 +6,13 @@ import {
   replaceTodo,
   resetAllTodos,
   setTodos,
-  updateTodoText,
 } from "../model/todos.js";
 import {
   createTodoOnServer,
   deleteTodoOnServer,
   fetchTodosFromServer,
   putTodoCompletionOnServer,
+  putTodoContentOnServer,
 } from "../api/todoApi.js";
 import { renderTodoList } from "../ui/todoView.js";
 import { showToastMessage } from "../ui/toast.js";
@@ -65,16 +65,22 @@ function cancelEditing() {
   renderCurrentTodos();
 }
 
-function saveEditing(todoId, text) {
+async function saveEditing(todoId, text) {
   const trimmedText = text.trim();
   if (!trimmedText) {
     alert("Task cannot be empty.");
     return;
   }
 
-  editingTodoId = null;
-  updateTodoText(todoId, trimmedText);
-  renderCurrentTodos();
+  try {
+    const updatedTodo = await putTodoContentOnServer(todoId, trimmedText);
+    editingTodoId = null;
+    replaceTodo(updatedTodo);
+    renderCurrentTodos();
+  } catch (error) {
+    console.error("Failed to put todo content on server.", error);
+    showToastMessage("Failed to update task content.");
+  }
 }
 
 async function handleTodoListChange(event) {
@@ -134,7 +140,7 @@ async function handleTodoListClick(event) {
     const editInput = todoItemElement.querySelector(".todo-edit-input");
     if (!(editInput instanceof HTMLInputElement)) return;
 
-    saveEditing(todoId, editInput.value);
+    await saveEditing(todoId, editInput.value);
     return;
   }
 
@@ -155,7 +161,7 @@ async function handleTodoListClick(event) {
   }
 }
 
-function handleTodoListKeydown(event) {
+async function handleTodoListKeydown(event) {
   const target = event.target;
   if (!(target instanceof HTMLInputElement)) return;
   if (!target.classList.contains("todo-edit-input")) return;
@@ -168,7 +174,7 @@ function handleTodoListKeydown(event) {
 
   if (event.key === "Enter") {
     event.preventDefault();
-    saveEditing(todoId, target.value);
+    await saveEditing(todoId, target.value);
     return;
   }
 

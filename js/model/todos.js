@@ -44,16 +44,6 @@ export function findTodoById(todoId) {
   return todos.find((todo) => isSameTodoId(todo.id, todoId));
 }
 
-export function updateTodoText(todoId, text) {
-  const todos = loadTodos();
-  const updatedTodos = todos.map((todo) => {
-    if (!isSameTodoId(todo.id, todoId)) return todo;
-    return { ...todo, text };
-  });
-
-  saveTodos(updatedTodos);
-  return updatedTodos;
-}
 
 export function deleteTodo(todoId) {
   const todos = loadTodos();

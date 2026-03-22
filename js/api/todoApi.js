@@ -36,6 +36,13 @@ function createTodoCompletionPutBody(completed) {
   };
 }
 
+function createTodoContentPutBody(content) {
+  return {
+    content,
+    updatedAt: new Date().toISOString(),
+  };
+}
+
 export async function fetchTodosFromServer() {
   const response = await fetch(TODO_API_ENDPOINT);
   if (!response.ok) {
@@ -80,6 +87,27 @@ export async function putTodoCompletionOnServer(todoId, completed) {
 
   if (!response.ok) {
     throw new Error(`Failed to put todo completion: ${response.status}`);
+  }
+
+  const result = await response.json();
+  return mapServerTodoToClientTodo(result);
+}
+
+export async function putTodoContentOnServer(todoId, content) {
+  if (!todoId) {
+    throw new Error("Cannot update todo content without a valid id.");
+  }
+
+  const response = await fetch(`${TODO_API_ENDPOINT}/${todoId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(createTodoContentPutBody(content)),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to put todo content: ${response.status}`);
   }
 
   const result = await response.json();
