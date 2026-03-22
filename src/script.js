@@ -1,4 +1,4 @@
-import { getTodo, addTodo, deleteTodo } from "./api";
+import { getTodo, addTodo, deleteTodo, checkTodo } from "./api";
 
 const todoForm = document.getElementById("form");
 const todoInput = document.getElementById("input");
@@ -30,8 +30,9 @@ function renderTodos() {
             renderTodos();
         })
 
-        checkbox.addEventListener("change", () => {
-            todo.completed = checkbox.checked;
+        checkbox.addEventListener("change", async () => {
+            await checkTodo(todo.id, !todo.completed);
+            todos = await getTodo();
             renderTodos();
         });
 

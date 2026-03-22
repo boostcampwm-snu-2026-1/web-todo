@@ -24,3 +24,16 @@ export async function deleteTodo(id) {
     })
     return(response)
 }
+
+export async function checkTodo(id, check) {
+    const response = await fetch(`https://69b9371be69653ffe6a6eff1.mockapi.io/todos/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            completed: check
+        })
+    })
+    return(response)
+}
