@@ -85,3 +85,17 @@ export async function putTodoCompletionOnServer(todoId, completed) {
   const result = await response.json();
   return mapServerTodoToClientTodo(result);
 }
+
+export async function deleteTodoOnServer(todoId) {
+  if (!todoId) {
+    throw new Error("Cannot delete todo without a valid id.");
+  }
+
+  const response = await fetch(`${TODO_API_ENDPOINT}/${todoId}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to delete todo: ${response.status}`);
+  }
+}

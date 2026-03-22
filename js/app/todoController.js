@@ -10,6 +10,7 @@ import {
 } from "../model/todos.js";
 import {
   createTodoOnServer,
+  deleteTodoOnServer,
   fetchTodosFromServer,
   putTodoCompletionOnServer,
 } from "../api/todoApi.js";
@@ -102,7 +103,14 @@ async function handleTodoListChange(event) {
   }
 }
 
-function handleTodoListClick(event) {
+async function deleteTodoWithServerSync(todoId) {
+  await deleteTodoOnServer(todoId);
+  deleteTodo(todoId);
+  renderCurrentTodos();
+  showToastMessage("Task has been deleted.");
+}
+
+async function handleTodoListClick(event) {
   const target = event.target;
   if (!(target instanceof HTMLElement)) return;
 
@@ -138,9 +146,13 @@ function handleTodoListClick(event) {
   const shouldDelete = confirmDeleteTask(todo.text);
   if (!shouldDelete) return;
 
-  deleteTodo(todoId);
-  renderCurrentTodos();
-  showToastMessage("Task has been deleted.");
+  try {
+    await deleteTodoWithServerSync(todoId);
+  } catch (error) {
+    console.error("Failed to delete todo on server.", error);
+    showToastMessage("Failed to delete task on server.");
+    renderCurrentTodos();
+  }
 }
 
 function handleTodoListKeydown(event) {
