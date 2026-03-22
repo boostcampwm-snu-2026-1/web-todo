@@ -16,7 +16,7 @@
  */
 
 import { postTodo, putTodo, removeTodo } from './api.js';
-import { addTodo, insertTodo, getTodoById, toggleTodo, deleteTodo, clearDone, setFilter } from './store.js';
+import { addTodo, insertTodo, getTodoById, getDoneTodos, toggleTodo, deleteTodo, setFilter } from './store.js';
 import { renderAll, renderList, renderStats } from './render.js';
 
 
@@ -204,10 +204,26 @@ function handleFilterClick(e) {
 
 /**
  * "완료 항목 삭제" 버튼 클릭 처리.
- * store에서 완료 항목을 제거하고 전체 화면을 다시 그린다.
+ *
+ * 완료된 항목 각각에 DELETE 요청을 병렬로 보낸다.
+ * Promise.allSettled를 사용하는 이유:
+ *   Promise.all은 하나라도 실패하면 전체가 중단된다.
+ *   allSettled는 모든 요청이 완료될 때까지 기다린 뒤
+ *   성공한 것만 store에서 제거하므로 부분 실패에 안전하다.
  */
-function handleClearDone() {
-  clearDone();
+async function handleClearDone() {
+  const done = getDoneTodos(); // 현재 완료 항목 스냅샷
+  if (!done.length) return;
+
+  // 완료 항목 전체에 DELETE 요청을 동시에 보낸다
+  const results = await Promise.allSettled(done.map(t => removeTodo(t.id)));
+
+  // 서버 삭제에 성공한 항목만 store에서도 제거한다
+  results.forEach((result, i) => {
+    if (result.status === 'fulfilled') deleteTodo(done[i].id);
+    else console.warn(`DELETE 실패 (id: ${done[i].id})`, result.reason?.message);
+  });
+
   renderAll();
 }
 

@@ -96,6 +96,9 @@ export function getFilteredTodos() {
  */
 export function getTodoById(id) { return todos.find(t => t.id === id); }
 
+/** 완료된 할일 목록을 반환한다 (일괄 삭제 시 id 목록 추출에 사용) */
+export function getDoneTodos() { return todos.filter(t => t.done); }
+
 /** 전체 할일 개수를 반환한다 (통계 표시에 사용) */
 export function getTotalCount() { return todos.length; }
 
