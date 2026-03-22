@@ -15,7 +15,7 @@
  *   import { initEvents } from './events.js';
  */
 
-import { postTodo } from './api.js';
+import { postTodo, putTodo, removeTodo } from './api.js';
 import { addTodo, insertTodo, toggleTodo, deleteTodo, clearDone, setFilter } from './store.js';
 import { renderAll, renderList, renderStats } from './render.js';
 
@@ -105,16 +105,17 @@ async function handleFormSubmit(e) {
  * 할일 목록 클릭 처리 — 이벤트 위임.
  *
  * 클릭된 요소의 data-action 속성을 보고 동작을 분기한다:
- *   - 'toggle' : 체크박스 클릭 → 완료 상태 토글
- *   - 'delete' : 삭제 버튼 클릭 → 애니메이션 후 삭제
+ *   - 'toggle' : 체크박스 클릭 → 낙관적 UI 업데이트 후 PUT 요청
+ *   - 'delete' : 삭제 버튼 클릭 → 애니메이션 후 DELETE 요청
  *
  * closest()를 쓰는 이유:
  *   SVG 내부의 path 같은 자식 요소를 클릭해도 올바르게 동작하도록
  *   클릭 대상에서 가장 가까운 [data-action] 조상을 탐색한다.
  *
+ * async로 선언한 이유: putTodo·removeTodo가 Promise를 반환하므로 await로 기다린다.
  * @param {MouseEvent} e
  */
-function handleListClick(e) {
+async function handleListClick(e) {
   // 클릭된 위치에서 가장 가까운 .todo-item을 찾는다
   const item = e.target.closest('.todo-item');
   if (!item) return; // 빈 영역 클릭이면 무시
@@ -123,13 +124,27 @@ function handleListClick(e) {
   const action = e.target.closest('[data-action]')?.dataset.action;
 
   if (action === 'toggle') {
-    toggleTodo(id); // store 상태 변경
-
-    // 전체 목록을 다시 그리는 대신, 해당 <li>의 클래스만 갱신해 성능을 높인다.
-    // 체크박스는 브라우저가 이미 시각적으로 변경했으므로 checked 값을 그대로 읽는다.
+    // 체크박스는 브라우저가 이미 시각적으로 변경했으므로 checked 값이 새 상태다
     const checkbox = item.querySelector('.todo-check');
-    item.classList.toggle('done', checkbox.checked);
-    renderStats(); // 통계 숫자만 업데이트
+    const newDone  = checkbox.checked;
+
+    // ── 낙관적 업데이트: 서버 응답을 기다리지 않고 UI를 먼저 반영 ──
+    // 사용자가 즉각적인 피드백을 느낄 수 있도록 한다.
+    toggleTodo(id);
+    item.classList.toggle('done', newDone);
+    renderStats();
+
+    try {
+      // 서버에 새 완료 상태를 반영한다 (PUT /todos/:id)
+      await putTodo(id, newDone);
+    } catch (err) {
+      // PUT 실패 시: store와 UI를 원래 상태로 되돌린다 (롤백)
+      console.warn('PUT 실패, 롤백합니다.', err.message);
+      toggleTodo(id);                        // store 롤백
+      checkbox.checked = !newDone;           // 체크박스 롤백
+      item.classList.toggle('done', !newDone); // 클래스 롤백
+      renderStats();
+    }
     return;
   }
 
@@ -139,11 +154,17 @@ function handleListClick(e) {
     item.style.opacity    = '0';
     item.style.transform  = 'translateX(8px)';
 
-    // 애니메이션이 끝난 뒤에 store에서 삭제하고 화면을 갱신한다.
+    // 애니메이션이 끝난 뒤 DELETE 요청을 보낸다.
     // { once: true }로 리스너가 한 번만 실행되게 해 메모리 누수를 막는다.
-    item.addEventListener('transitionend', () => {
-      deleteTodo(id);
-      renderAll();
+    item.addEventListener('transitionend', async () => {
+      try {
+        await removeTodo(id); // 서버에서 삭제 (DELETE /todos/:id)
+        deleteTodo(id);       // store에서도 제거
+      } catch (err) {
+        // DELETE 실패 시: store에 항목이 남아 있으므로 renderAll이 화면을 복원한다
+        console.warn('DELETE 실패, 항목을 복원합니다.', err.message);
+      }
+      renderAll(); // 성공·실패 모두 화면 갱신 (실패 시 복원 역할)
     }, { once: true });
   }
 }

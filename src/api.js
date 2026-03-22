@@ -116,3 +116,51 @@ export async function postTodo(text) {
   // (id, createdAt은 서버가 부여한 값을 그대로 사용)
   return transformTodo(data);
 }
+
+/**
+ * 특정 할일의 완료 상태를 서버에 반영한다 (PUT /todos/:id).
+ *
+ * 서버에 보내는 body:
+ *   { completed: boolean }
+ *   - MockAPI는 전달된 필드만 덮어쓰므로 변경할 필드만 보낸다.
+ *
+ * 서버 응답: 수정된 항목 전체 ({ id, content, completed, createdAt })
+ * 반환값은 사용하지 않으므로 void로 처리한다.
+ * 실패 시 호출부(events.js)에서 낙관적 업데이트를 롤백한다.
+ *
+ * @param {string} id — 수정할 할일의 id
+ * @param {boolean} completed — 새로운 완료 상태
+ * @returns {Promise<void>}
+ * @throws {Error} 네트워크 오류 또는 HTTP 오류 상태일 때
+ */
+export async function putTodo(id, completed) {
+  const response = await fetch(`${BASE_URL}/todos/${id}`, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ completed }),
+  });
+
+  if (!response.ok) {
+    throw new Error(`API 오류: ${response.status} ${response.statusText}`);
+  }
+}
+
+/**
+ * 특정 할일을 서버에서 삭제한다 (DELETE /todos/:id).
+ *
+ * 서버 응답: 삭제된 항목 전체 (반환값은 사용하지 않는다)
+ * 실패 시 호출부(events.js)에서 renderAll()로 항목을 화면에 복원한다.
+ *
+ * @param {string} id — 삭제할 할일의 id
+ * @returns {Promise<void>}
+ * @throws {Error} 네트워크 오류 또는 HTTP 오류 상태일 때
+ */
+export async function removeTodo(id) {
+  const response = await fetch(`${BASE_URL}/todos/${id}`, {
+    method: 'DELETE',
+  });
+
+  if (!response.ok) {
+    throw new Error(`API 오류: ${response.status} ${response.statusText}`);
+  }
+}
