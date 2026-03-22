@@ -50,7 +50,7 @@ h3 {
     gap: 10px;
 }
 
-.todo-item .todo-text {
+.todo-item .todo-content {
     background-color: #007BFF;
     color: white;
     border: none;

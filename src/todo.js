@@ -1,11 +1,6 @@
-
-
-const todoList = [
-    { id: 1, text: "Do the laundry", completed: true },
-    { id: 2, text: "Buy groceries", completed: false },
-];
+const todoList = [];
 const todoContainer = document.querySelector(".todo-container");
-
+const API_URL = "https://69b937bfe69653ffe6a6f498.mockapi.io/todos";
 
 function renderTodos () {
     todoContainer.innerHTML = "";
@@ -15,7 +10,7 @@ function renderTodos () {
         todoItem.dataset.id = todo.id;
 
         todoItem.innerHTML = `<input type="checkbox" ${todo.completed ? "checked" : ""}>
-        <span class="todo-text ${todo.completed ? "completed" : ""}">${todo.text}</span>
+        <span class="todo-content ${todo.completed ? "completed" : ""}">${todo.content}</span>
         <div>
             <button type="button" class="edit-todo-btn">🖋️</button>
             <button type="button" class="delete-todo-btn">🗑️</button>
@@ -24,7 +19,12 @@ function renderTodos () {
     });
 };
 
-renderTodos();
+fetch(API_URL)
+    .then(res => res.json())
+    .then(data => {
+        todoList.push(...data);
+        renderTodos();
+    });
 
 const todoInput = document.querySelector("#add-todo-input");
 const addTodoBtn = document.querySelector("#add-todo-btn");
@@ -37,14 +37,20 @@ todoInput.addEventListener("keypress", (e) => {
 
 
 function addTodo () {
-    const text = todoInput.value.trim()
-    if (text) {
-            const newTodo = {
-                id: Date.now(),
-                text: text,
-                completed: false
-            };
-            todoList.push(newTodo);
+    const todoContent = todoInput.value.trim();
+    if (todoContent) {
+            fetch(API_URL, {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    content: todoContent,
+                    completed: false
+                })
+                })
+                .then(res => res.json())
+                .then(result => console.log(result));
             renderTodos();
             todoInput.value = "";
     };
