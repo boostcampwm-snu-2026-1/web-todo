@@ -1,5 +1,5 @@
 import {
-  addTodo,
+  appendTodo,
   deleteTodo,
   findTodoById,
   getTodos,
@@ -8,7 +8,7 @@ import {
   toggleTodoCompletion,
   updateTodoText,
 } from "../model/todos.js";
-import { fetchTodosFromServer } from "../api/todoApi.js";
+import { createTodoOnServer, fetchTodosFromServer } from "../api/todoApi.js";
 import { renderTodoList } from "../ui/todoView.js";
 import { showToastMessage } from "../ui/toast.js";
 import { renderTodayDate } from "../ui/date.js";
@@ -146,7 +146,7 @@ function handleTodoListKeydown(event) {
   }
 }
 
-function handleTodoSubmit(event) {
+async function handleTodoSubmit(event) {
   event.preventDefault();
 
   const inputElement = document.getElementById("todo-input");
@@ -155,10 +155,16 @@ function handleTodoSubmit(event) {
   const text = getTrimmedInputValue(inputElement);
   if (!text) return;
 
-  addTodo(text);
-  renderCurrentTodos();
-  clearInput(inputElement);
-  showToastMessage("New task has been successfully added!");
+  try {
+    const createdTodo = await createTodoOnServer(text);
+    appendTodo(createdTodo);
+    renderCurrentTodos();
+    clearInput(inputElement);
+    showToastMessage("New task has been successfully added!");
+  } catch (error) {
+    console.error("Failed to create todo on server.", error);
+    showToastMessage("Failed to add task on server.");
+  }
 }
 
 function handleResetAllClick() {

@@ -15,6 +15,17 @@ function mapServerTodoToClientTodo(serverTodo) {
   };
 }
 
+function createTodoRequestBody(content) {
+  const now = new Date().toISOString();
+
+  return {
+    content,
+    completed: false,
+    createdAt: now,
+    updatedAt: now,
+  };
+}
+
 export async function fetchTodosFromServer() {
   const response = await fetch(TODO_API_ENDPOINT);
   if (!response.ok) {
@@ -25,4 +36,21 @@ export async function fetchTodosFromServer() {
   if (!Array.isArray(result)) return [];
 
   return result.map(mapServerTodoToClientTodo);
+}
+
+export async function createTodoOnServer(content) {
+  const response = await fetch(TODO_API_ENDPOINT, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(createTodoRequestBody(content)),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to create todo: ${response.status}`);
+  }
+
+  const result = await response.json();
+  return mapServerTodoToClientTodo(result);
 }
