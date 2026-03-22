@@ -1,8 +1,11 @@
 const TODO_API_ENDPOINT = "https://69be0fcd17c3d7d9779120b3.mockapi.io/api/v1/todos";
 
 function normalizeTodoId(rawId) {
-  const numericId = Number(rawId);
-  return Number.isFinite(numericId) ? numericId : rawId;
+  if (rawId === null || rawId === undefined || rawId === "") {
+    return null;
+  }
+
+  return String(rawId);
 }
 
 function mapServerTodoToClientTodo(serverTodo) {
@@ -23,6 +26,13 @@ function createTodoRequestBody(content) {
     completed: false,
     createdAt: now,
     updatedAt: now,
+  };
+}
+
+function createTodoCompletionPutBody(completed) {
+  return {
+    completed,
+    updatedAt: new Date().toISOString(),
   };
 }
 
@@ -49,6 +59,27 @@ export async function createTodoOnServer(content) {
 
   if (!response.ok) {
     throw new Error(`Failed to create todo: ${response.status}`);
+  }
+
+  const result = await response.json();
+  return mapServerTodoToClientTodo(result);
+}
+
+export async function putTodoCompletionOnServer(todoId, completed) {
+  if (!todoId) {
+    throw new Error("Cannot update todo completion without a valid id.");
+  }
+
+  const response = await fetch(`${TODO_API_ENDPOINT}/${todoId}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(createTodoCompletionPutBody(completed)),
+  });
+
+  if (!response.ok) {
+    throw new Error(`Failed to put todo completion: ${response.status}`);
   }
 
   const result = await response.json();

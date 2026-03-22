@@ -3,17 +3,26 @@ import {
   deleteTodo,
   findTodoById,
   getTodos,
+  replaceTodo,
   resetAllTodos,
   setTodos,
-  toggleTodoCompletion,
   updateTodoText,
 } from "../model/todos.js";
-import { createTodoOnServer, fetchTodosFromServer } from "../api/todoApi.js";
+import {
+  createTodoOnServer,
+  fetchTodosFromServer,
+  putTodoCompletionOnServer,
+} from "../api/todoApi.js";
 import { renderTodoList } from "../ui/todoView.js";
 import { showToastMessage } from "../ui/toast.js";
 import { renderTodayDate } from "../ui/date.js";
 
 let editingTodoId = null;
+
+function normalizeTodoId(rawId) {
+  if (!rawId || rawId === "undefined" || rawId === "null") return null;
+  return String(rawId);
+}
 
 function getTrimmedInputValue(inputElement) {
   return inputElement.value.trim();
@@ -24,13 +33,13 @@ function clearInput(inputElement) {
 }
 
 function getTodoIdFromItemElement(itemElement) {
-  return Number(itemElement.dataset.todoId);
+  return normalizeTodoId(itemElement.dataset.todoId);
 }
 
 function renderCurrentTodos() {
   const todos = getTodos();
 
-  if (editingTodoId !== null && !todos.some((todo) => todo.id === editingTodoId)) {
+  if (editingTodoId !== null && !todos.some((todo) => String(todo.id) === String(editingTodoId))) {
     editingTodoId = null;
   }
 
@@ -67,7 +76,7 @@ function saveEditing(todoId, text) {
   renderCurrentTodos();
 }
 
-function handleTodoListChange(event) {
+async function handleTodoListChange(event) {
   const target = event.target;
   if (!(target instanceof HTMLInputElement)) return;
   if (!target.classList.contains("todo-checkbox")) return;
@@ -76,10 +85,21 @@ function handleTodoListChange(event) {
   if (!todoItemElement) return;
 
   const todoId = getTodoIdFromItemElement(todoItemElement);
-  if (!Number.isFinite(todoId)) return;
+  if (!todoId) {
+    showToastMessage("This task cannot be updated (missing id).");
+    renderCurrentTodos();
+    return;
+  }
 
-  toggleTodoCompletion(todoId, target.checked);
-  renderCurrentTodos();
+  try {
+    const updatedTodo = await putTodoCompletionOnServer(todoId, target.checked);
+    replaceTodo(updatedTodo);
+    renderCurrentTodos();
+  } catch (error) {
+    console.error("Failed to put todo completion on server.", error);
+    showToastMessage("Failed to update task status.");
+    renderCurrentTodos();
+  }
 }
 
 function handleTodoListClick(event) {
@@ -90,7 +110,7 @@ function handleTodoListClick(event) {
   if (!todoItemElement) return;
 
   const todoId = getTodoIdFromItemElement(todoItemElement);
-  if (!Number.isFinite(todoId)) return;
+  if (!todoId) return;
 
   if (target.closest(".edit-button")) {
     startEditing(todoId);
@@ -132,7 +152,7 @@ function handleTodoListKeydown(event) {
   if (!todoItemElement) return;
 
   const todoId = getTodoIdFromItemElement(todoItemElement);
-  if (!Number.isFinite(todoId)) return;
+  if (!todoId) return;
 
   if (event.key === "Enter") {
     event.preventDefault();
