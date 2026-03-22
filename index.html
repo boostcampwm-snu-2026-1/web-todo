@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>오늘의 할 일</title>
+</head>
+<body>
+  <div class="app">
+    <header class="header">
+      <h1 class="title">오늘의 할 일</h1>
+      <p class="date" id="today-date" aria-hidden="true"></p>
+    </header>
+    <main class="main">
+      <p class="app-status" id="app-status" role="status" aria-live="polite"></p>
+      <form class="form" id="todo-form" aria-label="새 할 일 추가">
+        <input
+          type="text"
+          class="input"
+          id="todo-input"
+          placeholder="새 할 일 추가..."
+          autocomplete="off"
+          aria-label="할 일 입력"
+        >
+        <button type="submit" class="btn btn--add" aria-label="추가"><span class="btn-add-icon">+</span></button>
+      </form>
+      <ul class="todo-list" id="todo-list" aria-label="할 일 목록"></ul>
+    </main>
+  </div>
+  <script type="module" src="/src/main.js"></script>
+</body>
+</html>
