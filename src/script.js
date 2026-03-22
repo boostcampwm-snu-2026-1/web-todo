@@ -1,8 +1,10 @@
+import { getTodo } from "./api";
+
 const todoForm = document.getElementById("form");
 const todoInput = document.getElementById("input");
 const todoList = document.getElementById("todo-list");
 
-let todos = [];
+let todos = await getTodo();
 let currentId = 1;
 
 function renderTodos() {
