@@ -1,0 +1,15 @@
+{
+  "name": "web-todo",
+  "version": "1.0.0",
+  "scripts": {
+    "dev": "vite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/min-seokkim/web-todo.git"
+  },
+  "license": "ISC",
+  "devDependencies": {
+    "vite": "^8.0.1"
+  }
+}
