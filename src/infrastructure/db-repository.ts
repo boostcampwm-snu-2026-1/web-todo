@@ -21,9 +21,11 @@ const openDB = (storeName: string): Promise<IDBDatabase> => {
   });
 };
 
-export const implIndexedDBRepository = (
-  storeName: string
-): IndexedDBRepository => ({
+export const implIndexedDBRepository = ({
+  storeName,
+}: {
+  storeName: string;
+}): IndexedDBRepository => ({
   getAll: <T>(_storeName: string = storeName): Promise<T[]> => {
     return openDB(storeName).then((db) => {
       return new Promise((resolve, reject) => {

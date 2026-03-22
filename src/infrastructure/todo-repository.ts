@@ -1,7 +1,5 @@
+import type { IndexedDBRepository } from '../domain/db-interface';
 import type { Todo, TodoRepository } from '../domain/todo-interface';
-import { implIndexedDBRepository } from './db-repository';
-
-const STORE_NAME = 'todos';
 
 const todoTypeGuard = (value: unknown): value is Todo => {
   return (
@@ -16,13 +14,15 @@ const todoTypeGuard = (value: unknown): value is Todo => {
   );
 };
 
-export const implTodoRepository = (): TodoRepository => {
-  const db = implIndexedDBRepository(STORE_NAME);
-
+export const implTodoRepository = ({
+  indexedDBRepository,
+}: {
+  indexedDBRepository: IndexedDBRepository;
+}): TodoRepository => {
   return {
     readTodos: async () => {
       try {
-        const todos = await db.getAll<unknown>();
+        const todos = await indexedDBRepository.getAll<unknown>();
 
         if (!todos.every(todoTypeGuard)) {
           return { state: 'error', detailedError: 'INVALID_JSON_FORMAT' };
@@ -36,7 +36,7 @@ export const implTodoRepository = (): TodoRepository => {
 
     writeTodos: async ({ todos }) => {
       try {
-        await db.replaceAll(todos);
+        await indexedDBRepository.replaceAll(todos);
         return { state: 'success' };
       } catch {
         return { state: 'error', detailedError: 'FILE_WRITE_FAILED' };
