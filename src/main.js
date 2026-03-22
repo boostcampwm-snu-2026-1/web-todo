@@ -1,15 +1,77 @@
-const STORAGE_KEY = 'my-todos';
-let todos = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+const BASE_URL = "https://69b93726e69653ffe6a6f05b.mockapi.io/api/v1/todos";
+
+let todos = []; // localStoarge 대신 서버에서 데이터를 받아옴
 
 const todoForm = document.getElementById('todo-form');
 const todoInput = document.getElementById('todo-input');
 const todoList = document.getElementById('todo-list');
 const currentDateElement = document.getElementById('current-date');
 
-function saveAndRender() {
-    // 로컬 스토리지에 저장
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
-    render(); // 화면 갱신
+async function fetchTodos() {
+    try {
+        const response = await fetch(BASE_URL);
+        todos = await response.json();
+        render();
+    } catch (error) {
+        console.error("데이터 로드 실패:", error);
+    }
+}
+
+async function addTodo(task){
+    if(!isEmpty(task)) {
+        const data = {
+            content: task,
+            done: false,
+            createdAt: new Date()
+        };
+
+        try {
+            const response = await fetch(BASE_URL, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+            const createdTodo = await response.json();
+            todos.push(createdTodo); // 로컬 배열 업데이트
+            render();
+        } catch (error) {
+            console.error("추가 실패:", error);
+        }
+    }
+}
+
+async function toggleTodo(targetId) {
+    const index = todos.findIndex(t => t.id === targetId);
+    if (index === -1) return;
+
+    try {
+        const response = await fetch(`${BASE_URL}/${targetId}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ done: !todos[index].done })
+        });
+        const updatedTodo = await response.json();
+        
+        // 로컬 배열 업데이트
+        const index = todos.findIndex(t => t.id === targetId);
+        todos[index] = updatedTodo;
+        render();
+    } catch (error) {
+        console.error("수정 실패:", error);
+    }
+}
+
+async function deleteTodo(targetId) {
+    try {
+        await fetch(`${BASE_URL}/${targetId}`, {
+            method: 'DELETE'
+        });
+        // 서버에서 삭제 성공 시 로컬 배열에서 필터링
+        todos = todos.filter(t => t.id !== targetId);
+        render();
+    } catch (error) {
+        console.error("삭제 실패:", error);
+    }
 }
 
 // 문자열이 유효한지 체크하는 함수
@@ -18,39 +80,6 @@ function isEmpty(str){
         return true;
     else
         return false;
-}
-
-function addTodo(task){
-    const nextId = todos.length > 0 ? Math.max(...todos.map((x) => x.id)) + 1 : 1;
-        if(!isEmpty(task)) {
-            const data = {
-                id: nextId,
-                content: task,
-                done: false
-            };
-            todos.push(data); // 배열에 새로운 데이터 추가
-            saveAndRender();
-        }
-}
-
-function toggleTodo(targetId){
-    const todoIndex = todos.findIndex(t => t.id === targetId); // 저장된 json 파일에서 인덱스 찾기 (존재하지 않으면 -1)
-    if(isNaN(targetId) || todoIndex === -1) {
-        return;
-    } else {
-        todos[todoIndex].done = !todos[todoIndex].done; // 토글 처리
-    }
-    saveAndRender();
-}
-
-function deleteTodo(targetId){
-    const todoIndex = todos.findIndex(t => t.id === targetId); // 저장된 json 파일에서 인덱스 찾기 (존재하지 않으면 -1)
-    if(isNaN(targetId) || todoIndex === -1) {
-        return;
-    } else {
-        todos.splice(todoIndex, 1); // 삭제 처리
-    }
-    saveAndRender();
 }
 
 function displayDate() {
@@ -89,7 +118,7 @@ todoList.addEventListener('click', (e) => {
     const li = e.target.closest('.todo-item');
     if (!li) return;
     
-    const id = Number(li.dataset.id);
+    const id = li.dataset.id;
 
     // 삭제 버튼 클릭 시
     if (e.target.classList.contains('delete-btn')) {
@@ -103,4 +132,4 @@ todoList.addEventListener('click', (e) => {
 
 // 초기 실행
 displayDate();
-render();
+fetchTodos();
