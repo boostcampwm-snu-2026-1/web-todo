@@ -72,6 +72,3 @@ export async function updateTodo(id, updateText, isCompleted){
         console.error("Failed to update", error);
     }
 }
-
-//todo
-//add updateTodo func

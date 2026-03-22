@@ -1,4 +1,4 @@
-import { getTodo, createTodo, deleteTodo, toggleTodo } from "./api.js";
+import { getTodo, createTodo, deleteTodo, toggleTodo, updateTodo } from "./api.js";
 import {render, displayTodayDate} from "./render.js";
 
 let todoList = [];
@@ -47,7 +47,7 @@ todoInput.addEventListener("keypress", (e) => {
 
 listContainer.addEventListener('click', async (e) => {
     const target = e.target;
-    const li = target.closest('li');
+    const li = target.closest('li'); // DOM tree grammer
     if (!li) return;
 
     const id = li.dataset.id;
@@ -80,5 +80,55 @@ listContainer.addEventListener('click', async (e) => {
         handleEdit(li, id);
     }
 });
+
+
+async function handleEdit(li, id) {
+    const textSpan = li.querySelector('.todo-text'); //get text span pointer  from li
+    const currentText = textSpan.innerText; // get text before edit
+    
+    if (li.querySelector('.edit-input')) return; // block race conditon, 
+
+    const input = document.createElement('input'); // new input memory allocation
+    input.type = 'text'; // type text
+    input.value = currentText; // copy preivous value
+    input.className = 'edit-input'; // new class for new input
+    
+    textSpan.style.display = 'none'; // hide existing text
+    textSpan.parentElement.insertBefore(input, textSpan); //insert our input right in front of hidden text
+    input.focus(); //force typing without mouse click
+
+    let saving = false;
+    //inside routine, action when press key enter
+    const finalize = async () => {
+        if(saving) return;
+        saving = true;
+
+        const newText = input.value.trim();
+        
+
+        if (newText && newText !== currentText) {
+            const targetTodo = todoList.find(t => String(t.id) === String(id));
+
+            const updated = await updateTodo(id, newText, targetTodo.completed);
+            if (updated) targetTodo.item = newText;
+        }
+        input.remove(); // remove new input
+        render(todoList, listContainer);
+    };
+
+    input.addEventListener('keydown', (e) => { // detect ESC key when keydown
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            finalize();
+        }
+         if (e.key === 'Escape') { 
+            saving = true;         // set saving = true so that  so that the finalize does not run on blur
+            render(todoList, listContainer); //Forced blur event
+        }
+    });
+    
+    input.addEventListener('blur', finalize);
+}
+
 
 init();
