@@ -1,10 +1,13 @@
-import { saveTodos } from "./storage.js";
+import {
+  createTodo as createRemoteTodo,
+  deleteTodo as deleteRemoteTodo,
+  updateTodo as updateRemoteTodo,
+} from "./storage.js";
 import {
   addTodo,
   getTodos,
+  patchTodo,
   removeTodo,
-  toggleTodo,
-  updateTodo,
 } from "./todo.js";
 import { renderTodos, startEditingTodo, stopEditingTodo } from "./ui.js";
 
@@ -16,7 +19,7 @@ function focusEditInput(list, id) {
   editInput.select();
 }
 
-function saveEditedTodo(list, id) {
+async function saveEditedTodo(list, id) {
   const currentTodo = getTodos().find((todo) => todo.id === id);
   if (!currentTodo) return false;
 
@@ -29,14 +32,18 @@ function saveEditedTodo(list, id) {
     return false;
   }
 
-  stopEditingTodo();
-
   if (trimmedTask === currentTodo.task) {
+    stopEditingTodo();
     return true;
   }
 
-  updateTodo(id, trimmedTask);
-  saveTodos(getTodos());
+  const savedTodo = await updateRemoteTodo({
+    ...currentTodo,
+    task: trimmedTask,
+  });
+
+  patchTodo(id, savedTodo);
+  stopEditingTodo();
   return true;
 }
 
@@ -45,20 +52,28 @@ export function bindTodoEvents() {
   const input = document.getElementById("todo-input");
   const list = document.getElementById("todo-list");
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const task = input.value.trim();
     if (!task) return;
 
-    addTodo(task);
-    input.value = "";
+    try {
+      const createdTodo = await createRemoteTodo({
+        task,
+        done: false,
+      });
 
-    saveTodos(getTodos());
-    renderTodos(getTodos());
+      addTodo(createdTodo);
+      input.value = "";
+      renderTodos(getTodos());
+    } catch (error) {
+      console.error("Failed to create todo.", error);
+      alert("할 일을 저장하지 못했습니다.");
+    }
   });
 
-  list.addEventListener("click", (e) => {
+  list.addEventListener("click", async (e) => {
     const button = e.target.closest("button");
     if (!button) return;
 
@@ -82,30 +97,48 @@ export function bindTodoEvents() {
     }
 
     if (action === "save-edit") {
-      const isSaved = saveEditedTodo(list, id);
-      if (!isSaved) return;
+      try {
+        const isSaved = await saveEditedTodo(list, id);
+        if (!isSaved) return;
 
-      renderTodos(getTodos());
+        renderTodos(getTodos());
+      } catch (error) {
+        console.error("Failed to update todo.", error);
+        alert("할 일을 수정하지 못했습니다.");
+      }
       return;
     }
 
-    if (action === "toggle") {
-      toggleTodo(id);
-      hasChanged = true;
+    try {
+      if (action === "toggle") {
+        const currentTodo = getTodos().find((todo) => todo.id === id);
+        if (!currentTodo) return;
+
+        const savedTodo = await updateRemoteTodo({
+          ...currentTodo,
+          done: !currentTodo.done,
+        });
+
+        patchTodo(id, savedTodo);
+        hasChanged = true;
+      }
+
+      if (action === "delete") {
+        await deleteRemoteTodo(id);
+        removeTodo(id);
+        hasChanged = true;
+      }
+
+      if (!hasChanged) return;
+
+      renderTodos(getTodos());
+    } catch (error) {
+      console.error(`Failed to ${action} todo.`, error);
+      alert("할 일 저장 중 문제가 생겼습니다.");
     }
-
-    if (action === "delete") {
-      removeTodo(id);
-      hasChanged = true;
-    }
-
-    if (!hasChanged) return;
-
-    saveTodos(getTodos());
-    renderTodos(getTodos());
   });
 
-  list.addEventListener("keydown", (e) => {
+  list.addEventListener("keydown", async (e) => {
     const editInput = e.target.closest(".todo-edit-input");
     if (!editInput) return;
 
@@ -115,10 +148,15 @@ export function bindTodoEvents() {
     if (e.key === "Enter") {
       e.preventDefault();
 
-      const isSaved = saveEditedTodo(list, id);
-      if (!isSaved) return;
+      try {
+        const isSaved = await saveEditedTodo(list, id);
+        if (!isSaved) return;
 
-      renderTodos(getTodos());
+        renderTodos(getTodos());
+      } catch (error) {
+        console.error("Failed to update todo.", error);
+        alert("할 일을 수정하지 못했습니다.");
+      }
     }
 
     if (e.key === "Escape") {
