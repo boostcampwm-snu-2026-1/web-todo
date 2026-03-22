@@ -1,4 +1,4 @@
-const BASE_URL = "https://69bfc4c872ca04f3bcb92e5f.mockapi.io/";
+const BASE_URL = "https://69bfc4c872ca04f3bcb92e5f.mockapi.io/todos";
 
 export async function fetchTodos() {
   const response = await fetch(BASE_URL);
