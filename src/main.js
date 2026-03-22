@@ -1,51 +1,49 @@
 import './styles.css';
 
+
+const API_URL = 'https://69bfbb3d72ca04f3bcb91456.mockapi.io/api/v1/todos';
 let todos = [];
-let currentId = 0;
-//todos가 저장되는 배열과 ID를 위한 변수
+// API의 data를 저장할 배열
 
-const saved = localStorage.getItem('todos');
-
-if (saved) {
-    todos = JSON.parse(saved);
-} else {
-    todos = [
-        { id: 0, createdAt: new Date(), content: 'Study', completed: false },
-        { id: 1, createdAt: new Date(), content: 'Work out', completed: false }
-    ];
-    localStorage.setItem('todos', JSON.stringify(todos));
-}
-if (todos.length > 0) {
-    currentId = todos[todos.length - 1].id + 1; // ID 중복 방지
+async function fetchTodos() {
+    try {
+        const response = await fetch(API_URL);
+        todos = await response.json();
+        renderTodos();
+    } catch (error) {
+        console.error('Failed to fetch todos', error);
+    }  
 }
 
+fetchTodos();
+// API에서 todos를 가져와서 렌더링하는 함수
 
 const todoInput = document.getElementById('todo-input');
 const addBtn = document.getElementById('add-btn');
 const todoList = document.getElementById('todo-list');
 
-function addTodo(){ //add-btn 동작 함수
+async function addTodo(){ //add-btn 동작 함수
     let text = todoInput.value.trim();
     if(text === ''){ // 빈 입력 예외처리
         alert('Tasks cannot be empty!');
         return;
     }
 
-    const newTodo = {
-        id: currentId++,
-        createdAt: new Date(),
-        content: text,
-        completed: false
-    };
-    todos.push(newTodo); // newTodo 객체를 todos 배열에 추가
-
-    localStorage.setItem('todos', JSON.stringify(todos)); // todos 배열을 localStorage에 저장
+    await fetch(API_URL, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+            createdAt: new Date().toISOString(),
+            content: text,
+            completed: false
+    })
+    });
 
     todoInput.value = ''; // 입력창 초기화
-    renderTodos();
+    fetchTodos();
 }
 
-function renderTodos(){
+function renderTodos(){ // 화면에 todos를 렌더링하는 함수
     todoList.innerHTML = ''; // 기존 리스트 초기화
     todos.forEach(todo => {
         const li = document.createElement('li');
@@ -103,7 +101,6 @@ function doneTodo(event){
     }
     localStorage.setItem('todos', JSON.stringify(todos)); // 변경된 todos 배열을 localStorage에 저장
     renderTodos(); // 변경된 todos 배열을 화면에 다시 렌더링
-    
 }
 
 todoList.addEventListener('click', function (event){
