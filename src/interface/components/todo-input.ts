@@ -1,4 +1,5 @@
 import type { TodoUsecase } from '../../domain/todo-interface';
+import { ASSET_LINK } from '../assets/asset-link';
 import { inject, queryStrict } from '../decorators/attr';
 import { customElement } from '../decorators/custom-element';
 import { dispatch, errorDispatch } from '../decorators/event';
@@ -58,7 +59,7 @@ export class TodoInput extends HTMLElement {
       <div class="input-row">
         <input class="task-input" type="text" placeholder="Add a new task...">
         <button class="add-btn" aria-label="Add task">
-          <svg><use href="/public/asset/icon_sprite.svg#icon-plus" /></svg>
+          <svg><use href=${ASSET_LINK.ADD_ICON} /></svg>
         </button>
       </div>
     `;

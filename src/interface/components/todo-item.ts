@@ -1,4 +1,5 @@
 import type { Todo } from '../../domain/todo-interface';
+import { ASSET_LINK } from '../assets/asset-link';
 import { customElement } from '../decorators/custom-element';
 
 @customElement('todo-item')
@@ -13,18 +14,18 @@ export class TodoItem extends HTMLElement {
     this.innerHTML = /* html */ `
       <li class="task-item ${todo.done ? 'done' : ''}">
         <div class="checkbox" aria-label="${todo.done ? 'Mark incomplete' : 'Mark complete'}">
-          <svg><use href="/public/asset/icon_sprite.svg#icon-check" /></svg>
+          <svg><use href=${ASSET_LINK.CHECK_ICON} /></svg>
         </div>
         <span class="task-label">${todo.content}</span>
         <div class="task-actions">
           <button class="action-btn" data-action="edit" aria-label="Edit">
             <svg>
-              <use href="/public/asset/icon_sprite.svg#icon-edit" />
+              <use href=${ASSET_LINK.EDIT_ICON} />
             </svg>
           </button>
           <button class="action-btn" data-action="delete" aria-label="Delete">
             <svg>
-              <use href="/public/asset/icon_sprite.svg#icon-trash" />
+              <use href=${ASSET_LINK.DELETE_ICON} />
             </svg>
           </button>
         </div>

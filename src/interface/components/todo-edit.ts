@@ -1,4 +1,5 @@
 import type { Todo } from '../../domain/todo-interface';
+import { ASSET_LINK } from '../assets/asset-link';
 import { customElement } from '../decorators/custom-element';
 
 @customElement('todo-edit')
@@ -14,10 +15,10 @@ export class TodoEdit extends HTMLElement {
       <input class="task-edit-input" type="text" value="${todo.content}">
       <div class="task-actions">
         <button class="action-btn action-btn-confirm" aria-label="Confirm">
-          <svg><use href="/public/asset/icon_sprite.svg#icon-check" /></svg>
+          <svg><use href=${ASSET_LINK.CONFIRM_ICON} /></svg>
         </button>
         <button class="action-btn action-btn-cancel" aria-label="Cancel">
-          <svg><use href="/public/asset/icon_sprite.svg#icon-close" /></svg>
+          <svg><use href=${ASSET_LINK.CANCEL_ICON} /></svg>
         </button>
       </div>
     </li>
