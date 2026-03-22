@@ -15,7 +15,7 @@ function renderTodos () {
         todoItem.dataset.id = todo.id;
 
         todoItem.innerHTML = `<input type="checkbox" ${todo.completed ? "checked" : ""}>
-        <span class="todo-text">${todo.text}</span>
+        <span class="todo-text ${todo.completed ? "completed" : ""}">${todo.text}</span>
         <div>
             <button type="button" class="edit-todo-btn">🖋️</button>
             <button type="button" class="delete-todo-btn">🗑️</button>
@@ -69,11 +69,17 @@ function deleteTodo (deleteBtn) {
 
 };
 
-todoContainer.addEventListener("click", (e) => {
-    if (e.target.classList.contains("edit-todo-btn")) {
-        editTodo(e.target);
+todoContainer.addEventListener("change", (e) => {
+    if (e.target.type === "checkbox") {
+        toggleTodoCompletion(e.target);
     }
-})
+});
 
-
-
+function toggleTodoCompletion (checkbox) {
+    const todoId = parseInt(checkbox.parentElement.dataset.id, 10);
+    const todo = todoList.find(todo => todo.id === todoId); 
+    if (todo) {
+        todo.completed = checkbox.checked;
+        renderTodos();
+    }
+};
