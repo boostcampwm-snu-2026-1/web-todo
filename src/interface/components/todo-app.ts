@@ -2,6 +2,7 @@ import type { DateUsecase } from '../../domain/date-interface';
 import type { TodoUsecase } from '../../domain/todo-interface';
 import { inject } from '../decorators/attr';
 import { customElement } from '../decorators/custom-element';
+import { ErrorModal } from './error-modal';
 import { TodoHeader } from './todo-header';
 import { TodoInput } from './todo-input';
 import { TodoList } from './todo-list';
@@ -17,11 +18,22 @@ export class TodoApp extends HTMLElement {
     this.innerHTML = this.template();
     this.injectDependencies();
     this.addEventListener('todo:added', this.handleAdded);
+    this.addEventListener('todo:error', this.handleError);
   }
 
   disconnectedCallback() {
     this.removeEventListener('todo:added', this.handleAdded);
+    this.removeEventListener('todo:error', this.handleError);
   }
+
+  private handleError = (e: Event) => {
+    if (!(e instanceof CustomEvent)) return;
+    const modal = this.querySelector<ErrorModal>('error-modal');
+    if (modal === null) {
+      return;
+    }
+    modal.show(e.detail.error);
+  };
 
   private injectDependencies() {
     const todoInput = this.querySelector<TodoInput>('todo-input');
@@ -58,6 +70,7 @@ export class TodoApp extends HTMLElement {
           <todo-list></todo-list>
         </div>
       </div>
+      <error-modal></error-modal>
     `;
   }
 }

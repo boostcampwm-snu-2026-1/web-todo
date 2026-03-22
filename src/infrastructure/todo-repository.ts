@@ -10,7 +10,7 @@ export const implTodoRepository = ({
     getTodos: async () => {
       const response = await apiRepository['GET /todos']();
       if (response.status !== 200) {
-        return { state: 'error', detailedError: 'FILE_READ_FAILED' };
+        return { state: 'error', detailedError: 'TODO_FETCH_FAILED' };
       }
 
       return {
@@ -22,7 +22,7 @@ export const implTodoRepository = ({
       const params = { id };
       const response = await apiRepository['GET /todos/:id']({ params });
       if (response.status !== 200) {
-        return { state: 'error', detailedError: 'FILE_READ_FAILED' };
+        return { state: 'error', detailedError: 'TODO_FETCH_BY_ID_FAILED' };
       }
       return {
         state: 'success',
@@ -36,7 +36,7 @@ export const implTodoRepository = ({
       };
       const response = await apiRepository['POST /todos']({ body });
       if (response.status !== 201) {
-        return { state: 'error', detailedError: 'FILE_READ_FAILED' };
+        return { state: 'error', detailedError: 'TODO_CREATE_FAILED' };
       }
       return {
         state: 'success',
@@ -48,7 +48,7 @@ export const implTodoRepository = ({
       const body = { content, done };
       const response = await apiRepository['PUT /todos/:id']({ params, body });
       if (response.status !== 200) {
-        return { state: 'error', detailedError: 'FILE_READ_FAILED' };
+        return { state: 'error', detailedError: 'TODO_UPDATE_FAILED' };
       }
       return {
         state: 'success',
@@ -59,7 +59,7 @@ export const implTodoRepository = ({
       const params = { id };
       const response = await apiRepository['DELETE /todos/:id']({ params });
       if (response.status !== 200) {
-        return { state: 'error', detailedError: 'FILE_READ_FAILED' };
+        return { state: 'error', detailedError: 'TODO_DELETE_FAILED' };
       }
       return {
         state: 'success',

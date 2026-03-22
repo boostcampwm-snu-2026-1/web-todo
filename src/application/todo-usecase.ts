@@ -17,10 +17,7 @@ export const implTodoUsecase = ({
     const originalTodoResponse = await todoRepository.getTodoById({ id });
 
     if (originalTodoResponse.state === 'error') {
-      return {
-        state: 'error',
-        detailedError: 'NOT_FOUND_ID_IN_TOGGLE',
-      };
+      return originalTodoResponse;
     }
     const originalTodo = originalTodoResponse.data;
 
@@ -39,10 +36,7 @@ export const implTodoUsecase = ({
     const originalTodoResponse = await todoRepository.getTodoById({ id });
 
     if (originalTodoResponse.state === 'error') {
-      return {
-        state: 'error',
-        detailedError: 'NOT_FOUND_ID_IN_TOGGLE',
-      };
+      return originalTodoResponse;
     }
     const originalTodo = originalTodoResponse.data;
 

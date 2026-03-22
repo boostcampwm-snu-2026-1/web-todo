@@ -1,4 +1,4 @@
-import type { DETAILED_ERROR } from './detailed-error';
+import type { DetailedError } from './detailed-error';
 
 export type UseCaseResponseType<TData> =
   | (TData extends void
@@ -6,7 +6,7 @@ export type UseCaseResponseType<TData> =
       : { state: 'success'; data: TData })
   | {
       state: 'error';
-      detailedError: DETAILED_ERROR;
+      detailedError: DetailedError;
     };
 
 export type RepositoryResponseType<TData> =
@@ -15,5 +15,5 @@ export type RepositoryResponseType<TData> =
       : { state: 'success'; data: TData })
   | {
       state: 'error';
-      detailedError: DETAILED_ERROR;
+      detailedError: DetailedError;
     };

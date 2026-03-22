@@ -75,8 +75,9 @@ export class TodoList extends HTMLElement {
     const content = String(e.detail.content);
 
     const ul = this.querySelector('ul');
-    if (ul === null) return;
-
+    if (ul === null) {
+      return;
+    }
     const tempItem = new TodoItem();
     tempItem.dataset.temp = 'true';
     ul.appendChild(tempItem);
@@ -84,7 +85,7 @@ export class TodoList extends HTMLElement {
     await this.render();
   }
 
-  @errorDispatch('todo:error:rollback')
+  @errorDispatch('todo:error')
   private async handleAddRollback() {
     await this.render();
   }
