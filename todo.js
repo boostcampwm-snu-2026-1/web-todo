@@ -1,78 +1,38 @@
-const STORAGE_KEY = 'todos';
+import { createJsonStorage } from './storage.js';
+import { createTodoService } from './todoService.js';
+import { renderTodoList } from './todoView.js';
 
 const inputEl = document.getElementById('new-task-input');
 const addBtnEl = document.getElementById('add-task-button');
 const listEl = document.getElementById('todo-list');
 
-const getData = () => {
-  const raw = localStorage.getItem(STORAGE_KEY);
-  if (!raw) return [];
-  try {
-    return JSON.parse(raw);
-  } catch {
-    return [];
-  }
-};
-
-const setData = (todos) => {
-  localStorage.setItem(STORAGE_KEY, JSON.stringify(todos));
-};
+const todoService = createTodoService(createJsonStorage('todos'));
 
 const render = () => {
-  const todos = getData();
-  listEl.innerHTML = '';
-
-  todos.forEach((todo) => {
-    const li = document.createElement('li');
-    li.className = `todo-item${todo.done ? ' done' : ''}`;
-    li.dataset.id = String(todo.id);
-
-    li.innerHTML = `
-      <label>
-        <input type="checkbox" ${todo.done ? 'checked' : ''} />
-        <span></span>
-      </label>
-      <div class="todo-actions">
-        <button type="button" data-action="edit" aria-label="Edit task">Edit</button>
-        <button type="button" data-action="delete" aria-label="Delete task">Delete</button>
-      </div>
-    `;
-    li.querySelector('span').textContent = todo.content;
-    listEl.appendChild(li);
-  });
+  renderTodoList(listEl, todoService.list());
 };
 
 const addTodo = () => {
   const content = inputEl.value.trim();
   if (!content) return;
 
-  const todos = getData();
-  const newId = (todos.length ? Math.max(...todos.map((t) => t.id)) : 0) + 1;
-  todos.push({ id: newId, content, done: false });
-  setData(todos);
-
+  todoService.add(content);
   inputEl.value = '';
   render();
 };
 
 const toggleTodo = (id, checked) => {
-  const todos = getData();
-  const target = todos.find((t) => t.id === id);
-  if (!target) return;
-  target.done = checked;
-  setData(todos);
+  todoService.toggle(id, checked);
   render();
 };
 
 const deleteTodo = (id) => {
-  const todos = getData().filter((t) => t.id !== id);
-  setData(todos);
+  todoService.remove(id);
   render();
 };
 
 const editTodo = (id) => {
-  const todos = getData();
-  const target = todos.find((t) => t.id === id);
+  const target = todoService.getById(id);
   if (!target) return;
 
   const next = prompt('Edit task:', target.content);
@@ -81,8 +41,7 @@ const editTodo = (id) => {
   const content = next.trim();
   if (!content) return;
 
-  target.content = content;
-  setData(todos);
+  todoService.edit(id, content);
   render();
 };
 
