@@ -28,9 +28,10 @@ main {
 
 .deleteBtn {
     color: darkgray;
-    border: 0cap;
+    border: none;
     border-radius: 5px;
     margin-left: 20px;
+    flex-shrink: 0;
 }
 
 .deleteBtn:hover {
@@ -49,6 +50,11 @@ input[type="checkbox"] {
     width: 20px;
     height: 20px;
     margin-right: 10px;
+    flex-shrink: 0;
+}
+li span {
+    flex: 1;
+    word-break: break-word;
 }
 
 li {
@@ -56,8 +62,11 @@ li {
     padding: 0;
     display: flex;
     align-items: center;
+    gap: 8px;
 }
 
 ul {
-    width: 300px;
+    width: 100%;
+    max-width: 300px;
+    padding: 0;
 }
