@@ -1,37 +1,45 @@
-export const createTodoService = (storage) => {
-  const list = () => storage.get();
+import {
+  createTodo,
+  deleteTodo,
+  fetchTodoById,
+  fetchTodos,
+  updateTodo,
+} from './todoApi.js';
 
-  const getById = (id) => list().find((todo) => todo.id === id) ?? null;
+const toViewTodo = (serverTodo) => ({
+  id: String(serverTodo.id),
+  content: serverTodo.content ?? '',
+  done: Boolean(serverTodo.completed),
+});
 
-  const add = (content) => {
-    const todos = list();
-    const newId = (todos.length ? Math.max(...todos.map((todo) => todo.id)) : 0) + 1;
-
-    todos.push({ id: newId, content, done: false });
-    storage.set(todos);
+export const createTodoService = () => {
+  const list = async () => {
+    const todos = await fetchTodos();
+    return todos.map(toViewTodo);
   };
 
-  const toggle = (id, checked) => {
-    const todos = list();
-    const target = todos.find((todo) => todo.id === id);
-    if (!target) return;
-
-    target.done = checked;
-    storage.set(todos);
+  const getById = async (id) => {
+    const todo = await fetchTodoById(id);
+    return toViewTodo(todo);
   };
 
-  const remove = (id) => {
-    const todos = list().filter((todo) => todo.id !== id);
-    storage.set(todos);
+  const add = async (content) => {
+    const created = await createTodo(content);
+    return toViewTodo(created);
   };
 
-  const edit = (id, content) => {
-    const todos = list();
-    const target = todos.find((todo) => todo.id === id);
-    if (!target) return;
+  const toggle = async (id, checked) => {
+    const updated = await updateTodo(id, { completed: checked });
+    return toViewTodo(updated);
+  };
 
-    target.content = content;
-    storage.set(todos);
+  const remove = async (id) => {
+    await deleteTodo(id);
+  };
+
+  const edit = async (id, content) => {
+    const updated = await updateTodo(id, { content });
+    return toViewTodo(updated);
   };
 
   return {

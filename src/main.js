@@ -1,4 +1,3 @@
-import { createJsonStorage } from './storage.js';
 import { createTodoService } from './todoService.js';
 import { renderTodoList } from './todoView.js';
 
@@ -6,33 +5,47 @@ const inputEl = document.getElementById('new-task-input');
 const addBtnEl = document.getElementById('add-task-button');
 const listEl = document.getElementById('todo-list');
 
-const todoService = createTodoService(createJsonStorage('todos'));
+const todoService = createTodoService();
+let todos = [];
 
 const render = () => {
-  renderTodoList(listEl, todoService.list());
+  renderTodoList(listEl, todos);
 };
 
-const addTodo = () => {
+const refreshTodos = async () => {
+  todos = await todoService.list();
+  render();
+};
+
+const runWithErrorAlert = async (task) => {
+  try {
+    await task();
+  } catch (error) {
+    alert(`Request failed: ${error.message}`);
+  }
+};
+
+const addTodo = async () => {
   const content = inputEl.value.trim();
   if (!content) return;
 
-  todoService.add(content);
+  await todoService.add(content);
   inputEl.value = '';
-  render();
+  await refreshTodos();
 };
 
-const toggleTodo = (id, checked) => {
-  todoService.toggle(id, checked);
-  render();
+const toggleTodo = async (id, checked) => {
+  await todoService.toggle(id, checked);
+  await refreshTodos();
 };
 
-const deleteTodo = (id) => {
-  todoService.remove(id);
-  render();
+const deleteTodo = async (id) => {
+  await todoService.remove(id);
+  await refreshTodos();
 };
 
-const editTodo = (id) => {
-  const target = todoService.getById(id);
+const editTodo = async (id) => {
+  const target = await todoService.getById(id);
   if (!target) return;
 
   const next = prompt('Edit task:', target.content);
@@ -41,20 +54,22 @@ const editTodo = (id) => {
   const content = next.trim();
   if (!content) return;
 
-  todoService.edit(id, content);
-  render();
+  await todoService.edit(id, content);
+  await refreshTodos();
 };
 
-addBtnEl.addEventListener('click', addTodo);
+addBtnEl.addEventListener('click', () => {
+  runWithErrorAlert(addTodo);
+});
 
 inputEl.addEventListener('keydown', (e) => {
-  if (e.key === 'Enter') addTodo();
+  if (e.key === 'Enter') runWithErrorAlert(addTodo);
 });
 
 listEl.addEventListener('change', (e) => {
   const li = e.target.closest('.todo-item');
   if (!li || e.target.type !== 'checkbox') return;
-  toggleTodo(Number(li.dataset.id), e.target.checked);
+  runWithErrorAlert(() => toggleTodo(li.dataset.id, e.target.checked));
 });
 
 listEl.addEventListener('click', (e) => {
@@ -62,11 +77,11 @@ listEl.addEventListener('click', (e) => {
   const li = e.target.closest('.todo-item');
   if (!button || !li) return;
 
-  const id = Number(li.dataset.id);
+  const id = li.dataset.id;
   const action = button.dataset.action;
 
-  if (action === 'delete') deleteTodo(id);
-  if (action === 'edit') editTodo(id);
+  if (action === 'delete') runWithErrorAlert(() => deleteTodo(id));
+  if (action === 'edit') runWithErrorAlert(() => editTodo(id));
 });
 
-render();
+runWithErrorAlert(refreshTodos);
