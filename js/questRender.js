@@ -46,7 +46,7 @@ function createQuestItem(quest) {
 
   const title = document.createElement("p");
   title.classList.add("quest-item__title");
-  title.textContent = `${quest.completed ? "⭐" : "📜"} ${quest.text}`;
+  title.textContent = `${quest.completed ? "⭐" : "📜"} ${quest.content}`;
 
   const status = document.createElement("span");
   status.classList.add("quest-item__status");
