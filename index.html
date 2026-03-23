@@ -1,10 +1,9 @@
 <!DOCTYPE html>
-
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Todo</title>
+    <title>Todo App</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -12,14 +11,21 @@
         <h1>TODOS</h1>
 
         <form id="todo-form">
-            <input id="todo-input" type="text" placeholder="Add a new task" autocomplete="off">
+            <input
+                id="todo-input"
+                type="text"
+                placeholder="Add a new task"
+                autocomplete="off"
+                required
+            >
             <button type="submit">Add</button>
         </form>
 
-        <p id="todo-count">Total <span id="count-all">0</span> • Active <span id="count-active">0</span></p>
+        <p id="todo-count">
+            Total <span id="count-all">0</span> • Active <span id="count-active">0</span>
+        </p>
 
         <ul id="todo-list"></ul>
-
     </main>
 
     <script src="app.js" type="module"></script>

@@ -6,9 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "json-server --watch db.json",
-    "dev": "npx concurrently \"json-server --watch db.json\" \"python3 -m http.server 8080\""
+    "dev": "vite"
   },
-  
   "repository": {
     "type": "git",
     "url": "git+https://github.com/pkdje/web-todo.git"
@@ -20,5 +19,8 @@
   "bugs": {
     "url": "https://github.com/pkdje/web-todo/issues"
   },
-  "homepage": "https://github.com/pkdje/web-todo#readme"
+  "homepage": "https://github.com/pkdje/web-todo#readme",
+  "devDependencies": {
+    "vite": "^8.0.1"
+  }
 }
