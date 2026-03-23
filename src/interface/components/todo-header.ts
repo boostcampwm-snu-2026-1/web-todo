@@ -1,8 +1,9 @@
 import type { DateUsecase } from '../../domain/date-interface';
+import { COMPONENT_TAGS } from '../assets/tag-name';
 import { inject } from '../decorators/attr';
 import { customElement } from '../decorators/custom-element';
 
-@customElement('todo-header')
+@customElement(COMPONENT_TAGS.TODO_HEADER)
 export class TodoHeader extends HTMLElement {
   @inject<DateUsecase>('dateUsecase')
   accessor dateUsecase!: DateUsecase;
@@ -12,7 +13,11 @@ export class TodoHeader extends HTMLElement {
   }
 
   render() {
-    this.querySelector('.date')!.textContent = this.dateUsecase.getNow();
+    const dateEl = this.querySelector('.date');
+    if (dateEl === null) {
+      return;
+    }
+    dateEl.textContent = this.dateUsecase.getNow();
   }
 
   private template() {

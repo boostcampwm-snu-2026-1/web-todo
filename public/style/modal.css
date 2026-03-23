@@ -1,0 +1,52 @@
+/* ── Error Modal ── */
+.error-modal {
+  border: none;
+  border-radius: var(--radius-card);
+  padding: 3.2rem;
+  width: 100%;
+  max-width: 36rem;
+  box-shadow: var(--shadow-card);
+  background: var(--card-bg);
+}
+
+.error-modal::backdrop {
+  background: rgba(26, 29, 46, 0.4);
+  backdrop-filter: blur(0.2rem);
+}
+
+.error-modal-message {
+  font-size: 1.5rem;
+  color: var(--text-primary);
+  font-weight: 500;
+  line-height: 1.6;
+  text-align: center;
+  margin-bottom: 2.4rem;
+}
+
+.error-modal-close {
+  display: block;
+  width: 100%;
+  padding: 1.2rem;
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  border-radius: var(--radius-input);
+  font-size: 1.5rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.2s,
+    transform 0.15s;
+}
+
+.error-modal-close:hover {
+  background: var(--accent-hover);
+  transform: scale(1.02);
+}
+
+@media (max-width: 480px) {
+  .error-modal {
+    max-width: calc(100vw - 4rem);
+    padding: 2.4rem;
+  }
+}

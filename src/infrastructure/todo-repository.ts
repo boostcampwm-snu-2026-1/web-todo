@@ -1,46 +1,70 @@
-import type { Todo, TodoRepository } from '../domain/todo-interface.js';
-import { implIndexedDBRepository } from './db-repository.js';
+import type { ApiRepository } from '../domain/api/api-repository';
+import type { TodoRepository } from '../domain/todo-interface';
 
-const STORE_NAME = 'todos';
-
-const todoTypeGuard = (value: unknown): value is Todo => {
-  return (
-    typeof value === 'object' &&
-    value !== null &&
-    'id' in value &&
-    'content' in value &&
-    'done' in value &&
-    typeof (value as Todo).id === 'number' &&
-    typeof (value as Todo).content === 'string' &&
-    typeof (value as Todo).done === 'boolean'
-  );
-};
-
-export const implTodoRepository = (): TodoRepository => {
-  const db = implIndexedDBRepository(STORE_NAME);
-
+export const implTodoRepository = ({
+  apiRepository,
+}: {
+  apiRepository: ApiRepository;
+}): TodoRepository => {
   return {
-    readTodos: async () => {
-      try {
-        const todos = await db.getAll<unknown>();
-
-        if (!todos.every(todoTypeGuard)) {
-          return { state: 'error', detailedError: 'INVALID_JSON_FORMAT' };
-        }
-
-        return { state: 'success', data: todos };
-      } catch {
-        return { state: 'error', detailedError: 'FILE_READ_FAILED' };
+    getTodos: async () => {
+      const response = await apiRepository['GET /todos']();
+      if (response.status !== 200) {
+        return { state: 'error', detailedError: 'TODO_FETCH_FAILED' };
       }
+
+      return {
+        state: 'success',
+        data: response.data,
+      };
     },
-
-    writeTodos: async ({ todos }) => {
-      try {
-        await db.replaceAll(todos);
-        return { state: 'success' };
-      } catch {
-        return { state: 'error', detailedError: 'FILE_WRITE_FAILED' };
+    getTodoById: async ({ id }) => {
+      const params = { id };
+      const response = await apiRepository['GET /todos/:id']({ params });
+      if (response.status !== 200) {
+        return { state: 'error', detailedError: 'TODO_FETCH_BY_ID_FAILED' };
       }
+      return {
+        state: 'success',
+        data: response.data,
+      };
+    },
+    createTodo: async ({ content }) => {
+      const body = {
+        content,
+        done: false,
+      };
+      const response = await apiRepository['POST /todos']({ body });
+      if (response.status !== 201) {
+        return { state: 'error', detailedError: 'TODO_CREATE_FAILED' };
+      }
+      return {
+        state: 'success',
+        data: response.data,
+      };
+    },
+    updateTodo: async ({ id, content, done }) => {
+      const params = { id };
+      const body = { content, done };
+      const response = await apiRepository['PUT /todos/:id']({ params, body });
+      if (response.status !== 200) {
+        return { state: 'error', detailedError: 'TODO_UPDATE_FAILED' };
+      }
+      return {
+        state: 'success',
+        data: response.data,
+      };
+    },
+    deleteTodo: async ({ id }) => {
+      const params = { id };
+      const response = await apiRepository['DELETE /todos/:id']({ params });
+      if (response.status !== 200) {
+        return { state: 'error', detailedError: 'TODO_DELETE_FAILED' };
+      }
+      return {
+        state: 'success',
+        data: response.data,
+      };
     },
   };
 };

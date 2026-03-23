@@ -1,8 +1,21 @@
 import type { Todo } from '../../domain/todo-interface';
+import { ASSET_LINK } from '../assets/asset-link';
+import { EVENT_NAMES } from '../assets/event-name';
+import { COMPONENT_TAGS } from '../assets/tag-name';
 import { customElement } from '../decorators/custom-element';
 
-@customElement('todo-edit')
+@customElement(COMPONENT_TAGS.TODO_EDIT)
 export class TodoEdit extends HTMLElement {
+  private originalItem: Element | null = null;
+
+  setOriginalItem(item: Element) {
+    this.originalItem = item;
+  }
+
+  getOriginalItem() {
+    return this.originalItem;
+  }
+
   setTodo(todo: Todo) {
     this.dataset.id = String(todo.id);
     this.render(todo);
@@ -14,10 +27,10 @@ export class TodoEdit extends HTMLElement {
       <input class="task-edit-input" type="text" value="${todo.content}">
       <div class="task-actions">
         <button class="action-btn action-btn-confirm" aria-label="Confirm">
-          <svg><use href="/public/asset/icon_sprite.svg#icon-check" /></svg>
+          <svg><use href=${ASSET_LINK.CONFIRM_ICON} /></svg>
         </button>
         <button class="action-btn action-btn-cancel" aria-label="Cancel">
-          <svg><use href="/public/asset/icon_sprite.svg#icon-close" /></svg>
+          <svg><use href=${ASSET_LINK.CANCEL_ICON} /></svg>
         </button>
       </div>
     </li>
@@ -36,10 +49,16 @@ export class TodoEdit extends HTMLElement {
   }
 
   private handleKeydown = (e: Event) => {
-    if (!(e instanceof KeyboardEvent)) return;
+    if (!(e instanceof KeyboardEvent)) {
+      return;
+    }
 
-    if (e.key === 'Enter') this.handleCommit();
-    if (e.key === 'Escape') this.handleCancel();
+    if (e.key === 'Enter') {
+      this.handleCommit();
+    }
+    if (e.key === 'Escape') {
+      this.handleCancel();
+    }
   };
 
   private handleClick = (e: MouseEvent) => {
@@ -64,7 +83,7 @@ export class TodoEdit extends HTMLElement {
     if (newContent.length === 0) return;
 
     this.dispatchEvent(
-      new CustomEvent('todo:update', {
+      new CustomEvent(EVENT_NAMES.TODO_UPDATE, {
         bubbles: true,
         detail: { id: this.dataset.id, newContent },
       })
@@ -73,7 +92,7 @@ export class TodoEdit extends HTMLElement {
 
   private handleCancel() {
     this.dispatchEvent(
-      new CustomEvent('todo:cancel', {
+      new CustomEvent(EVENT_NAMES.TODO_CANCEL, {
         bubbles: true,
         detail: { id: this.dataset.id },
       })
