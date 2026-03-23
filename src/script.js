@@ -1,9 +1,10 @@
+import { getTodo, addTodo, deleteTodo, checkTodo } from "./api";
+
 const todoForm = document.getElementById("form");
 const todoInput = document.getElementById("input");
 const todoList = document.getElementById("todo-list");
 
-let todos = [];
-let currentId = 1;
+let todos = await getTodo();
 
 function renderTodos() {
     todoList.innerHTML = "";
@@ -23,13 +24,15 @@ function renderTodos() {
         deleteBtn.textContent = "삭제";
         deleteBtn.className = "deleteBtn";
 
-        deleteBtn.addEventListener("click", () => {
-            todos = todos.filter((item) => item.id != todo.id);
+        deleteBtn.addEventListener("click", async () => {
+            await deleteTodo(todo.id);
+            todos = await getTodo();
             renderTodos();
         })
 
-        checkbox.addEventListener("change", () => {
-            todo.completed = checkbox.checked;
+        checkbox.addEventListener("change", async () => {
+            await checkTodo(todo.id, !todo.completed);
+            todos = await getTodo();
             renderTodos();
         });
 
@@ -40,19 +43,14 @@ function renderTodos() {
     });
 }
 
-todoForm.addEventListener("submit", (e) => {
+todoForm.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const text = todoInput.value.trim();
     if (text === "")return;
 
-    const newTodo = {
-        id: ++currentId,
-        content: text,
-        completed: false,
-    };
-
-    todos.push(newTodo);
+    await addTodo(text);
+    todos = await getTodo();
     todoInput.value = "";
     renderTodos();
 });
