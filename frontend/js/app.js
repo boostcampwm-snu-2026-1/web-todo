@@ -3,7 +3,7 @@
  * 앱 진입점 - 각 모듈을 조합하여 앱 초기화 (단일책임: 조율/조합)
  */
 
-import { getTodos, addTodo, toggleTodo, deleteTodo, getStats } from './store.js';
+import { getTodos, setTodos, addTodo, updateTodo, deleteTodo, getStats } from './store.js';
 import {
   createTodoElement,
   renderTodoList,
@@ -13,6 +13,7 @@ import {
   renderDate,
 } from './dom.js';
 import { bindListEvents, bindFormSubmit } from './events.js';
+import { fetchTodos, createTodo, patchTodo, removeTodo } from './api.js';
 
 /* ─── DOM 참조 ─── */
 const formEl = document.getElementById('todo-form');
@@ -30,22 +31,25 @@ const syncUI = () => {
 };
 
 /** todo 추가 핸들러 */
-const handleAdd = (text) => {
-  const todo = addTodo(text);
+const handleAdd = async (text) => {
+  const todo = await createTodo(text);
+  addTodo(todo);
   const li = createTodoElement(todo);
   listEl.prepend(li);
   syncUI();
 };
 
 /** todo 토글 핸들러 */
-const handleToggle = (id) => {
-  const updated = toggleTodo(id);
+const handleToggle = async (id) => {
+  const updated = await patchTodo(id);
+  updateTodo(updated);
   updateTodoItemUI(listEl, updated);
   syncUI();
 };
 
 /** todo 삭제 핸들러 */
-const handleDelete = (id) => {
+const handleDelete = async (id) => {
+  await removeTodo(id);
   deleteTodo(id);
   const li = listEl.querySelector(`[data-id="${id}"]`);
   li?.remove();
@@ -53,8 +57,11 @@ const handleDelete = (id) => {
 };
 
 /** 앱 초기화 */
-const init = () => {
+const init = async () => {
   renderDate(dateEl);
+
+  const todos = await fetchTodos();
+  setTodos(todos);
   renderTodoList(listEl, getTodos());
   syncUI();
 
