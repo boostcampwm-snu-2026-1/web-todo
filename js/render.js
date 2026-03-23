@@ -1,4 +1,4 @@
-window.renderTodos = function renderTodos(todoList, todos, editingTodoId) {
+export function renderTodos(todoList, todos, editingTodoId) {
   todoList.innerHTML = "";
 
   if (todos.length === 0) {
@@ -38,7 +38,7 @@ window.renderTodos = function renderTodos(todoList, todos, editingTodoId) {
     if (isEditing) {
       const editInput = document.createElement("input");
       editInput.type = "text";
-      editInput.value = todo.text;
+      editInput.value = todo.title;
       editInput.dataset.id = todo.id;
       editInput.className = "edit-input";
 
@@ -60,7 +60,7 @@ window.renderTodos = function renderTodos(todoList, todos, editingTodoId) {
     } else {
       const label = document.createElement("label");
       label.htmlFor = checkbox.id;
-      label.textContent = todo.text;
+      label.textContent = todo.title;
 
       if (todo.completed) {
         label.classList.add("completed");
@@ -85,4 +85,4 @@ window.renderTodos = function renderTodos(todoList, todos, editingTodoId) {
 
     todoList.append(item);
   });
-};
+}
