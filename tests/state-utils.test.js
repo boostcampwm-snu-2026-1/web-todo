@@ -76,3 +76,40 @@ test('toggle missing id does not call save', () => {
   assert.equal(store.toggleTodo('missing'), false);
   assert.equal(saveCalls, 0);
 });
+
+test('store setTodos/addTodoObject/replaceTodo work', () => {
+  const store = createTodoStore([], {
+    load: (seed) => [...seed],
+    save: () => {},
+  });
+
+  const seeded = [
+    { id: '1', text: '서버 데이터', completed: false },
+    { id: '2', text: '완료 데이터', completed: true },
+  ];
+
+  assert.equal(store.setTodos(seeded), true);
+  assert.equal(store.getTodos().length, 2);
+
+  assert.equal(store.addTodoObject({ id: '3', text: '추가', completed: false }), true);
+  assert.equal(store.getTodos().length, 3);
+
+  assert.equal(store.replaceTodo('3', { id: '3', text: '수정', completed: true }), true);
+  assert.equal(store.getTodos().find((todo) => todo.id === '3')?.completed, true);
+});
+
+test('store removeTodos removes selected ids only', () => {
+  const store = createTodoStore(
+    [
+      { id: 'a', text: 'A', completed: false },
+      { id: 'b', text: 'B', completed: true },
+      { id: 'c', text: 'C', completed: true },
+    ],
+    { load: (seed) => [...seed], save: () => {} },
+  );
+
+  assert.equal(store.removeTodos(['b', 'c']), true);
+  assert.deepEqual(store.getTodos(), [{ id: 'a', text: 'A', completed: false }]);
+  assert.equal(store.removeTodos([]), false);
+});
+

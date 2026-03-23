@@ -70,8 +70,16 @@ export function createTodoStore(
       };
     },
 
+        setTodos(todos) {
+      return commit([...todos]);
+    },
+
     addTodo(text) {
       return commit([...state.todos, createTodo(text, generateId)]);
+    },
+
+    addTodoObject(todo) {
+      return commit([...state.todos, { ...todo }]);
     },
 
     toggleTodo(todoId) {
@@ -85,6 +93,21 @@ export function createTodoStore(
       const nextTodos = state.todos.filter((todo) => todo.id !== todoId);
       return commit(nextTodos.length === state.todos.length ? state.todos : nextTodos);
     },
+
+    removeTodos(todoIds) {
+      const idSet = new Set(todoIds);
+      if (idSet.size === 0) {
+        return false;
+      }
+      const nextTodos = state.todos.filter((todo) => !idSet.has(todo.id));
+      return commit(nextTodos.length === state.todos.length ? state.todos : nextTodos);
+    },
+
+    replaceTodo(todoId, nextTodo) {
+      const nextTodos = replaceByMap((todo) => (todo.id === todoId ? { ...nextTodo } : todo));
+      return commit(nextTodos);
+    },
+
 
     clearCompleted() {
       const nextTodos = state.todos.filter((todo) => !todo.completed);
