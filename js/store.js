@@ -1,17 +1,16 @@
-// 상태 관리 및 LocalStorage 담당 모듈
+// 상태 관리 모듈 (mockapi.io 연동)
+import { fetchTodos, createTodo, removeTodo, updateTodo } from './api.js';
+
 let todos = [];
-let nextId = 1;
 
-export function loadTodos() {
-  const saved = localStorage.getItem('todos');
-  if (saved) {
-    todos = JSON.parse(saved);
-    nextId = todos.length > 0 ? Math.max(...todos.map(t => t.id)) + 1 : 1;
-  }
-}
-
-function saveTodos() {
-  localStorage.setItem('todos', JSON.stringify(todos));
+export async function loadTodos() {
+  const data = await fetchTodos();
+  todos = data.map(item => ({
+    id: item.id,
+    text: item.title,
+    completed: item.completed,
+  }));
+  return todos;
 }
 
 export function getTodos() {
@@ -19,33 +18,32 @@ export function getTodos() {
 }
 
 export function findTodoById(id) {
-  return todos.find(t => t.id === id);
+  return todos.find(t => String(t.id) === String(id));
 }
 
-export function addTodo(text) {
-  const todo = { id: nextId++, text: text.trim(), completed: false };
+export async function addTodo(text) {
+  const data = await createTodo(text);
+  const todo = { id: data.id, text: data.title, completed: data.completed };
   todos.push(todo);
-  saveTodos();
   return todo;
 }
 
-export function toggleTodo(id) {
+export async function toggleTodo(id) {
   const todo = findTodoById(id);
-  if (todo) {
-    todo.completed = !todo.completed;
-    saveTodos();
-  }
+  if (!todo) return;
+  const newCompleted = !todo.completed;
+  await updateTodo(id, { completed: newCompleted });
+  todo.completed = newCompleted;
 }
 
-export function deleteTodo(id) {
-  todos = todos.filter(t => t.id !== id);
-  saveTodos();
+export async function deleteTodo(id) {
+  await removeTodo(id);
+  todos = todos.filter(t => String(t.id) !== String(id));
 }
 
-export function updateTodoText(id, newText) {
+export async function updateTodoText(id, newText) {
   const todo = findTodoById(id);
-  if (todo) {
-    todo.text = newText;
-    saveTodos();
-  }
+  if (!todo) return;
+  await updateTodo(id, { title: newText });
+  todo.text = newText;
 }

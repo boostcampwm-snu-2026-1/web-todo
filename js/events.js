@@ -7,34 +7,34 @@ export function bindEvents(form, input, list) {
   list.addEventListener('click', (e) => handleListClick(e));
 }
 
-function handleFormSubmit(e, input, list) {
+async function handleFormSubmit(e, input, list) {
   e.preventDefault();
   const text = input.value.trim();
   if (!text) return;
 
-  const todo = addTodo(text);
+  const todo = await addTodo(text);
   list.appendChild(createTodoElement(todo));
   input.value = '';
   input.focus();
 }
 
-function handleListClick(e) {
+async function handleListClick(e) {
   const item = e.target.closest('.todo-item');
   if (!item) return;
 
-  const id = Number(item.dataset.id);
+  const id = item.dataset.id;
 
   if (e.target.closest('.todo-toggle')) {
-    handleToggle(item, id);
+    await handleToggle(item, id);
   } else if (e.target.closest('.todo-delete-btn')) {
-    handleDelete(item, id);
+    await handleDelete(item, id);
   } else if (e.target.closest('.todo-edit-btn')) {
     handleEdit(item, id);
   }
 }
 
-function handleToggle(item, id) {
-  toggleTodo(id);
+async function handleToggle(item, id) {
+  await toggleTodo(id);
   item.classList.toggle('completed');
 
   const toggleBtn = item.querySelector('.todo-toggle');
@@ -42,8 +42,8 @@ function handleToggle(item, id) {
   toggleBtn.setAttribute('aria-label', isCompleted ? '완료 해제' : '완료 처리');
 }
 
-function handleDelete(item, id) {
-  deleteTodo(id);
+async function handleDelete(item, id) {
+  await deleteTodo(id);
   item.remove();
 }
 
@@ -64,10 +64,10 @@ function handleEdit(item, id) {
   input.focus();
   input.select();
 
-  function finishEdit() {
+  async function finishEdit() {
     const newText = input.value.trim();
     if (newText && newText !== currentText) {
-      updateTodoText(id, newText);
+      await updateTodoText(id, newText);
     }
 
     const newSpan = document.createElement('span');
