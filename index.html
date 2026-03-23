@@ -4,7 +4,6 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>오늘의 할 일</title>
-  <link rel="stylesheet" href="todo.css">
 </head>
 <body>
   <div class="app">
@@ -13,6 +12,7 @@
       <p class="date" id="today-date" aria-hidden="true"></p>
     </header>
     <main class="main">
+      <p class="app-status" id="app-status" role="status" aria-live="polite"></p>
       <form class="form" id="todo-form" aria-label="새 할 일 추가">
         <input
           type="text"
@@ -27,6 +27,6 @@
       <ul class="todo-list" id="todo-list" aria-label="할 일 목록"></ul>
     </main>
   </div>
-  <script src="todo.js"></script>
+  <script type="module" src="/src/main.js"></script>
 </body>
 </html>
