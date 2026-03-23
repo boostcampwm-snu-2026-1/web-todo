@@ -1,26 +1,25 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Todo App</title>
-  <link rel="stylesheet" href="./todo.css" />
+  <link rel="stylesheet" href="./todo.css">
 </head>
 <body>
   <main class="app">
-    <section class="todo-card" aria-labelledby="todo-title">
+    <section class="todo-card">
       <header class="todo-header">
         <div>
           <p class="eyebrow">Vanilla JavaScript Todo</p>
           <h1 id="todo-title">오늘의 할 일</h1>
         </div>
-        <div class="status-box" aria-live="polite">
-          <span id="task-count">0개의 작업</span>
+        <div class="status-box">
+          <span id="task-count">전체 0개</span>
         </div>
       </header>
 
       <form id="todo-form" class="todo-form">
-        <label class="sr-only" for="todo-input">할 일 입력</label>
         <input
           id="todo-input"
           name="todo"
@@ -28,26 +27,24 @@
           placeholder="할 일을 입력하세요"
           maxlength="100"
           autocomplete="off"
-        />
-        <button type="submit">추가</button>
+        >
+        <button id="submit-button" type="submit">추가</button>
       </form>
 
-      <section class="toolbar" aria-label="할 일 관리">
-        <button id="clear-completed-button" type="button" class="ghost-button">
-          완료한 항목 삭제
-        </button>
-      </section>
+      <div class="toolbar">
+        <button id="reload-button" type="button" class="ghost-button">새로고침</button>
+      </div>
 
-      <ul id="todo-list" class="todo-list" aria-live="polite"></ul>
+      <ul id="todo-list" class="todo-list"></ul>
 
       <template id="todo-item-template">
         <li class="todo-item">
           <label class="todo-check-label">
-            <input class="todo-checkbox" type="checkbox" />
-            <span class="checkmark" aria-hidden="true"></span>
+            <input class="todo-checkbox" type="checkbox">
+            <span class="checkmark"></span>
           </label>
           <span class="todo-text"></span>
-          <button class="delete-button" type="button" aria-label="할 일 삭제">삭제</button>
+          <button class="delete-button" type="button">삭제</button>
         </li>
       </template>
     </section>
