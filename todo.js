@@ -2,16 +2,60 @@ const input = document.querySelector("#new-task");
 const addButton = document.querySelector("#add-task");
 const todoList = document.querySelector("#task-list");
 
-// 데이터 저장소
-const todos = [];
+// GET todos
+function getTodos() {
+  fetch("https://69b9372ee69653ffe6a6f09a.mockapi.io/todos")
+    .then((res) => res.json())
+    .then((result) => {
+      for (const todo of result) {
+        const item = createTodoItem(todo);
+        todoList.appendChild(item);
+      }
+    });
+}
 
-// todo 데이터 객체 생성
-function createTodo(text) {
-  return {
-    id: Date.now(),
-    text,
-    done: false,
-  };
+// POST todo
+function postTodo(todo) {
+  fetch("https://69b9372ee69653ffe6a6f09a.mockapi.io/todos", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(todo),
+  })
+    .then((res) => res.json())
+    .then((result) => {
+      const item = createTodoItem(result);
+      todoList.appendChild(item);
+    });
+}
+
+// DELETE todo
+function deleteTodo(id) {
+  fetch(`https://69b9372ee69653ffe6a6f09a.mockapi.io/todos/${id}`, {
+    method: "DELETE",
+  }).then(() => {
+    const li = todoList.querySelector(`li[data-id="${id}"]`);
+    if (li) li.remove();
+  });
+}
+
+// TOGGLE todo
+function toggleTodo(id, done) {
+  fetch(`https://69b9372ee69653ffe6a6f09a.mockapi.io/todos/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ done }),
+  }).then(() => {
+    const li = todoList.querySelector(`li[data-id="${id}"]`);
+    if (li) {
+      li.classList.toggle("done", done);
+      const toggleButton = li.querySelector(".toggle-button");
+      if (toggleButton) toggleButton.textContent = done ? "Undo" : "Done";
+    }
+  });
 }
 
 // todo 데이터를 DOM 으로 변환
@@ -26,7 +70,7 @@ function createTodoItem(todo) {
   toggleButton.textContent = "Done";
   toggleButton.classList.add("toggle-button");
 
-  span.textContent = todo.text;
+  span.textContent = todo.content;
   deleteButton.textContent = "Delete";
   deleteButton.classList.add("delete-button");
 
@@ -38,14 +82,12 @@ function createTodoItem(todo) {
 
 // todo 추가
 function addTodo(text) {
-  const todo = createTodo(text);
-  todos.push(todo);
-
-  const item = createTodoItem(todo);
-  todoList.appendChild(item);
-
+  postTodo({ content: text, done: false });
   input.value = "";
 }
+
+// 초기 데이터 로드
+getTodos();
 
 // 이벤트 위임 - 추후 delete/toggle 여기서 처리
 todoList.addEventListener("click", (e) => {
@@ -56,22 +98,13 @@ todoList.addEventListener("click", (e) => {
 
   // deleteTodo(id) 구현
   if (e.target.classList.contains("delete-button")) {
-    todos.splice(
-      todos.findIndex((t) => t.id === id),
-      1,
-    );
-    li.remove();
+    deleteTodo(id);
   }
 
   // toggleTodo(id) 구현
   if (e.target.classList.contains("toggle-button")) {
-    const todo = todos.find((t) => t.id === id);
-    if (todo) {
-      todo.done = !todo.done;
-      li.classList.toggle("done", todo.done);
-
-      e.target.textContent = todo.done ? "Undo" : "Done";
-    }
+    const isDone = li.classList.toggle("done");
+    toggleTodo(id, isDone);
   }
 });
 
