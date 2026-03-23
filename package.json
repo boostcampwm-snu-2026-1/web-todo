@@ -1,0 +1,24 @@
+{
+  "name": "web-todo",
+  "version": "1.0.0",
+  "description": "서울대학교 컴퓨터 및 VLSI 특강 2주차 과제",
+  "main": "app.js",
+  "scripts": {
+    "dev": "vite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/dootheg0924/web-todo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/dootheg0924/web-todo/issues"
+  },
+  "homepage": "https://github.com/dootheg0924/web-todo#readme",
+  "devDependencies": {
+    "vite": "^8.0.0"
+  }
+}
