@@ -1,0 +1,23 @@
+{
+  "name": "web-todo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "src/main.js",
+  "scripts": {
+    "dev": "vite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/peterabcd/web-todo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/peterabcd/web-todo/issues"
+  },
+  "homepage": "https://github.com/peterabcd/web-todo#readme",
+  "devDependencies": {
+    "vite": "^8.0.1"
+  }
+}
