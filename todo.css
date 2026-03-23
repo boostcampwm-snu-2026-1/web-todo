@@ -51,6 +51,9 @@ h1 {
     list-style: none;
     padding: 0;
     margin: 0;
+
+    max-height: 400px; /* 바구니 최대 높이 제한 */
+    overflow-y: auto; /* 내용물이 높이 넘치면 스크롤바 만들어줌 */
 }
 
 .todo-item.completed .todo-text {
