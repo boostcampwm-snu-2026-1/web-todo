@@ -1,4 +1,4 @@
-const BASE_URL = 'https://69bceaae2bc2a25b22acbf9c.mockapi.io/todos'; // MockAPI 주소로 교체하세요!
+const BASE_URL = '/api/todos';
 
 export const todoAPI = {
     async fetchTodos() {
@@ -15,7 +15,7 @@ export const todoAPI = {
     },
     async updateTodo(id, updates) {
         const response = await fetch(`${BASE_URL}/${id}`, {
-            method: 'PUT',
+            method: 'PATCH',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify(updates)
         });
