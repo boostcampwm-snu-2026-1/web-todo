@@ -1,7 +1,7 @@
-const API_URL = "https://69b93709e69653ffe6a6ef8d.mockapi.io/todos";
+const API_URL = import.meta.env.VITE_API_URL || "http://localhost:3000/api";
 
 function makeOptions(method, body) {
-  if (!body) {
+  if (body === undefined) {
     return { method };
   }
 
@@ -16,41 +16,39 @@ function makeOptions(method, body) {
 
 async function request(url = "", options) {
   const response = await fetch(`${API_URL}${url}`, options);
+  const data = response.status === 204 ? null : await response.json().catch(() => null);
 
   if (!response.ok) {
-    throw new Error("request failed");
+    throw new Error(data?.message || "request failed");
   }
 
-  return response.json();
+  return data;
 }
 
 function normalizeTodo(todo) {
   return {
     id: todo.id,
-    text: todo.content,
-    done: Boolean(todo.completed),
+    text: todo.text,
+    done: Boolean(todo.done),
   };
 }
 
 export async function getTodos() {
-  const todos = await request();
+  const todos = await request("/todos");
   return todos.map(normalizeTodo);
 }
 
 export async function createTodo(text) {
-  const todo = await request("", makeOptions("POST", { content: text, completed: false }));
+  const todo = await request("/todos", makeOptions("POST", { text }));
   return normalizeTodo(todo);
 }
 
 export async function updateTodo(todo) {
-  const nextTodo = await request(
-    `/${todo.id}`,
-    makeOptions("PUT", { content: todo.text, completed: !todo.done })
-  );
+  const nextTodo = await request(`/todos/${todo.id}`, makeOptions("PATCH", { done: !todo.done }));
 
   return normalizeTodo(nextTodo);
 }
 
 export async function deleteTodo(id) {
-  await request(`/${id}`, makeOptions("DELETE"));
+  await request(`/todos/${id}`, makeOptions("DELETE"));
 }
