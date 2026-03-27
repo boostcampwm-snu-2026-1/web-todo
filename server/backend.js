@@ -28,6 +28,21 @@ app.get('/todos', async (req, res) => {
   }
 });
 
+app.post('/todos', async (req, res) => {
+  try {
+    const {content} = req.body;
+
+    const newTodo = new Todo({
+      content: content, isDone: false
+    });
+
+    const savedTodo = await newTodo.save();
+
+    res.status(201).json(savedTodo);
+  } catch (error) {
+    res.status(400).json({ message: "할 일 추가 실패", error});
+  }
+});
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`🚀 서버가 http://localhost:${PORT} 에서 달리는 중!`);
