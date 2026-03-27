@@ -1,4 +1,4 @@
-const API_URL = 'https://69b93649e69653ffe6a6ebf9.mockapi.io/todoweb';
+const API_URL = 'http://localhost:3000/todos';
 
 // 외부(todo.js)에서 이 함수들을 가져다 쓸 수 있도록 앞에 'export'를 붙여줌
 
