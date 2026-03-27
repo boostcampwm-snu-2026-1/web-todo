@@ -43,6 +43,26 @@ app.post('/todos', async (req, res) => {
     res.status(400).json({ message: "할 일 추가 실패", error});
   }
 });
+
+app.patch('/todos/:id', async (req, res) => {
+  try {
+    const { id } = req.params; 
+    const { isDone } = req.body; 
+
+    const updatedTodo = await Todo.findByIdAndUpdate(
+      id, { isDone }, { new: true } 
+    );
+
+    if (!updatedTodo) {
+      return res.status(404).json({ message: "해당 데이터를 찾을 수 없습니다." });
+    }
+
+    res.status(200).json(updatedTodo);
+  } catch (error) {
+    res.status(500).json({ message: "수정 실패", error });
+  }
+});
+
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`🚀 서버가 http://localhost:${PORT} 에서 달리는 중!`);
