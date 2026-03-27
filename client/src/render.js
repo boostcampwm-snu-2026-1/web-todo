@@ -8,11 +8,11 @@ export function renderTodos(todos) {
 
     todos.forEach(todo => {
         const li = document.createElement('li');
-        li.className = `todo-item ${todo.done ? 'done' : ''}`;
-        li.dataset.id = todo.id; 
+        li.className = `todo-item ${todo.isDone ? 'done' : ''}`;
+        li.dataset.id = todo._id; 
 
         li.innerHTML = `
-            <input type="checkbox" class="toggle-checkbox" ${todo.done ? 'checked' : ''}>
+            <input type="checkbox" class="toggle-checkbox" ${todo.isDone ? 'checked' : ''}>
             <span class="todo-content">${todo.content}</span>
             <button class="delete-btn">삭제</button>
         `;
