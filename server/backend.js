@@ -63,6 +63,22 @@ app.patch('/todos/:id', async (req, res) => {
   }
 });
 
+app.delete('/todos/:id', async (req, res) => {
+  try {
+    const { id } = req.params; 
+
+    const deletedTodo = await Todo.findByIdAndDelete(id);
+
+    if (!deletedTodo) {
+      return res.status(404).json({ message: "삭제할 데이터를 찾을 수 없습니다." });
+    }
+
+    res.status(200).json({ message: "삭제 성공", deletedTodo });
+  } catch (error) {
+    res.status(500).json({ message: "삭제 실패", error });
+  }
+});
+
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log(`🚀 서버가 http://localhost:${PORT} 에서 달리는 중!`);
