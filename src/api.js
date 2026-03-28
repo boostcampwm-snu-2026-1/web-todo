@@ -1,4 +1,4 @@
-const API_URL = 'https://69bd31e32bc2a25b22add65b.mockapi.io/todos';
+const API_URL = 'http://localhost:3000/todos';
 
 export const todoApi = {
     async getAll() {
