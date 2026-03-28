@@ -16,7 +16,7 @@ export default class TodoView {
             day: 'numeric' 
         };
         
-        const formattedDate = now.toLocaleDateString('en-US', options);
+        const formattedDate = now.toLocaleDateString('ko-KR', options);
         
         if (this.dateElement) {
             this.dateElement.textContent = formattedDate;
@@ -69,7 +69,7 @@ export default class TodoView {
 
         this.todoList.addEventListener('click', (e) => {
         const actionBtn = e.target.closest('[data-action]');
-        if (!actionBtn) return;
+        if (actionBtn === null) return;
 
         const item = actionBtn.closest('.todo-item');
 

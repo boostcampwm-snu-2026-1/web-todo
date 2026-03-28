@@ -1,7 +1,11 @@
+import dns from 'node:dns';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
+
+// 현재 네트워크 DNS가 MongoDB SRV 레코드를 조회 못하는 문제 우회
+dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 dotenv.config();
 
@@ -37,6 +41,11 @@ app.get('/api/todos', async (req, res) => {
 // POST
 app.post('/api/todos', async (req, res) => {
   try {
+    // id가 없으면 서버에서 자동 생성
+    if (!req.body.id) {
+      const lastTodo = await Todo.findOne().sort({ createdAt: -1 });
+      req.body.id = lastTodo ? String(Number(lastTodo.id) + 1) : '1';
+    }
     const newTodo = new Todo(req.body);
     const savedTodo = await newTodo.save();
     res.status(201).json(savedTodo);
