@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Today's Tasks</title>
+  <link rel="stylesheet" href="todo.css">
+</head>
+<body>
+  <main class="todo-app">
+    <header class="todo-header">
+      <h1>Today's Tasks</h1>
+      <p class="todo-date"></p>
+    </header>
+
+    <form class="todo-form" aria-label="새로운 할 일 추가">
+      <input
+        type="text"
+        class="todo-input"
+        placeholder="Add a new task..."
+        required
+        aria-label="할 일 입력"
+      >
+      <button type="submit" class="todo-add-btn" aria-label="추가">+</button>
+    </form>
+
+    <ul class="todo-list" aria-label="할 일 목록"></ul>
+  </main>
+
+  <script type="module" src="todo.js"></script>
+</body>
+</html>
