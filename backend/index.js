@@ -17,9 +17,15 @@ mongoose.connect(URI)
 
 // todo 스키마
 const todoSchema = new mongoose.Schema({
-  content: { type: String, required: true },
-  done: { type: Boolean, default: false },
+    content: { type: String, required: true },
+    done: { type: Boolean, default: false },
 });
+
+// id라는 가상의 컬럼 추가. JSON 타입으로 변경할 때 _id 값을 그대로 보여줌
+todoSchema.virtual('id').get(function() {
+  return this._id.toHexString();
+}); 
+todoSchema.set('toJSON', { virtuals: true }) 
 
 const Todos = mongoose.model("Todos", todoSchema);
 
@@ -43,6 +49,19 @@ app.post('/api/todos', async (req, res) => {
         
         // 새로 생성된 사용자 정보를 응답
         res.status(201).json(newTodo);
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.put('/api/todos/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { done } = req.body;
+        const updatedTodo = await Todos.findByIdAndUpdate(id, { done });
+
+        if (!updatedTodo) return res.status(404).json({ message: "대상을 찾을 수 없습니다." });
+        res.status(200).json(updatedTodo);
     } catch (error) {
         res.status(500).json({ error: error.message });
     }
