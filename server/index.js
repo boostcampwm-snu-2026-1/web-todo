@@ -31,12 +31,13 @@ async function startServer() {
     });
 
     app.put("/todos/:id", async (req, res) => {
-      const todo = await Todo.findByIdAndUpdate(
-        req.params.id,
-        { done: req.body.done },
-        { new: true },
-      );
-      res.json(todo);
+      const update = {};
+      if (req.body.done !== undefined) update.done = req.body.done;
+      if (req.body.content !== undefined) update.content = req.body.content;
+      const todo = await Todo.findByIdAndUpdate(req.params.id, update, {
+        returnDocument: "after",
+      });
+      res.status(200).json(todo);
     });
 
     app.delete("/todos/:id", async (req, res) => {
