@@ -21,7 +21,7 @@ mongoose.connect(process.env.URI)
     .catch(err => console.error("연결 실패:", err.message));
 
 // GET /todos - 전체 조회
-app.get("/todos", async (req, res) => {
+app.get("/todos", async (_req, res) => {
     try {
         const todos = await Todo.find();
         res.json(todos);

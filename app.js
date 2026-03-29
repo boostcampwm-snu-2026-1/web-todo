@@ -36,7 +36,7 @@ function createTodoElement(todo) {
     const li = document.createElement('li');
     li.classList.add('todo-item');
     if (todo.done) li.classList.add('done');
-    li.dataset.id = todo.id;
+    li.dataset.id = todo._id;
 
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
@@ -105,7 +105,7 @@ async function handleAddTodo(e) {
 async function handleDeleteTodo(id) {
     try {
         await deleteTodo(id);
-        todos = todos.filter(t => t.id !== id);
+        todos = todos.filter(t => t._id !== id);
         render();
     } catch (error) {
         showToast('Todo 삭제에 실패했습니다. 다시 시도해주세요.');
@@ -116,12 +116,12 @@ async function handleDeleteTodo(id) {
  * todo 완료 상태 토글 처리
  */
 async function handleToggleTodo(id) {
-    const todo = todos.find(t => t.id === id);
+    const todo = todos.find(t => t._id === id);
     if (!todo) return;
 
     try {
         const updated = await toggleTodo(id, todo.done);
-        todos = todos.map(t => t.id === id ? updated : t);
+        todos = todos.map(t => t._id === id ? updated : t);
         render();
     } catch (error) {
         showToast('Todo 상태 변경에 실패했습니다. 다시 시도해주세요.');
