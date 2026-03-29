@@ -1,6 +1,4 @@
-//https://69b92c3ee69653ffe6a6cc3c.mockapi.io/api/v1/todos
-
-const BASE_URL = 'https://69b92c3ee69653ffe6a6cc3c.mockapi.io/api/v1/todos';
+const BASE_URL = 'http://localhost:3000/todos';
 
 export async function getTodo() {
     try {
@@ -8,7 +6,7 @@ export async function getTodo() {
         if(!response.ok) throw new Error("Network error");
 
         return await response.json();
-    }    
+    }
     catch(error){
         console.error("Failed to fecth todo", error);
         return [];
@@ -25,7 +23,8 @@ export async function createTodo(itemText) {
                 completed: false
             })
         });
-        return await response.json(); // get id number, meta data, receipt from server
+        if (!response.ok) throw new Error("Failed to create");
+        return await response.json();
     }
     catch(error){
         console.error("Failed to create", error);
@@ -35,9 +34,10 @@ export async function createTodo(itemText) {
 
 export async function deleteTodo(id) {
     try {
-        const response = await fetch(`${BASE_URL}/${id}`, { // to pinpoint the id
+        const response = await fetch(`${BASE_URL}/${id}`, {
             method: 'DELETE'
         });
+        if (!response.ok) throw new Error("Failed to delete");
         return await response.json();
     } catch (error) {
         console.error("Failed to delete", error);
@@ -51,6 +51,7 @@ export async function toggleTodo(id, isCompleted) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ completed: isCompleted })
         });
+        if (!response.ok) throw new Error("Failed to toggle");
         return await response.json();
     } catch (error) {
         console.error("Failed to toggle", error);
@@ -62,11 +63,12 @@ export async function updateTodo(id, updateText, isCompleted){
         const response = await fetch(`${BASE_URL}/${id}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ 
+            body: JSON.stringify({
                 item : updateText,
-                completed: isCompleted 
+                completed: isCompleted
             })
         });
+        if (!response.ok) throw new Error("Failed to update");
         return await response.json();
     } catch (error) {
         console.error("Failed to update", error);

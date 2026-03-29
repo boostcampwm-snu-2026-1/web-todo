@@ -2,12 +2,14 @@
   "name": "web-todo",
   "version": "1.0.0",
   "description": "",
-  "main": "src/todo.js",
+  "main": "index.js",
   "devDependencies": {
+    "nodemon": "^3.1.14",
     "vite": "^8.0.1"
   },
   "scripts": {
-    "dev": "vite"
+    "dev": "vite",
+    "server": "nodemon --dns-result-order=ipv4first index.js"
   },
   "repository": {
     "type": "git",
@@ -16,9 +18,16 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
+  "type": "module",
   "bugs": {
     "url": "https://github.com/LeeSeokWoo0326/web-todo/issues"
   },
-  "homepage": "https://github.com/LeeSeokWoo0326/web-todo#readme"
+  "homepage": "https://github.com/LeeSeokWoo0326/web-todo#readme",
+  "dependencies": {
+    "cors": "^2.8.6",
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "mongodb": "^7.1.1",
+    "mongoose": "^9.3.3"
+  }
 }

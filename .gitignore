@@ -1,1 +1,12 @@
 node_modules/
+
+# Environment files
+.env
+.env.local
+.env.*.local
+.env.development
+.env.production
+.env.test
+
+# AI log (contains sensitive connection info)
+AI_LOG.md
