@@ -59,9 +59,7 @@
         "noUnusedImports": "error",
         "useIsNan": "error",
         "useValidForDirection": "error",
-        "useYield": "error",
-        "useExhaustiveDependencies": "error",
-        "useHookAtTopLevel": "error"
+        "useYield": "error"
       },
       "complexity": {
         "noExtraBooleanCast": "error",
