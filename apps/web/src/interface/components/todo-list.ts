@@ -5,6 +5,7 @@ import { inject } from '../decorators/attr';
 import { customElement } from '../decorators/custom-element';
 import { errorDispatch } from '../decorators/event';
 import { optimistic } from '../utils/optimistic-render';
+import { createRandomString } from '../utils/random-string';
 import { TodoEdit } from './todo-edit';
 import { TodoItem } from './todo-item';
 
@@ -27,6 +28,10 @@ export class TodoList extends HTMLElement {
   accessor todoUsecase!: TodoUsecase;
 
   async render() {
+    if (this.querySelector('ul') == null) {
+      this.innerHTML = '<ul class="task-list"></ul>';
+    }
+
     const result = await this.todoUsecase.listTodos();
     if (result.state === 'error') {
       this.dispatchEvent(
@@ -39,11 +44,7 @@ export class TodoList extends HTMLElement {
     }
 
     this.innerHTML = '<ul class="task-list"></ul>';
-    const ul = this.querySelector('ul');
-    if (ul === null) {
-      return;
-    }
-
+    const ul = this.querySelector('ul')!;
     for (const todo of result.data) {
       const item = new TodoItem();
       ul.appendChild(item);
@@ -78,21 +79,33 @@ export class TodoList extends HTMLElement {
   }
 
   @errorDispatch(EVENT_NAMES.TODO_ERROR)
-  private async handleAdded(e: Event) {
+  private handleAdded(e: Event) {
     if (!(e instanceof CustomEvent)) {
       return;
     }
     const content = String(e.detail.content);
 
-    const ul = this.querySelector('ul');
+    const ul = this.querySelector('.task-list');
     if (ul === null) {
       return;
     }
     const tempItem = new TodoItem();
-    tempItem.dataset.temp = 'true';
-    ul.appendChild(tempItem);
-    tempItem.setTodo({ id: -1, content, done: false });
-    await this.render();
+    const tempId = createRandomString();
+
+    const optimisticFn = () => {
+      tempItem.dataset.temp = 'true';
+      ul.appendChild(tempItem);
+      tempItem.setTodo({ id: tempId, content, done: false });
+    };
+    const asyncFn = () => this.todoUsecase.addTodo({ content });
+    const cleanUpFn = () => {
+      return this.render();
+    };
+    const rollbackFn = () => {
+      tempItem.remove();
+      return this.render();
+    };
+    return optimistic({ optimisticFn, asyncFn, rollbackFn, cleanUpFn });
   }
 
   @errorDispatch(EVENT_NAMES.TODO_ERROR)
@@ -114,7 +127,7 @@ export class TodoList extends HTMLElement {
     const optimisticFn = () => item.toggleDone();
     const asyncFn = () =>
       this.todoUsecase.toggleTodo({
-        id: Number(e.detail.id),
+        id: e.detail.id,
       });
     const rollbackFn = () => this.render();
     return optimistic({ optimisticFn, asyncFn, rollbackFn });
@@ -142,7 +155,7 @@ export class TodoList extends HTMLElement {
     const editEl = new TodoEdit();
     editEl.setOriginalItem(item);
     item.replaceWith(editEl);
-    editEl.setTodo({ id: Number(id), content, done });
+    editEl.setTodo({ id, content, done });
   }
 
   @errorDispatch(EVENT_NAMES.TODO_ERROR)
@@ -164,11 +177,11 @@ export class TodoList extends HTMLElement {
       const isDone = editEl.classList.contains('done') ?? false;
       const tempItem = new TodoItem();
       editEl.replaceWith(tempItem);
-      tempItem.setTodo({ id: Number(id), content: newContent, done: isDone });
+      tempItem.setTodo({ id, content: newContent, done: isDone });
     };
     const asyncFn = () =>
       this.todoUsecase.updateTodo({
-        id: Number(id),
+        id,
         newContent,
       });
     const rollbackFn = () => this.render();
@@ -218,7 +231,7 @@ export class TodoList extends HTMLElement {
     };
     const asyncFn = () =>
       this.todoUsecase.deleteTodo({
-        id: Number(e.detail.id),
+        id: e.detail.id,
       });
     const rollbackFn = () => this.render();
 

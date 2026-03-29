@@ -4,7 +4,7 @@ import type {
 } from './response-type';
 
 export type Todo = {
-  id: number;
+  id: string;
   content: string;
   done: boolean;
 };
@@ -14,7 +14,7 @@ export type TodoRepository = {
   getTodoById: ({
     id,
   }: {
-    id: number;
+    id: string;
   }) => Promise<RepositoryResponseType<Todo>>;
   createTodo: ({
     content,
@@ -26,14 +26,14 @@ export type TodoRepository = {
     content,
     done,
   }: {
-    id: number;
+    id: string;
     content: string;
     done: boolean;
   }) => Promise<RepositoryResponseType<Todo[]>>;
   deleteTodo: ({
     id,
   }: {
-    id: number;
+    id: string;
   }) => Promise<RepositoryResponseType<Todo[]>>;
 };
 
@@ -44,13 +44,13 @@ export type TodoUsecase = {
     content: string;
   }) => Promise<UseCaseResponseType<void>>;
   listTodos: () => Promise<UseCaseResponseType<Todo[]>>;
-  toggleTodo: ({ id }: { id: number }) => Promise<UseCaseResponseType<void>>;
-  deleteTodo: ({ id }: { id: number }) => Promise<UseCaseResponseType<void>>;
+  toggleTodo: ({ id }: { id: string }) => Promise<UseCaseResponseType<void>>;
+  deleteTodo: ({ id }: { id: string }) => Promise<UseCaseResponseType<void>>;
   updateTodo: ({
     id,
     newContent,
   }: {
-    id: number;
+    id: string;
     newContent: string;
   }) => Promise<UseCaseResponseType<void>>;
 };

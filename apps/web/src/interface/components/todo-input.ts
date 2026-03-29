@@ -1,15 +1,12 @@
-import type { TodoUsecase } from '../../domain/todo-interface';
 import { ASSET_LINK } from '../assets/asset-link';
 import { EVENT_NAMES } from '../assets/event-name';
 import { COMPONENT_TAGS } from '../assets/tag-name';
-import { inject, queryStrict } from '../decorators/attr';
+import { queryStrict } from '../decorators/attr';
 import { customElement } from '../decorators/custom-element';
-import { dispatch, errorDispatch } from '../decorators/event';
+import { errorDispatch } from '../decorators/event';
 
 @customElement(COMPONENT_TAGS.TODO_INPUT)
 export class TodoInput extends HTMLElement {
-  @inject<TodoUsecase>('todoUsecase')
-  accessor todoUsecase!: TodoUsecase;
   @queryStrict<HTMLInputElement>('input')
   accessor inputEl!: HTMLInputElement;
   @queryStrict<HTMLButtonElement>('button')
@@ -39,9 +36,8 @@ export class TodoInput extends HTMLElement {
     }
   };
 
-  @dispatch(EVENT_NAMES.TODO_ADDED)
   @errorDispatch(EVENT_NAMES.TODO_ERROR)
-  private async handleAdd() {
+  private handleAdd() {
     const content = this.inputEl.value.trim();
     if (content.length === 0) {
       return {
@@ -58,16 +54,6 @@ export class TodoInput extends HTMLElement {
         detail: { content },
       })
     );
-
-    const response = await this.todoUsecase.addTodo({ content });
-
-    if (response.state === 'error') {
-      this.dispatchEvent(
-        new CustomEvent(EVENT_NAMES.TODO_ADDED_ROLLBACK, { bubbles: true })
-      );
-    }
-
-    return response;
   }
 
   private template() {

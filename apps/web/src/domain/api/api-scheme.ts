@@ -1,11 +1,11 @@
 export type TodoResponse = {
-  id: number;
+  id: string;
   content: string;
   done: boolean;
 };
 
 export type TodoIdParams = {
-  id: number;
+  id: string;
 };
 
 export type CreateOrPatchTodo = {

@@ -13,7 +13,7 @@ export type ApiRepository = {
   'POST /todos': (p: {
     body: CreateOrPatchTodo;
   }) => Promise<SuccessResponse<TodoResponse[]> | ErrorResponse>;
-  'PUT /todos/:id': (p: {
+  'PATCH /todos/:id': (p: {
     params: TodoIdParams;
     body: CreateOrPatchTodo;
   }) => Promise<SuccessResponse<TodoResponse[]> | ErrorResponse>;

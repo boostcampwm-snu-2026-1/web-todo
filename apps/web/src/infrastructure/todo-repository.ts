@@ -46,7 +46,10 @@ export const implTodoRepository = ({
     updateTodo: async ({ id, content, done }) => {
       const params = { id };
       const body = { content, done };
-      const response = await apiRepository['PUT /todos/:id']({ params, body });
+      const response = await apiRepository['PATCH /todos/:id']({
+        params,
+        body,
+      });
       if (response.status !== 200) {
         return { state: 'error', detailedError: 'TODO_UPDATE_FAILED' };
       }

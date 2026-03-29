@@ -48,7 +48,6 @@ export class TodoApp extends HTMLElement {
     if (todoHeader == null) throw new Error('todo-header를 찾을 수 없어요.');
     if (todoList == null) throw new Error('todo-list를 찾을 수 없어요.');
 
-    todoInput.todoUsecase = this.todoUsecase;
     todoHeader.dateUsecase = this.dateUsecase;
     todoHeader.render();
     todoList.todoUsecase = this.todoUsecase;
@@ -56,7 +55,9 @@ export class TodoApp extends HTMLElement {
   }
 
   private handleAdded = (e: Event) => {
-    if (!(e instanceof CustomEvent)) return;
+    if (!(e instanceof CustomEvent)) {
+      return;
+    }
     const todoList = this.querySelector(COMPONENT_TAGS.TODO_LIST);
     if (todoList === null) {
       return;

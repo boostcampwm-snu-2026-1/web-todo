@@ -5,9 +5,19 @@
   "type": "module",
   "scripts": {
     "check:type": "tsc --noEmit",
-    "check-all": "pnpm check:type"
+    "check-all": "pnpm check:type",
+    "dev": "node --watch --import tsx/esm src/index.ts",
+    "build": "tsc"
   },
   "devDependencies": {
-    "@yeonu-todo/typescript-config": "workspace:*"
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.5.0",
+    "@yeonu-todo/typescript-config": "workspace:*",
+    "tsx": "^4.21.0"
+  },
+  "dependencies": {
+    "dotenv": "^17.3.1",
+    "express": "^5.2.1",
+    "mongoose": "^9.3.3"
   }
 }

@@ -34,7 +34,7 @@ export const implApiRepository = ({
         body,
       });
     },
-    'PUT /todos/:id': ({
+    'PATCH /todos/:id': ({
       params,
       body,
     }: {
@@ -42,7 +42,7 @@ export const implApiRepository = ({
       body: CreateOrPatchTodo;
     }) => {
       return callWithoutToken<SuccessResponse<TodoResponse[]>>({
-        method: 'PUT',
+        method: 'PATCH',
         path: `todos/${params.id}`,
         body,
       });
