@@ -25,6 +25,11 @@ async function startServer() {
       res.json(todos);
     });
 
+    app.put("/todos", async (req, res) => {
+      const todo = await Todo.create({ content: req.body.content });
+      res.status(201).json(todo);
+    });
+
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
