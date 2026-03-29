@@ -1,4 +1,4 @@
-const TODO_API_ENDPOINT = "https://69be0fcd17c3d7d9779120b3.mockapi.io/api/v1/todos";
+const TODO_API_ENDPOINT = "http://localhost:3000/todos";
 
 function normalizeTodoId(rawId) {
   if (rawId === null || rawId === undefined || rawId === "") {
@@ -19,27 +19,21 @@ function mapServerTodoToClientTodo(serverTodo) {
 }
 
 function createTodoRequestBody(content) {
-  const now = new Date().toISOString();
-
   return {
     content,
     completed: false,
-    createdAt: now,
-    updatedAt: now,
   };
 }
 
 function createTodoCompletionPutBody(completed) {
   return {
     completed,
-    updatedAt: new Date().toISOString(),
   };
 }
 
 function createTodoContentPutBody(content) {
   return {
     content,
-    updatedAt: new Date().toISOString(),
   };
 }
 
@@ -129,8 +123,11 @@ export async function deleteTodoOnServer(todoId) {
 }
 
 export async function resetAllTodosOnServer() {
-  const todos = await fetchTodosFromServer();
-  const validTodoIds = todos.map((todo) => normalizeTodoId(todo.id)).filter(Boolean);
+  const response = await fetch(TODO_API_ENDPOINT, {
+    method: "DELETE",
+  });
 
-  await Promise.all(validTodoIds.map((todoId) => deleteTodoOnServer(todoId)));
+  if (!response.ok) {
+    throw new Error(`Failed to reset todos: ${response.status}`);
+  }
 }
