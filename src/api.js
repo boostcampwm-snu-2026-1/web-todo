@@ -1,6 +1,6 @@
 /* 서버 통신 모듈 */
 
-const BASE_URL = "https://69b93726e69653ffe6a6f05b.mockapi.io/api/v1/todos";
+const BASE_URL = "http://localhost:3000/api/todos";
 
 export async function fetchTodosApi() {
     const response = await fetch(BASE_URL);
