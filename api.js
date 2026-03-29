@@ -1,4 +1,4 @@
-const BASE_URL = 'https://69b93728e69653ffe6a6f07b.mockapi.io/todos';
+const BASE_URL = 'http://localhost:3000/todos';
 
 export async function fetchTodos() {
     try {
