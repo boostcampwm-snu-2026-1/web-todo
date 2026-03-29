@@ -19,23 +19,12 @@ const todoSchema = new mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    createdAt: {
-      type: Date,
-      default: Date.now,
-    },
-    updatedAt: {
-      type: Date,
-      default: Date.now,
-    },
   },
   {
-    versionKey: false,
+    timestamps: true,
+    versionKey: false
   }
 );
-
-todoSchema.pre("save", function updateTimestamp() {
-  this.updatedAt = new Date();
-});
 
 const Todo = mongoose.model("Todo", todoSchema);
 
@@ -70,7 +59,6 @@ function parseOptionalCompletedArg(rawCompleted) {
 
   return undefined;
 }
-
 
 function parsePostArgs(args) {
   if (!Array.isArray(args) || args.length === 0) {
@@ -181,8 +169,6 @@ async function updateTodo(id, contentArg, completedArg) {
     throw new Error("put requires at least content or completed argument");
   }
 
-  updatePayload.updatedAt = new Date();
-
   const updated = await Todo.findByIdAndUpdate(id, updatePayload, {
     returnDocument: "after",
     runValidators: true,
@@ -210,7 +196,6 @@ async function removeTodo(id) {
   console.log(JSON.stringify(serializeTodo(deleted), null, 2));
 }
 
-
 async function resetTodos() {
   const result = await Todo.deleteMany({});
 
@@ -222,7 +207,7 @@ function printUsage() {
   console.log("Usage:");
   console.log("  npm run test -- get");
   console.log('  npm run test -- post "todo content" [true|false]');
-  console.log('  npm run test -- put <id> ["new content"] [true|false]');
+  console.log('  npm run test -- put <id> ["todo content"] [true|false]');
   console.log("  npm run test -- delete <id>");
   console.log("  npm run test -- reset");
 }

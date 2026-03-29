@@ -1,4 +1,3 @@
 node_modules/
 dist/
-web-todo-client/.env
-web-todo-server/.env
+.env
