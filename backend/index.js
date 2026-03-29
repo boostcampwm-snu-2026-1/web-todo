@@ -67,6 +67,18 @@ app.put('/api/todos/:id', async (req, res) => {
     }
 });
 
+app.delete('/api/todos/:id', async (req, res) => {
+    try {
+        const { id } = req.params;
+        const deletedTodo = await Todos.findByIdAndDelete(id);
+
+        if (!deletedTodo) return res.status(404).json({ message: "대상을 찾을 수 없습니다." });
+        res.status(200).json({ id: deletedTodo._id });
+    } catch (error) {
+        res.status(500).json({ error: error.message });
+    }
+});
+
 app.listen(port, () => {
   console.log(`Example app listening on port ${port}`)
 })
