@@ -2,9 +2,11 @@ const input = document.querySelector("#new-task");
 const addButton = document.querySelector("#add-task");
 const todoList = document.querySelector("#task-list");
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 // GET todos
 function getTodos() {
-  fetch("https://69b9372ee69653ffe6a6f09a.mockapi.io/todos")
+  fetch(`${API_URL}/todos`)
     .then((res) => res.json())
     .then((result) => {
       for (const todo of result) {
@@ -16,7 +18,7 @@ function getTodos() {
 
 // POST todo
 function postTodo(todo) {
-  fetch("https://69b9372ee69653ffe6a6f09a.mockapi.io/todos", {
+  fetch(`${API_URL}/todos`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -32,7 +34,7 @@ function postTodo(todo) {
 
 // DELETE todo
 function deleteTodo(id) {
-  fetch(`https://69b9372ee69653ffe6a6f09a.mockapi.io/todos/${id}`, {
+  fetch(`${API_URL}/todos/${id}`, {
     method: "DELETE",
   }).then(() => {
     const li = todoList.querySelector(`li[data-id="${id}"]`);
@@ -42,7 +44,7 @@ function deleteTodo(id) {
 
 // TOGGLE todo
 function toggleTodo(id, done) {
-  fetch(`https://69b9372ee69653ffe6a6f09a.mockapi.io/todos/${id}`, {
+  fetch(`${API_URL}/todos/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
