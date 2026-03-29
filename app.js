@@ -70,10 +70,13 @@ function updateCounts() {
  */
 function render() {
     list.innerHTML = '';
+
+    const fragment = document.createDocumentFragment();
     todos.forEach(todo => {
-        const todoElement = createTodoElement(todo);
-        list.appendChild(todoElement);
+        fragment.appendChild(createTodoElement(todo));
     });
+    list.appendChild(fragment);
+
     updateCounts();
 }
 
