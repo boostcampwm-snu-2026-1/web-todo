@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>할 일 앱</title>
+    <link rel="stylesheet" href="/src/todo.css">
+</head>
+<body>
+    <main class="todo-app">
+        <header class="todo-header">
+            <p class="todo-label">집중 목록</p>
+            <h1>오늘 중요한 일은?</h1>
+            <p class="todo-description">우선순위를 분명히 하고 하나씩 끝내보세요.</p>
+        </header>
+
+        <section class="todo-input-section">
+            <label class="sr-only" for="todo-input">새 할 일</label>
+            <input
+                type="text"
+                id="todo-input"
+                placeholder="다음 할 일을 입력하세요..."
+            >
+            <button id="add-btn" type="button">할 일 추가</button>
+        </section>
+
+        <section class="todo-list-section">
+            <ul id="todo-list"></ul>
+        </section>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+</body>
+</html>
