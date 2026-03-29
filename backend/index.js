@@ -4,7 +4,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import dns from "dns";
 
-dotenv.config();
+dotenv.config({ path: new URL("./.env", import.meta.url) });
 dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 const app = express();
