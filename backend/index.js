@@ -58,24 +58,23 @@ app.post('/todos', async (req, res) => {
     });
 
     const savedTodo = await newTodo.save();
-    console.log("데이터 받음!")
     res.status(201).json(savedTodo);
   } catch (err) {
     res.status(400).json({ message: "할 일을 저장할 수 없습니다.", error: err.message });
   }
 });
 
-// 1. 할 일 상태 수정하기 (PATCH)
+// PATCH: 할 일 완료 상태 토글하기
 app.patch('/todos/:id', async (req, res) => {
+  // try-catch 블록으로 에러 처리
     try {
         const { id } = req.params;
         const { completed } = req.body;
         
-        // ID로 찾아서 상태만 업데이트
         const updatedTodo = await Todo.findByIdAndUpdate(
             id, 
             { completed }, 
-            { new: true } // 업데이트된 후의 데이터를 반환
+            { new: true }
         );
         
         res.json(updatedTodo);
@@ -84,8 +83,9 @@ app.patch('/todos/:id', async (req, res) => {
     }
 });
 
-// 2. 할 일 삭제하기 (DELETE)
+// DELETE: 할 일 삭제하기
 app.delete('/todos/:id', async (req, res) => {
+  // try-catch 블록으로 에러 처리
     try {
         const { id } = req.params;
         await Todo.findByIdAndDelete(id);
