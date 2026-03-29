@@ -51,7 +51,6 @@ function serializeTodo(doc) {
   };
 }
 
-
 function parseCompletedArg(rawCompleted) {
   if (rawCompleted === undefined) return false;
 
@@ -60,6 +59,66 @@ function parseCompletedArg(rawCompleted) {
   if (value === "false") return false;
 
   return false;
+}
+
+function parseOptionalCompletedArg(rawCompleted) {
+  if (rawCompleted === undefined) return undefined;
+
+  const value = String(rawCompleted).toLowerCase();
+  if (value === "true") return true;
+  if (value === "false") return false;
+
+  return undefined;
+}
+
+
+function parsePostArgs(args) {
+  if (!Array.isArray(args) || args.length === 0) {
+    return { content: "", completedArg: undefined };
+  }
+
+  const maybeCompleted = parseOptionalCompletedArg(args[args.length - 1]);
+  if (maybeCompleted !== undefined) {
+    return {
+      content: args.slice(0, -1).join(" "),
+      completedArg: args[args.length - 1],
+    };
+  }
+
+  return {
+    content: args.join(" "),
+    completedArg: undefined,
+  };
+}
+
+function parsePutArgs(args) {
+  if (!Array.isArray(args) || args.length === 0) {
+    return {
+      contentArg: undefined,
+      completedArg: undefined,
+    };
+  }
+
+  const maybeLastCompleted = parseOptionalCompletedArg(args[args.length - 1]);
+
+  if (args.length === 1 && maybeLastCompleted !== undefined) {
+    return {
+      contentArg: undefined,
+      completedArg: args[0],
+    };
+  }
+
+  if (maybeLastCompleted !== undefined) {
+    return {
+      contentArg: args.slice(0, -1).join(" "),
+      completedArg: args[args.length - 1],
+    };
+  }
+
+  return {
+    contentArg: args.join(" "),
+    completedArg: undefined,
+  };
 }
 
 async function connectDatabase() {
@@ -93,8 +152,79 @@ async function createTodo(content, completedArg) {
 
   const completed = parseCompletedArg(completedArg);
   const created = await Todo.create({ content: trimmedContent, completed });
+
   console.log("✅ created todo");
   console.log(JSON.stringify(serializeTodo(created), null, 2));
+}
+
+async function updateTodo(id, contentArg, completedArg) {
+  if (!id) {
+    throw new Error("id is required for put command");
+  }
+
+  const updatePayload = {};
+
+  if (contentArg !== undefined) {
+    const trimmedContent = contentArg.trim();
+    if (!trimmedContent) {
+      throw new Error("content cannot be empty");
+    }
+    updatePayload.content = trimmedContent;
+  }
+
+  const completed = parseOptionalCompletedArg(completedArg);
+  if (completed !== undefined) {
+    updatePayload.completed = completed;
+  }
+
+  if (Object.keys(updatePayload).length === 0) {
+    throw new Error("put requires at least content or completed argument");
+  }
+
+  updatePayload.updatedAt = new Date();
+
+  const updated = await Todo.findByIdAndUpdate(id, updatePayload, {
+    returnDocument: "after",
+    runValidators: true,
+  });
+
+  if (!updated) {
+    throw new Error(`todo not found for id: ${id}`);
+  }
+
+  console.log("✅ updated todo");
+  console.log(JSON.stringify(serializeTodo(updated), null, 2));
+}
+
+async function removeTodo(id) {
+  if (!id) {
+    throw new Error("id is required for delete command");
+  }
+
+  const deleted = await Todo.findByIdAndDelete(id);
+  if (!deleted) {
+    throw new Error(`todo not found for id: ${id}`);
+  }
+
+  console.log("✅ deleted todo");
+  console.log(JSON.stringify(serializeTodo(deleted), null, 2));
+}
+
+
+async function resetTodos() {
+  const result = await Todo.deleteMany({});
+
+  console.log("✅ reset completed");
+  console.log(`deletedCount: ${result.deletedCount}`);
+}
+
+function printUsage() {
+  console.log("Usage:");
+  console.log("  npm run test -- get");
+  console.log('  npm run test -- post "todo content" [true|false]');
+  console.log('  npm run test -- put <id> ["new content"] [true|false]');
+  console.log("  npm run test -- delete <id>");
+  console.log("  npm run test -- reset");
 }
 
 async function main() {
@@ -109,15 +239,33 @@ async function main() {
     }
 
     if (command === "post") {
-      const content = process.argv[3] ?? "";
-      const completedArg = process.argv[4];
+      const postArgs = process.argv.slice(3);
+      const { content, completedArg } = parsePostArgs(postArgs);
       await createTodo(content, completedArg);
       return;
     }
 
-    console.log("Usage:");
-    console.log("  node db-test.js get");
-    console.log('  node db-test.js post "todo content" [true|false]');
+    if (command === "put") {
+      const id = process.argv[3];
+      const putArgs = process.argv.slice(4);
+      const { contentArg, completedArg } = parsePutArgs(putArgs);
+
+      await updateTodo(id, contentArg, completedArg);
+      return;
+    }
+
+    if (command === "delete") {
+      const id = process.argv[3];
+      await removeTodo(id);
+      return;
+    }
+
+    if (command === "reset") {
+      await resetTodos();
+      return;
+    }
+
+    printUsage();
   } finally {
     await disconnectDatabase();
   }
