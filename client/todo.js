@@ -130,6 +130,7 @@ todoList.addEventListener("click", (e) => {
 
   // editTodo(id) 구현
   if (e.target.classList.contains("edit-button")) {
+    const editButton = e.target;
     const span = li.querySelector("span");
     const input = document.createElement("input");
     input.type = "text";
@@ -141,7 +142,7 @@ todoList.addEventListener("click", (e) => {
     saveButton.classList.add("save-button");
 
     li.replaceChild(input, span);
-    e.target.replaceWith(saveButton);
+    editButton.replaceWith(saveButton);
     input.focus();
 
     const save = () => {

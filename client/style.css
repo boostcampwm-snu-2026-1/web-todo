@@ -139,6 +139,8 @@ li.done span {
 
 /* ── Shared button styles ─────────────────────────── */
 .toggle-button,
+.edit-button,
+.save-button,
 .delete-button {
   border: none;
   border-radius: 8px;
@@ -151,6 +153,8 @@ li.done span {
 }
 
 .toggle-button:active,
+.edit-button:active,
+.save-button:active,
 .delete-button:active {
   transform: scale(0.94);
 }
@@ -174,6 +178,26 @@ li.done .toggle-button:hover {
   background: #bbf7d0;
 }
 
+/* Edit button */
+.edit-button {
+  background: #f3f0ff;
+  color: #7c3aed;
+}
+
+.edit-button:hover {
+  background: #ede9fe;
+}
+
+/* Save button */
+.save-button {
+  background: #667eea;
+  color: #fff;
+}
+
+.save-button:hover {
+  background: #5a6fd6;
+}
+
 /* Delete button */
 .delete-button {
   background: #fee2e2;
@@ -182,4 +206,18 @@ li.done .toggle-button:hover {
 
 .delete-button:hover {
   background: #fecaca;
+}
+
+/* ── Inline edit input ────────────────────────────── */
+.edit-input {
+  flex: 1;
+  padding: 6px 10px;
+  border: 2px solid #667eea;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  font-family: inherit;
+  color: #2d2d2d;
+  background: #fff;
+  outline: none;
+  box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.15);
 }
