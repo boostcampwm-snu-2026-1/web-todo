@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "json-server --watch db.json",
-    "dev": "vite"
+    "dev": "vite",
+    "back": "nodemon back.js"
   },
   "repository": {
     "type": "git",
@@ -21,6 +22,11 @@
   },
   "homepage": "https://github.com/pkdje/web-todo#readme",
   "devDependencies": {
+    "nodemon": "^3.1.14",
     "vite": "^8.0.1"
+  },
+  "dependencies": {
+    "cors": "^2.8.6",
+    "express": "^5.2.1"
   }
 }

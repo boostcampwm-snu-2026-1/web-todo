@@ -7,6 +7,25 @@ const list = document.querySelector('#todo-list');
 const countAll = document.querySelector('#count-all');
 const countActive = document.querySelector('#count-active');
 
+// Toast 컨테이너 생성
+const toastContainer = document.createElement('div');
+toastContainer.id = 'toast-container';
+document.body.appendChild(toastContainer);
+
+function showToast(message, type = 'error') {
+    const toast = document.createElement('div');
+    toast.classList.add('toast', `toast-${type}`);
+    toast.textContent = message;
+    toastContainer.appendChild(toast);
+
+    requestAnimationFrame(() => toast.classList.add('show'));
+
+    setTimeout(() => {
+        toast.classList.remove('show');
+        toast.addEventListener('transitionend', () => toast.remove());
+    }, 3000);
+}
+
 // 전역 상태
 let todos = [];
 
@@ -73,7 +92,7 @@ async function handleAddTodo(e) {
         input.value = '';
         render();
     } catch (error) {
-        alert('Todo 추가에 실패했습니다. 다시 시도해주세요.');
+        showToast('Todo 추가에 실패했습니다. 다시 시도해주세요.');
     }
 }
 
@@ -86,7 +105,7 @@ async function handleDeleteTodo(id) {
         todos = todos.filter(t => t.id !== id);
         render();
     } catch (error) {
-        alert('Todo 삭제에 실패했습니다. 다시 시도해주세요.');
+        showToast('Todo 삭제에 실패했습니다. 다시 시도해주세요.');
     }
 }
 
@@ -102,7 +121,7 @@ async function handleToggleTodo(id) {
         todos = todos.map(t => t.id === id ? updated : t);
         render();
     } catch (error) {
-        alert('Todo 상태 변경에 실패했습니다. 다시 시도해주세요.');
+        showToast('Todo 상태 변경에 실패했습니다. 다시 시도해주세요.');
     }
 }
 
