@@ -30,6 +30,20 @@ async function startServer() {
       res.status(201).json(todo);
     });
 
+    app.patch("/todos/:id", async (req, res) => {
+      const todo = await Todo.findByIdAndUpdate(
+        req.params.id,
+        { done: req.body.done },
+        { new: true },
+      );
+      res.json(todo);
+    });
+
+    app.delete("/todos/:id", async (req, res) => {
+      await Todo.findByIdAndDelete(req.params.id);
+      res.status(204).end();
+    });
+
     app.listen(PORT, () => {
       console.log(`Server is running on port ${PORT}`);
     });
