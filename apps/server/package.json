@@ -1,0 +1,13 @@
+{
+  "name": "week4-server",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "check:type": "tsc --noEmit",
+    "check-all": "pnpm check:type"
+  },
+  "devDependencies": {
+    "@yeonu-todo/typescript-config": "workspace:*"
+  }
+}

@@ -24,4 +24,4 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Check
-        run: pnpm check-all
+        run: pnpm turbo check-all
