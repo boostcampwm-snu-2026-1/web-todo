@@ -22,7 +22,7 @@ export const bindListEvents = (listEl, { onToggle, onDelete }) => {
     const li = target.closest('[data-id]');
     if (!li) return;
 
-    const id = Number(li.dataset.id);
+    const id = li.dataset.id;
 
     if (action === 'toggle') onToggle(id);
     if (action === 'delete') onDelete(id);
