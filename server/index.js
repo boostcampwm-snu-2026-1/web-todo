@@ -2,6 +2,7 @@ import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import Todo from "./models/Todo.js";
 
 dotenv.config();
 
@@ -19,8 +20,9 @@ async function startServer() {
     await mongoose.connection.asPromise();
     console.log("Connected to MongoDB");
 
-    app.get("/", (req, res) => {
-      res.send("Hello, World!");
+    app.get("/todos", async (_req, res) => {
+      const todos = await Todo.find();
+      res.json(todos);
     });
 
     app.listen(PORT, () => {
