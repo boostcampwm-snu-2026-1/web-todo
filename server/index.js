@@ -25,12 +25,12 @@ async function startServer() {
       res.json(todos);
     });
 
-    app.put("/todos", async (req, res) => {
+    app.post("/todos", async (req, res) => {
       const todo = await Todo.create({ content: req.body.content });
       res.status(201).json(todo);
     });
 
-    app.patch("/todos/:id", async (req, res) => {
+    app.put("/todos/:id", async (req, res) => {
       const todo = await Todo.findByIdAndUpdate(
         req.params.id,
         { done: req.body.done },

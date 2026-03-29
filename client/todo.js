@@ -96,7 +96,7 @@ todoList.addEventListener("click", (e) => {
   const li = e.target.closest("li");
   if (!li) return;
 
-  const id = Number(li.dataset.id);
+  const id = li.dataset.id;
 
   // deleteTodo(id) 구현
   if (e.target.classList.contains("delete-button")) {
