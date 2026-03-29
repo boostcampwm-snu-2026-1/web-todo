@@ -1,9 +1,12 @@
 import { createTodoService } from './todoService.js';
 import { renderTodoList } from './todoView.js';
+import { API_BASE_URL } from './config.js';
 
 const inputEl = document.getElementById('new-task-input');
 const addBtnEl = document.getElementById('add-task-button');
 const listEl = document.getElementById('todo-list');
+const backendTestBtnEl = document.getElementById('backend-test-button');
+const backendTestStatusEl = document.getElementById('backend-test-status');
 
 const todoService = createTodoService();
 let todos = [];
@@ -22,6 +25,22 @@ const runWithErrorAlert = async (task) => {
     await task();
   } catch (error) {
     alert(`Request failed: ${error.message}`);
+  }
+};
+
+// Test local server (localhost:3000) connection
+const testBackendConnection = async () => {
+  backendTestStatusEl.textContent = 'Checking backend...';
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/health`);
+    if (!response.ok) throw new Error(`status ${response.status}`);
+
+    const data = await response.json();
+    const checkedTime = new Date(data.timestamp).toLocaleTimeString();
+    backendTestStatusEl.textContent = `Connected (${checkedTime})`;
+  } catch (error) {
+    backendTestStatusEl.textContent = `Connection failed: ${error.message}`;
   }
 };
 
@@ -60,6 +79,10 @@ const editTodo = async (id) => {
 
 addBtnEl.addEventListener('click', () => {
   runWithErrorAlert(addTodo);
+});
+
+backendTestBtnEl.addEventListener('click', () => {
+  testBackendConnection();
 });
 
 inputEl.addEventListener('keydown', (e) => {
