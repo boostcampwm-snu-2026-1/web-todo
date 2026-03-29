@@ -85,7 +85,6 @@ async function addTodo(){ //add-btn 동작 함수
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                createdAt: new Date().toISOString(),
                 content: text,
                 completed: false
                 //id는 서버에서 정리함

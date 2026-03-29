@@ -16,7 +16,7 @@ const URI = process.env.URI; // <-.env 파일에 URI 정보로 정의
 const todoSchema = new mongoose.Schema({
   content: String,
   completed: Boolean,
-});
+}, { timestamps: true });
 const Todos = mongoose.model("Todos", todoSchema);
 
 //DB 연결
