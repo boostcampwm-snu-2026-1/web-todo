@@ -1,44 +1,47 @@
-export async function getTodo () {
-    const response = await fetch("https://69b9371be69653ffe6a6eff1.mockapi.io/todos");
-    return(response.json());
+const BASE_URL = "http://localhost:3000";
+
+export async function getTodo() {
+  const response = await fetch(`${BASE_URL}/todos`);
+  if (!response.ok) throw new Error("Todo 목록 조회 실패");
+  return await response.json();
 }
 
 export async function addTodo(content) {
-    const response = await fetch("https://69b9371be69653ffe6a6eff1.mockapi.io/todos", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            content: content,
-            completed: false
-        })
-    })
-    .then((res) => res.json())
-    return(response)
+  const response = await fetch(`${BASE_URL}/todos`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      content,
+      done: false,
+    }),
+  });
+
+  if (!response.ok) throw new Error("Todo 추가 실패");
+  return await response.json();
 }
 
 export async function deleteTodo(id) {
-    const response = await fetch(`https://69b9371be69653ffe6a6eff1.mockapi.io/todos/${id}`, {
-        method: "DELETE",
-    })
-    return(response)
+  const response = await fetch(`${BASE_URL}/todos/${id}`, {
+    method: "DELETE",
+  });
+
+  if (!response.ok) throw new Error("Todo 삭제 실패");
+  return await response.json();
 }
 
 export async function checkTodo(id, check) {
-    const response = await fetch(`https://69b9371be69653ffe6a6eff1.mockapi.io/todos/${id}`, {
-        method: "PUT",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            completed: check
-        })
-    })
-    return(response)
+  const response = await fetch(`${BASE_URL}/todos/${id}`, {
+    method: "PATCH",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      done: check,
+    }),
+  });
+
+  if (!response.ok) throw new Error("Todo 상태 변경 실패");
+  return await response.json();
 }
-
-
-// fetch 에선 try-catch로 예외처리가 필요하다.
-// 예측불가능한 네트워크나 외부적인 환경 문제에 대응하기 위해. 
-
