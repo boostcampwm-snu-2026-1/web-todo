@@ -1,6 +1,6 @@
 /**
  * server.js
- * Todo REST API 서버 (Express)
+ * Todo REST API 서버 (Express + MongoDB Atlas)
  *
  * GET    /todos       - 전체 목록 조회
  * POST   /todos       - 새 todo 추가
@@ -8,22 +8,36 @@
  * DELETE /todos/:id   - 삭제
  */
 
+require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
+const mongoose = require('mongoose');
 
 const app = express();
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
 
-/* ─── In-memory 데이터 저장소 ─── */
-let todos = [
-  { id: 1, text: '학습 목표 읽기', done: false, createdAt: Date.now() },
-  { id: 2, text: 'Vite 개발환경 세팅', done: false, createdAt: Date.now() },
-  { id: 3, text: 'fetch API 학습', done: false, createdAt: Date.now() },
-];
-let nextId = 4;
+/* ─── Mongoose Todo 스키마 ─── */
+const todoSchema = new mongoose.Schema(
+  {
+    text: { type: String, required: true, trim: true },
+    done: { type: Boolean, default: false },
+    createdAt: { type: Number, default: Date.now },
+  },
+  {
+    toJSON: {
+      transform(doc, ret) {
+        ret.id = ret._id.toString();
+        delete ret._id;
+        delete ret.__v;
+      },
+    },
+  }
+);
+
+const Todo = mongoose.model('Todo', todoSchema);
 
 /* ─── GET /todos ─── */
 app.get('/todos', (req, res) => {
