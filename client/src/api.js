@@ -37,3 +37,8 @@ export async function checkTodo(id, check) {
     })
     return(response)
 }
+
+
+// fetch 에선 try-catch로 예외처리가 필요하다.
+// 예측불가능한 네트워크나 외부적인 환경 문제에 대응하기 위해. 
+
