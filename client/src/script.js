@@ -1,58 +1,61 @@
-import { getTodo, addTodo, deleteTodo, checkTodo } from "./api";
+import { getTodo, addTodo, deleteTodo, checkTodo } from "./api.js";
 
 const todoForm = document.getElementById("form");
 const todoInput = document.getElementById("input");
 const todoList = document.getElementById("todo-list");
 
-let todos = await getTodo();
+let todos = [];
+
+async function loadTodos() {
+  todos = await getTodo();
+  renderTodos();
+}
 
 function renderTodos() {
-    todoList.innerHTML = "";
-    todos.forEach((todo) => {
-        const li = document.createElement("li");
+  todoList.innerHTML = "";
 
-        const checkbox = document.createElement("input");
-        checkbox.type = "checkbox";
-        checkbox.className = "checkbox";
-        checkbox.checked = todo.completed;
+  todos.forEach((todo) => {
+    const li = document.createElement("li");
 
-        const span = document.createElement("span");
-        span.textContent = todo.content;
+    const checkbox = document.createElement("input");
+    checkbox.type = "checkbox";
+    checkbox.className = "checkbox";
+    checkbox.checked = todo.done;
 
-        const deleteBtn = document.createElement("button");
-        deleteBtn.type = "button"
-        deleteBtn.textContent = "삭제";
-        deleteBtn.className = "deleteBtn";
+    const span = document.createElement("span");
+    span.textContent = todo.content;
 
-        deleteBtn.addEventListener("click", async () => {
-            await deleteTodo(todo.id);
-            todos = await getTodo();
-            renderTodos();
-        })
+    const deleteBtn = document.createElement("button");
+    deleteBtn.type = "button";
+    deleteBtn.textContent = "삭제";
+    deleteBtn.className = "deleteBtn";
 
-        checkbox.addEventListener("change", async () => {
-            await checkTodo(todo.id, !todo.completed);
-            todos = await getTodo();
-            renderTodos();
-        });
-
-        li.appendChild(checkbox);
-        li.appendChild(span);
-        li.appendChild(deleteBtn);
-        todoList.appendChild(li);
+    deleteBtn.addEventListener("click", async () => {
+      await deleteTodo(todo._id);
+      await loadTodos();
     });
+
+    checkbox.addEventListener("change", async () => {
+      await checkTodo(todo._id, checkbox.checked);
+      await loadTodos();
+    });
+
+    li.appendChild(checkbox);
+    li.appendChild(span);
+    li.appendChild(deleteBtn);
+    todoList.appendChild(li);
+  });
 }
 
 todoForm.addEventListener("submit", async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    const text = todoInput.value.trim();
-    if (text === "")return;
+  const text = todoInput.value.trim();
+  if (text === "") return;
 
-    await addTodo(text);
-    todos = await getTodo();
-    todoInput.value = "";
-    renderTodos();
+  await addTodo(text);
+  todoInput.value = "";
+  await loadTodos();
 });
 
-renderTodos();
+loadTodos();
