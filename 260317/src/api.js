@@ -1,4 +1,4 @@
-const BASE_URL = 'https://69bffea772ca04f3bcba40d7.mockapi.io/api/v1';
+const BASE_URL = 'http://localhost:3000/api';
 
 export async function fetchTodos() {
   const res = await fetch(`${BASE_URL}/todos`);
