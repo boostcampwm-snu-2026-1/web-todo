@@ -2,9 +2,11 @@ const input = document.querySelector("#new-task");
 const addButton = document.querySelector("#add-task");
 const todoList = document.querySelector("#task-list");
 
+const API_URL = import.meta.env.VITE_API_URL;
+
 // GET todos
 function getTodos() {
-  fetch("https://69b9372ee69653ffe6a6f09a.mockapi.io/todos")
+  fetch(`${API_URL}/todos`)
     .then((res) => res.json())
     .then((result) => {
       for (const todo of result) {
@@ -16,7 +18,7 @@ function getTodos() {
 
 // POST todo
 function postTodo(todo) {
-  fetch("https://69b9372ee69653ffe6a6f09a.mockapi.io/todos", {
+  fetch(`${API_URL}/todos`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -32,7 +34,7 @@ function postTodo(todo) {
 
 // DELETE todo
 function deleteTodo(id) {
-  fetch(`https://69b9372ee69653ffe6a6f09a.mockapi.io/todos/${id}`, {
+  fetch(`${API_URL}/todos/${id}`, {
     method: "DELETE",
   }).then(() => {
     const li = todoList.querySelector(`li[data-id="${id}"]`);
@@ -40,9 +42,20 @@ function deleteTodo(id) {
   });
 }
 
+// UPDATE todo content
+function updateTodoContent(id, content) {
+  fetch(`${API_URL}/todos/${id}`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ content }),
+  });
+}
+
 // TOGGLE todo
 function toggleTodo(id, done) {
-  fetch(`https://69b9372ee69653ffe6a6f09a.mockapi.io/todos/${id}`, {
+  fetch(`${API_URL}/todos/${id}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -63,19 +76,27 @@ function createTodoItem(todo) {
   const li = document.createElement("li");
   const span = document.createElement("span");
   const toggleButton = document.createElement("button");
+  const editButton = document.createElement("button");
   const deleteButton = document.createElement("button");
 
   li.dataset.id = todo.id;
 
-  toggleButton.textContent = "Done";
+  if (todo.done) li.classList.add("done");
+
+  toggleButton.textContent = todo.done ? "Undo" : "Done";
   toggleButton.classList.add("toggle-button");
 
   span.textContent = todo.content;
+
+  editButton.textContent = "Edit";
+  editButton.classList.add("edit-button");
+
   deleteButton.textContent = "Delete";
   deleteButton.classList.add("delete-button");
 
   li.appendChild(span);
   li.appendChild(toggleButton);
+  li.appendChild(editButton);
   li.appendChild(deleteButton);
   return li;
 }
@@ -94,7 +115,7 @@ todoList.addEventListener("click", (e) => {
   const li = e.target.closest("li");
   if (!li) return;
 
-  const id = Number(li.dataset.id);
+  const id = li.dataset.id;
 
   // deleteTodo(id) 구현
   if (e.target.classList.contains("delete-button")) {
@@ -105,6 +126,43 @@ todoList.addEventListener("click", (e) => {
   if (e.target.classList.contains("toggle-button")) {
     const isDone = li.classList.toggle("done");
     toggleTodo(id, isDone);
+  }
+
+  // editTodo(id) 구현
+  if (e.target.classList.contains("edit-button")) {
+    const editButton = e.target;
+    const span = li.querySelector("span");
+    const input = document.createElement("input");
+    input.type = "text";
+    input.value = span.textContent;
+    input.classList.add("edit-input");
+
+    const saveButton = document.createElement("button");
+    saveButton.textContent = "Save";
+    saveButton.classList.add("save-button");
+
+    li.replaceChild(input, span);
+    editButton.replaceWith(saveButton);
+    input.focus();
+
+    const save = () => {
+      const newContent = input.value.trim();
+      if (newContent) {
+        span.textContent = newContent;
+        updateTodoContent(id, newContent);
+      }
+      li.replaceChild(span, input);
+      saveButton.replaceWith(editButton);
+    };
+
+    saveButton.addEventListener("click", save);
+    input.addEventListener("keydown", (ev) => {
+      if (ev.key === "Enter") save();
+      if (ev.key === "Escape") {
+        li.replaceChild(span, input);
+        saveButton.replaceWith(editButton);
+      }
+    });
   }
 });
 
