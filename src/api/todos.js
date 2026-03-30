@@ -1,5 +1,5 @@
 const BASE_URL =
-  'https://69b93733e69653ffe6a6f0d3.mockapi.io/api/v1/todos';
+  import.meta.env.VITE_API_BASE_URL ?? 'http://localhost:3000/api/todos';
 
 const JSON_HEADERS = {
   'Content-Type': 'application/json',
