@@ -4,7 +4,7 @@ import './styles.css';
 // 상태 및 DOM 요소
 // =========================
 
-const API_URL = 'https://69bfbb3d72ca04f3bcb91456.mockapi.io/api/v1/todos';
+const API_URL = 'http://localhost:3000/todos'; //API 주소
 let todos = [];
 // API의 data를 저장할 배열
 
@@ -25,7 +25,7 @@ function renderTodos(){
         checkbox.type = 'checkbox';
         checkbox.className = 'checkbox';
         checkbox.checked = todo.completed;
-        checkbox.dataset.id = todo.id; //doneTodo에서 사용할 id 저장
+        checkbox.dataset.id = todo._id; //doneTodo에서 사용할 id 저장
 
         const span = document.createElement('span');
         span.textContent = todo.content;
@@ -49,7 +49,7 @@ function renderTodos(){
         const delBtn = document.createElement('button');
         delBtn.textContent = '🗑';
         delBtn.className = 'del-btn';
-        delBtn.dataset.id = todo.id; //deleteTodo에서 사용할 id 저장
+        delBtn.dataset.id = todo._id; //deleteTodo에서 사용할 id 저장
 
         li.appendChild(checkbox);
         li.appendChild(span);
@@ -85,7 +85,6 @@ async function addTodo(){ //add-btn 동작 함수
             method: 'POST',
             headers: {'Content-Type': 'application/json'},
             body: JSON.stringify({
-                createdAt: new Date().toISOString(),
                 content: text,
                 completed: false
                 //id는 서버에서 정리함
@@ -112,7 +111,7 @@ async function deleteTodo(id){
 
 async function doneTodo(id){
 
-    const target = todos.find(t => t.id === id);
+    const target = todos.find(t => t._id === id);
     if(!target) return;
 
     const newStatus = !target.completed;
@@ -157,3 +156,4 @@ todoList.addEventListener('click', function (event){
 
 // 초기 데이터 로드
 fetchTodos();
+
