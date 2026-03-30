@@ -1,5 +1,5 @@
-// mockapi.io 통신 담당 모듈
-const BASE_URL = 'https://69ba34d2b3dcf7e0b4bc2627.mockapi.io/api/v1/todos';
+// 백엔드 API 통신 담당 모듈
+const BASE_URL = '/api/todos';
 
 export async function fetchTodos() {
   const res = await fetch(BASE_URL);
