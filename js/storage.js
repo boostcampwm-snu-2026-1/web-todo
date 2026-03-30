@@ -1,4 +1,10 @@
-const resourceURL = "https://69bfd08f72ca04f3bcb997b8.mockapi.io/api/v1/todo";
+const defaultAPIOrigin =
+  typeof window === "undefined"
+    ? "http://127.0.0.1:3000"
+    : `${window.location.protocol}//${window.location.hostname}:3000`;
+
+const apiOrigin = import.meta.env?.VITE_API_ORIGIN ?? defaultAPIOrigin;
+const resourceURL = new URL("/api/todos", apiOrigin).toString();
 
 async function request(url, options = {}) {
   const res = await fetch(url, {
@@ -9,7 +15,16 @@ async function request(url, options = {}) {
   });
 
   if (!res.ok) {
-    throw new Error(`MockAPI request failed: ${res.status}`);
+    let message = `API request failed: ${res.status}`;
+
+    try {
+      const errorBody = await res.json();
+      if (typeof errorBody?.message === "string" && errorBody.message) {
+        message = errorBody.message;
+      }
+    } catch {}
+
+    throw new Error(message);
   }
 
   if (res.status === 204) {
