@@ -8,6 +8,12 @@ const todoList = document.getElementById('todo-list');
 
 let todos = []; 
 
+function applyThemeByTime() {
+    const hour = new Date().getHours();
+    const isDayTime = hour >= 7 && hour < 19;
+    document.body.classList.toggle('theme-dark', !isDayTime);
+}
+
 async function fetchAndRender() {
     todos = await getTodos(); 
     renderTodos(todos);     
@@ -28,6 +34,8 @@ async function handleAddTodo() {
 }
 
 async function init() {
+    applyThemeByTime();
+    setInterval(applyThemeByTime, 60 * 1000);
     displayDate();     
     await fetchAndRender(); 
 }
@@ -52,9 +60,9 @@ todoList.addEventListener('click', async (e) => {
         }
     } 
     else if (target.classList.contains('toggle-checkbox')) {
-        const todo = todos.find(t => t.id === id);
+        const todo = todos.find(t => t._id === id);
         if (todo) {
-            await toggleTodoApi(id, todo.done); 
+            await toggleTodoApi(id, todo.isDone); 
             await fetchAndRender();
         }
     }
