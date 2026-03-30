@@ -1,4 +1,4 @@
-const API_ENDPOINT = "https://69bbf34c0915748735bac056.mockapi.io/api/v1/todos";
+const API_ENDPOINT = "http://localhost:3000/todos";
 
 function sortTodos(todos) {
   return todos
