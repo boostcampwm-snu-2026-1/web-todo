@@ -16,8 +16,8 @@
  */
 
 
-/** MockAPI 베이스 URL */
-const BASE_URL = 'https://69b9372ce69653ffe6a6f090.mockapi.io';
+/** 백엔드 서버 베이스 URL */
+const BASE_URL = 'http://localhost:3000';
 
 
 /* ════════════════════════════════════════════
@@ -42,7 +42,7 @@ const BASE_URL = 'https://69b9372ce69653ffe6a6f090.mockapi.io';
  */
 function transformTodo(item) {
   return {
-    id: item.id,
+    id: item._id ?? item.id,
     text: item.content,                        // content → text
     done: item.completed,                      // completed → done
     createdAt: new Date(item.createdAt).getTime(), // ISO 문자열 → Unix ms
