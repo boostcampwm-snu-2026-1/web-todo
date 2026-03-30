@@ -1,0 +1,112 @@
+:root {
+  /* color */
+  --color-bg: #f3f4f6;
+  --color-surface: #ffffff;
+  --color-border: #e5e7eb;
+  --color-text: #111827;
+  --color-text-muted: #9ca3af;
+  --color-primary: #2563eb;
+  --color-danger: #ef4444;
+
+  /* typography */
+  --font-family-base: Arial, sans-serif;
+
+  /* size */
+  --app-width: 460px;
+
+  /* spacing */
+  --spacing-1: 8px;
+  --spacing-2: 12px;
+  --spacing-3: 16px;
+  --spacing-4: 20px;
+  --spacing-5: 40px;
+
+  /* radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-family-base);
+  background-color: var(--color-bg);
+  color: var(--color-text);
+}
+
+.app {
+  width: var(--app-width);
+  margin: var(--spacing-5) auto;
+  padding: var(--spacing-4);
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+}
+
+form {
+  display: flex;
+  gap: var(--spacing-2);
+  margin-bottom: var(--spacing-3);
+}
+
+input[type="text"] {
+  flex: 1;
+  padding: var(--spacing-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+  font-size: 14px;
+}
+
+form button {
+  padding: var(--spacing-2) var(--spacing-3);
+  border: none;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-primary);
+  color: white;
+  cursor: pointer;
+}
+
+ul {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--spacing-2);
+  padding: var(--spacing-2) var(--spacing-3);
+  margin-bottom: var(--spacing-2);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-sm);
+}
+
+li span {
+  flex: 1;
+  margin-left: var(--spacing-2);
+  font-size: 14px;
+}
+
+li input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  margin: 0;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+
+li button {
+  padding: 6px 10px;
+  border: none;
+  border-radius: var(--radius-sm);
+  background-color: var(--color-danger);
+  color: white;
+  cursor: pointer;
+  flex-shrink: 0;
+}
+
+.done {
+  color: var(--color-text-muted);
+  text-decoration: line-through;
+}
