@@ -6,6 +6,20 @@ function saveTodos() {
   localStorage.setItem("todos", JSON.stringify(todos));
 }
 
+export function setTodos(newTodos) {
+  todos = newTodos;
+  nextId =
+    todos.length === 0 ? 1 : Math.max(...todos.map((todo) => todo.id)) + 1;
+  saveTodos();
+}
+
+export function addTodoFromServer(todo) {
+  todos.push(todo);
+  nextId =
+    todos.length === 0 ? 1 : Math.max(...todos.map((todo) => todo.id)) + 1;
+  saveTodos();
+}
+
 export function addTodo(content) {
   todos.push({
     id: nextId,

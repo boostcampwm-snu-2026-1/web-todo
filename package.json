@@ -1,0 +1,23 @@
+{
+  "name": "web-todo",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "dev": "vite"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/a01034972144-hash/web-todo.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/a01034972144-hash/web-todo/issues"
+  },
+  "homepage": "https://github.com/a01034972144-hash/web-todo#readme",
+  "devDependencies": {
+    "vite": "^8.0.3"
+  }
+}
