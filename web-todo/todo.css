@@ -1,0 +1,159 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  background: #f0f2f5;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  padding: 60px 20px;
+}
+
+#app {
+  width: 100%;
+  max-width: 520px;
+}
+
+h1 {
+  font-size: 42px;
+  font-weight: 700;
+  color: #1a1a2e;
+  margin-bottom: 4px;
+}
+
+#todo-count {
+  font-size: 14px;
+  color: #888;
+  margin-bottom: 24px;
+}
+
+#input-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 24px;
+}
+
+#todo-input {
+  flex: 1;
+  padding: 14px 18px;
+  font-size: 16px;
+  border: 2px solid #e0e0e0;
+  border-radius: 12px;
+  outline: none;
+  background: #fff;
+  transition: border-color 0.2s;
+}
+
+#todo-input:focus {
+  border-color: #4f46e5;
+}
+
+#add-btn {
+  padding: 14px 28px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #fff;
+  background: #4f46e5;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.1s;
+}
+
+#add-btn:hover {
+  background: #4338ca;
+}
+
+#add-btn:active {
+  transform: scale(0.96);
+}
+
+#todo-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+#todo-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 14px 18px;
+  background: #fff;
+  border-radius: 12px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+  transition: box-shadow 0.2s, transform 0.2s;
+}
+
+#todo-list li:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-1px);
+}
+
+#todo-list li .checkbox {
+  width: 22px;
+  height: 22px;
+  border: 2px solid #d0d0d0;
+  border-radius: 6px;
+  cursor: pointer;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s;
+}
+
+#todo-list li .checkbox.checked {
+  background: #4f46e5;
+  border-color: #4f46e5;
+}
+
+#todo-list li .checkbox.checked::after {
+  content: '';
+  width: 6px;
+  height: 10px;
+  border: solid #fff;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+  margin-bottom: 2px;
+}
+
+#todo-list li span {
+  flex: 1;
+  font-size: 16px;
+  color: #333;
+  cursor: pointer;
+  transition: color 0.2s;
+  word-break: break-word;
+}
+
+#todo-list li span.completed {
+  color: #aaa;
+  text-decoration: line-through;
+}
+
+#todo-list li .delete-btn {
+  padding: 6px 14px;
+  font-size: 13px;
+  font-weight: 500;
+  color: #e53e3e;
+  background: #fff0f0;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 0.2s, background 0.2s;
+}
+
+#todo-list li:hover .delete-btn {
+  opacity: 1;
+}
+
+#todo-list li .delete-btn:hover {
+  background: #fee2e2;
+}
