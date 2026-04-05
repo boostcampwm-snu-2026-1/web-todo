@@ -1,4 +1,4 @@
-const API_URL = 'https://69bd09772bc2a25b22ad23e1.mockapi.io/api/todos';
+const API_URL = '/api/todos';
 
 const todoForm = document.querySelector('#todo-form');
 const todoInput = document.querySelector('#todo-input');
@@ -17,13 +17,13 @@ function bindEvents() {
   reloadButton.addEventListener('click', loadTodos);
 }
 
-async function handleSubmit(e) {
-  e.preventDefault();
+async function handleSubmit(event) {
+  event.preventDefault();
 
   const text = todoInput.value.trim();
   if (!text) return;
 
-  const res = await fetch(API_URL, {
+  const response = await fetch(API_URL, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json'
@@ -34,18 +34,18 @@ async function handleSubmit(e) {
     })
   });
 
-  const data = await res.json();
-  todos = [normalizeTodo(data), ...todos];
+  const createdTodo = await response.json();
+  todos = [normalizeTodo(createdTodo), ...todos];
 
   renderTodos();
   todoForm.reset();
 }
 
 async function loadTodos() {
-  const res = await fetch(API_URL);
-  const data = await res.json();
+  const response = await fetch(API_URL);
+  const savedTodos = await response.json();
 
-  todos = data.map(normalizeTodo);
+  todos = savedTodos.map(normalizeTodo);
   renderTodos();
 }
 
@@ -59,7 +59,7 @@ async function deleteTodo(id) {
 }
 
 async function toggleTodo(id, completed) {
-  const res = await fetch(`${API_URL}/${id}`, {
+  const response = await fetch(`${API_URL}/${id}`, {
     method: 'PUT',
     headers: {
       'Content-Type': 'application/json'
@@ -67,20 +67,20 @@ async function toggleTodo(id, completed) {
     body: JSON.stringify({ completed })
   });
 
-  const updated = await res.json();
+  const updatedTodo = await response.json();
 
   todos = todos.map(todo =>
-    todo.id === id ? normalizeTodo(updated) : todo
+    todo.id === id ? normalizeTodo(updatedTodo) : todo
   );
 
   renderTodos();
 }
 
-function normalizeTodo(item) {
+function normalizeTodo(rawTodo) {
   return {
-    id: item.id,
-    text: item.name || '',
-    completed: item.completed || false
+    id: rawTodo._id,
+    text: rawTodo.name || '',
+    completed: rawTodo.completed || false
   };
 }
 
@@ -88,33 +88,33 @@ function renderTodos() {
   todoList.innerHTML = '';
 
   todos.forEach(todo => {
-    const el = createTodoElement(todo);
-    todoList.appendChild(el);
+    const todoItem = createTodoElement(todo);
+    todoList.appendChild(todoItem);
   });
 
   taskCount.textContent = `전체 ${todos.length}개`;
 }
 
 function createTodoElement(todo) {
-  const el = todoItemTemplate.content.firstElementChild.cloneNode(true);
-  const checkbox = el.querySelector('.todo-checkbox');
-  const text = el.querySelector('.todo-text');
-  const deleteButton = el.querySelector('.delete-button');
+  const todoElement = todoItemTemplate.content.firstElementChild.cloneNode(true);
+  const checkbox = todoElement.querySelector('.todo-checkbox');
+  const todoText = todoElement.querySelector('.todo-text');
+  const deleteButton = todoElement.querySelector('.delete-button');
 
-  text.textContent = todo.text;
+  todoText.textContent = todo.text;
   checkbox.checked = todo.completed;
 
   if (todo.completed) {
-    el.classList.add('completed');
+    todoElement.classList.add('completed');
   }
 
-  checkbox.addEventListener('change', (e) => {
-    toggleTodo(todo.id, e.target.checked);
+  checkbox.addEventListener('change', (event) => {
+    toggleTodo(todo.id, event.target.checked);
   });
 
   deleteButton.addEventListener('click', () => {
     deleteTodo(todo.id);
   });
 
-  return el;
+  return todoElement;
 }
